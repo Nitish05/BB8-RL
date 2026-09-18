@@ -1,0 +1,92 @@
+{
+  "scope": "Offline authored-axis-aligned synthetic collider scoring only. No geometry enters online control. Covers frozen map/cell corners at chosen position bounds, not unseen maps or motion guarantees.",
+  "box_count": 11,
+  "raw_free_cells": 21891,
+  "raw_free_centers_inside_true_box": 0,
+  "raw_free_center_min_true_signed_distance_m": 0.10177461341059196,
+  "checks": [
+    {
+      "margin_m": 0.04,
+      "position_bound_m": 0.027,
+      "planning_radius_m": 0.12,
+      "free_planning_cells": 8578,
+      "minimum_true_surface_gap_with_cell_and_localization_bounds_m": 0.16650412044771257,
+      "nonpositive_gap_cells": 0
+    },
+    {
+      "margin_m": 0.03,
+      "position_bound_m": 0.027,
+      "planning_radius_m": 0.1,
+      "free_planning_cells": 9889,
+      "minimum_true_surface_gap_with_cell_and_localization_bounds_m": 0.15275143865795762,
+      "nonpositive_gap_cells": 0
+    },
+    {
+      "margin_m": 0.02,
+      "position_bound_m": 0.027,
+      "planning_radius_m": 0.1,
+      "free_planning_cells": 9889,
+      "minimum_true_surface_gap_with_cell_and_localization_bounds_m": 0.15275143865795762,
+      "nonpositive_gap_cells": 0
+    },
+    {
+      "margin_m": 0.04,
+      "position_bound_m": 0.043,
+      "planning_radius_m": 0.12,
+      "free_planning_cells": 8578,
+      "minimum_true_surface_gap_with_cell_and_localization_bounds_m": 0.15050412044771255,
+      "nonpositive_gap_cells": 0
+    },
+    {
+      "margin_m": 0.03,
+      "position_bound_m": 0.043,
+      "planning_radius_m": 0.12,
+      "free_planning_cells": 8578,
+      "minimum_true_surface_gap_with_cell_and_localization_bounds_m": 0.15050412044771255,
+      "nonpositive_gap_cells": 0
+    },
+    {
+      "margin_m": 0.02,
+      "position_bound_m": 0.043,
+      "planning_radius_m": 0.1,
+      "free_planning_cells": 9889,
+      "minimum_true_surface_gap_with_cell_and_localization_bounds_m": 0.13675143865795764,
+      "nonpositive_gap_cells": 0
+    },
+    {
+      "margin_m": 0.04,
+      "position_bound_m": 0.053,
+      "planning_radius_m": 0.14,
+      "free_planning_cells": 7547,
+      "minimum_true_surface_gap_with_cell_and_localization_bounds_m": 0.15499308970767853,
+      "nonpositive_gap_cells": 0
+    },
+    {
+      "margin_m": 0.03,
+      "position_bound_m": 0.053,
+      "planning_radius_m": 0.12,
+      "free_planning_cells": 8578,
+      "minimum_true_surface_gap_with_cell_and_localization_bounds_m": 0.14050412044771257,
+      "nonpositive_gap_cells": 0
+    },
+    {
+      "margin_m": 0.02,
+      "position_bound_m": 0.053,
+      "planning_radius_m": 0.12,
+      "free_planning_cells": 8578,
+      "minimum_true_surface_gap_with_cell_and_localization_bounds_m": 0.14050412044771257,
+      "nonpositive_gap_cells": 0
+    }
+  ],
+  "body_radius_m": 0.037,
+  "grid_resolution_m": 0.02,
+  "position_bounds_m": [
+    0.027,
+    0.043,
+    0.053
+  ],
+  "memory_manifest_sha256": "07a704a3f24d4c2f8f32056f80a520acd086098ee6e586c81c24fe18e7a52488",
+  "free_grid_sha256": "4af1361202b9b22b3bcebcd1e0eff6ccbc3c20978ad1264bd6fe530ba3dba352",
+  "scene_sha256": "73421fdfe351a2092fb0a502325157ebc692b15b1ea75aa09063c11bdc66e65a",
+  "scorer_sha256": "4965af1fc8bcde2b521338213bd02cc68259e97b415438b55cdcbb9d84451979"
+}

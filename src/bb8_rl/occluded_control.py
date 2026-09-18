@@ -120,12 +120,26 @@ class OcclusionParameters:
     arrival_radius: float = 0.10
     arrival_speed: float = 0.03
     visible_dwell: float = 0.5
+    proactive_horizon_seconds: float = 0.0
+    proactive_speed_samples: int = 10
 
     def __post_init__(self):
-        if not all(np.isfinite(value) and value > 0 for value in asdict(self).values()):
+        positive = asdict(self)
+        horizon = positive.pop("proactive_horizon_seconds")
+        samples = positive.pop("proactive_speed_samples")
+        if not all(np.isfinite(value) and value > 0 for value in positive.values()):
             raise ValueError("Controller parameters must be finite and positive")
         if self.minimum_visual_samples < 3:
             raise ValueError("At least three accepted RGB fixes are required")
+        if (
+            not np.isfinite(horizon)
+            or not 0 <= horizon <= 0.5
+            or type(samples) is not int
+            or not 4 <= samples <= 20
+        ):
+            raise ValueError(
+                "Proactive horizon must be 0–0.5 seconds with 4–20 speed samples"
+            )
 
 
 class CommandBelief:
@@ -454,6 +468,12 @@ class OccludedController:
     visible dwell begins. This uses the same lower acceleration / upper response
     time assumption as the stopping-envelope tail, not an adversarial sustained
     q-disturbance guarantee or calibrated physical-speed measurement.
+
+    Optional proactive lookahead extends the reaction interval of the same
+    whole-stop enclosure before choosing a speed. Both the original current
+    certificate and this more conservative lookahead must pass. It assumes no
+    future visual fixes or known future actuator transitions. A zero horizon
+    preserves the original four speed trials and their exact control behavior.
     """
 
     def __init__(
@@ -576,7 +596,9 @@ class OccludedController:
             and all(entry[0] <= now + 1e-12 for entry in self.issued_history)
         )
 
-    def _reaction_envelope(self, command, applied_command, timestamp, now):
+    def _reaction_envelope(
+        self, command, applied_command, timestamp, now, *, command_horizon=None
+    ):
         """Same whole-stop proof with a command-aware reachable-speed bound.
 
         A saturated first-order response is always directed toward its target.
@@ -596,7 +618,12 @@ class OccludedController:
             target_bound = max(target_bound, d.max_speed)
         initial_speed_bound = float(np.linalg.norm(b.velocity) + b.velocity_radius)
         nominal_speed_bound = max(initial_speed_bound, target_bound)
-        reaction = p.command_horizon + d.latency_mismatch + max(0, now - timestamp)
+        horizon = (
+            p.command_horizon
+            if command_horizon is None
+            else max(p.command_horizon, command_horizon)
+        )
+        reaction = horizon + d.latency_mismatch + max(0, now - timestamp)
         speed_bound = nominal_speed_bound + d.acceleration_uncertainty * reaction
         reaction_distance = (
             nominal_speed_bound * reaction
@@ -834,9 +861,16 @@ class OccludedController:
         # Every candidate preserves SAC heading. Rejected candidates are never
         # issued/added to history. Current momentum and all possible queued
         # targets remain in every candidate's bound, including reduced speeds.
-        scales = (
-            (1.0,) if np.linalg.norm(d.target(command)) == 0 else (1.0, 0.75, 0.5, 0.25)
-        )
+        proactive = p.proactive_horizon_seconds > 0
+        if np.linalg.norm(d.target(command)) == 0:
+            scales = (1.0,)
+        elif proactive:
+            scales = np.linspace(
+                1.0, 1 / p.proactive_speed_samples, p.proactive_speed_samples
+            )
+        else:
+            scales = (1.0, 0.75, 0.5, 0.25)
+        any_current_certified = False
         for scale in scales:
             candidate = self._scaled_command(command, scale)
             endpoint, radius, trial = self._reaction_envelope(
@@ -845,13 +879,44 @@ class OccludedController:
             self.envelope_radius = radius
             self.segment_certificate = self._certify(b.xy, endpoint, radius)
             trial.update(speed_scale=scale, certified=self.segment_certificate)
+            any_current_certified |= self.segment_certificate
+            if proactive:
+                trial.update(
+                    current_certified=self.segment_certificate, proactive_certified=None
+                )
+                if self.segment_certificate:
+                    future_endpoint, future_radius, future_trial = (
+                        self._reaction_envelope(
+                            candidate,
+                            applied_command,
+                            timestamp,
+                            now,
+                            command_horizon=p.proactive_horizon_seconds,
+                        )
+                    )
+                    future_certified = self._certify(
+                        b.xy, future_endpoint, future_radius
+                    )
+                    trial.update(
+                        proactive_certified=future_certified,
+                        proactive={
+                            **future_trial,
+                            "endpoint": future_endpoint.tolist(),
+                        },
+                        certified=future_certified,
+                    )
+                    self.segment_certificate = future_certified
             self.envelope_trials.append(trial)
             if self.segment_certificate:
                 self.speed_scale = scale
                 return self._finish(
                     "tracking_visible" if visible else "tracking_hidden", candidate
                 )
-        return self._finish("stopping_envelope_not_certified")
+        return self._finish(
+            "proactive_envelope_not_certified"
+            if proactive and any_current_certified
+            else "stopping_envelope_not_certified"
+        )
 
     @property
     def diagnostics(self):
@@ -897,6 +962,8 @@ class OccludedController:
             "arrived": self.arrived,
             "dynamics_bounds_calibrated": False,
             "controller_revision": "v8-model-settling-before-visible-dwell",
+            "proactive_horizon_seconds": self.parameters.proactive_horizon_seconds,
+            "proactive_speed_samples": self.parameters.proactive_speed_samples,
             "arrival_settle_until": self.arrival_settle_until,
             "arrival_settle_speed_bound_m_s": self.arrival_settle_speed_bound,
             "arrival_visible_since": self.visible_since,

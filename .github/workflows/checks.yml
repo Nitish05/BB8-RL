@@ -21,6 +21,8 @@ jobs:
           PYTHONPATH: src
         run: >-
           pytest -q tests/test_interactive.py tests/test_demo_assets.py
+          tests/test_control_profiles.py tests/test_control_calibration.py
+          tests/test_control_benchmark_summary.py
           tests/test_interactive_runtime.py tests/test_occluded_control.py
           tests/test_camera.py tests/test_camera_rig.py tests/test_camera_runtime.py
           -k 'not world_rejects_invalid_rig_before_loading_scene'

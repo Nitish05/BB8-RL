@@ -1075,3 +1075,128 @@ def test_lost_segment_stops_then_replans_only_on_later_visible_observation():
     assert len(calls) == 2
     assert control.route is not None
     assert control.status == "tracking_visible"
+
+
+@pytest.mark.parametrize(
+    "horizon,samples",
+    [
+        (-0.1, 10),
+        (0.51, 10),
+        (np.nan, 10),
+        (np.inf, 10),
+        (0.1, 3),
+        (0.1, 21),
+        (0.1, 10.0),
+        (0.1, True),
+    ],
+)
+def test_proactive_configuration_is_bounded(horizon, samples):
+    with pytest.raises(ValueError, match="Proactive"):
+        OcclusionParameters(
+            proactive_horizon_seconds=horizon, proactive_speed_samples=samples
+        )
+
+
+def test_disabled_proactive_mode_preserves_original_actions_and_four_trials():
+    baseline = controller(segment_free=Corridor(half_width=0.13))
+    disabled = controller(
+        segment_free=Corridor(half_width=0.13),
+        parameters=OcclusionParameters(
+            proactive_horizon_seconds=0, proactive_speed_samples=20
+        ),
+    )
+    for index in range(45):
+        timestamp = index * 0.05
+        a = step(baseline, timestamp)
+        b = step(disabled, timestamp)
+        np.testing.assert_array_equal(a, b)
+        assert baseline.status == disabled.status
+        assert baseline.envelope_trials == disabled.envelope_trials
+        assert len(disabled.envelope_trials) <= 4
+    assert baseline.envelope_trials
+    assert all("proactive" not in trial for trial in baseline.envelope_trials)
+
+
+def test_proactive_lookahead_slows_before_current_stop_certificate_fails():
+    baseline, last = stationary_ready(half_width=0.165)
+    proactive = controller(
+        segment_free=Corridor(half_width=0.165),
+        parameters=OcclusionParameters(proactive_horizon_seconds=0.20),
+    )
+    proactive.policy = lambda vector: np.zeros(2)
+    assert warm(proactive, count=30) == last
+    for control in (baseline, proactive):
+        control.policy = lambda vector: np.array([0.8, 0])
+    original = step(baseline, last + 0.05)
+    reduced = step(proactive, last + 0.05)
+    assert np.linalg.norm(baseline.dynamics.target(original)) == pytest.approx(0.15)
+    assert 0 < np.linalg.norm(proactive.dynamics.target(reduced)) < 0.15
+    assert proactive.status == "tracking_visible"
+    first, accepted = proactive.envelope_trials[0], proactive.envelope_trials[-1]
+    assert first["current_certified"] and not first["proactive_certified"]
+    assert accepted["current_certified"] and accepted["proactive_certified"]
+    assert accepted["proactive"]["reaction_seconds"] == pytest.approx(0.25)
+    assert accepted["reaction_seconds"] == pytest.approx(0.10)
+    assert accepted["proactive"]["envelope_radius_m"] >= accepted["envelope_radius_m"]
+    assert reduced[0] > 0 and reduced[1] == 0
+
+
+def test_proactive_failure_does_not_fall_back_to_current_only_certificate():
+    # A fixed endpoint-independent certificate isolates the radius proof.
+    control = controller(
+        parameters=OcclusionParameters(proactive_horizon_seconds=0.50),
+        segment_free=Corridor(half_width=0.13),
+    )
+    control.policy = lambda vector: np.zeros(2)
+    last = warm(control, count=30)
+    control.policy = lambda vector: np.array([0.8, 0])
+    action = step(control, last + 0.05)
+    assert control.status == "proactive_envelope_not_certified"
+    assert any(trial["current_certified"] for trial in control.envelope_trials)
+    assert not any(trial["proactive_certified"] for trial in control.envelope_trials)
+    assert len(control.envelope_trials) == 10
+    np.testing.assert_array_equal(action, [0, 0])
+
+
+def test_proactive_backoff_preserves_momentum_pending_targets_and_model_error():
+    control = controller(parameters=OcclusionParameters(proactive_horizon_seconds=0.20))
+    control.policy = lambda vector: np.zeros(2)
+    last = warm(control, count=30)
+    control.belief.velocity = np.array([0.13, 0.02])
+    control.belief.velocity_radius = 0.04
+    control.issued_history.append((last, last + 0.15, 0.15))
+    for scale in (1, 0.5, 0.1):
+        candidate = control._scaled_command([0.4, 0], scale)
+        _, _, original = control._reaction_envelope(
+            candidate, [0, 0], last + 0.05, last + 0.05
+        )
+        _, _, future = control._reaction_envelope(
+            candidate, [0, 0], last + 0.05, last + 0.05, command_horizon=0.20
+        )
+        for field in (
+            "initial_speed_bound_m_s",
+            "retained_target_speed_m_s",
+            "target_speed_bound_m_s",
+        ):
+            assert future[field] == original[field]
+        assert future["retained_target_speed_m_s"] == 0.15
+        assert future["reaction_speed_bound_m_s"] >= future["initial_speed_bound_m_s"]
+        assert future["reaction_speed_bound_m_s"] - original[
+            "reaction_speed_bound_m_s"
+        ] == pytest.approx(control.dynamics.acceleration_uncertainty * 0.15)
+        assert future["envelope_radius_m"] > original["envelope_radius_m"]
+
+
+def test_proactive_never_tries_to_rescue_failed_current_certificate():
+    control = controller(parameters=OcclusionParameters(proactive_horizon_seconds=0.20))
+    control.policy = lambda vector: np.zeros(2)
+    last = warm(control, count=30)
+    control.segment_free = Corridor(half_width=0.095)
+    control.policy = lambda vector: np.array([0.8, 0])
+    action = step(control, last + 0.05)
+    assert control.status == "stopping_envelope_not_certified"
+    assert all(not trial["current_certified"] for trial in control.envelope_trials)
+    assert all(
+        trial["proactive_certified"] is None for trial in control.envelope_trials
+    )
+    np.testing.assert_array_equal(action, [0, 0])

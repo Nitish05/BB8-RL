@@ -1,0 +1,534 @@
+{
+  "schema_version": 1,
+  "scope": "Frozen synthetic development tuning/validation; no claim of unseen room or map generalization. Frozen before candidate native results.",
+  "fixture_selection": "Validation endpoints chosen using only frozen estimated memory geometry; no physics or localization outcomes inspected for these routes. Unsupported north-east corner was not selected.",
+  "bundle_manifest_sha256": "57593c411b3a551c7a7eafd55e10870adc8803f13745e88b847ddcdb9bb62a61",
+  "map_manifest_sha256": "07a704a3f24d4c2f8f32056f80a520acd086098ee6e586c81c24fe18e7a52488",
+  "room_memory_sha256": "de366b55dc85f26464b0f7722440d302b8abec7fdcb01c1406c5171ca2f86e8b",
+  "tuning_cases": [
+    {
+      "id": "forward",
+      "mode": 1,
+      "start": [
+        -1.23,
+        1.45
+      ],
+      "goal": [
+        -0.2065534089380967,
+        -0.8665560984356091
+      ],
+      "max_sim_seconds": 60.0
+    },
+    {
+      "id": "reported-reverse",
+      "mode": 1,
+      "start": [
+        -0.21,
+        -0.87
+      ],
+      "goal": [
+        -1.59,
+        1.41
+      ],
+      "max_sim_seconds": 60.0
+    }
+  ],
+  "validation_cases": [
+    {
+      "id": "north-mode1",
+      "mode": 1,
+      "start": [
+        -1.4,
+        1.25
+      ],
+      "goal": [
+        0.2,
+        1.55
+      ],
+      "max_sim_seconds": 60.0,
+      "preselection_estimated_map_feasibility": [
+        {
+          "radius_m": 0.14,
+          "route": [
+            [
+              -1.4,
+              1.25
+            ],
+            [
+              0.2,
+              1.55
+            ]
+          ],
+          "all_segments_certified": true,
+          "length_m": 1.6278820596099706
+        },
+        {
+          "radius_m": 0.16,
+          "route": [
+            [
+              -1.4,
+              1.25
+            ],
+            [
+              0.2,
+              1.55
+            ]
+          ],
+          "all_segments_certified": true,
+          "length_m": 1.6278820596099706
+        },
+        {
+          "radius_m": 0.18,
+          "route": [
+            [
+              -1.4,
+              1.25
+            ],
+            [
+              0.2,
+              1.55
+            ]
+          ],
+          "all_segments_certified": true,
+          "length_m": 1.6278820596099706
+        },
+        {
+          "radius_m": 0.2,
+          "route": [
+            [
+              -1.4,
+              1.25
+            ],
+            [
+              0.2,
+              1.55
+            ]
+          ],
+          "all_segments_certified": true,
+          "length_m": 1.6278820596099706
+        }
+      ]
+    },
+    {
+      "id": "center-mode2",
+      "mode": 2,
+      "start": [
+        -0.3,
+        -0.75
+      ],
+      "goal": [
+        -0.35,
+        0.7
+      ],
+      "max_sim_seconds": 60.0,
+      "preselection_estimated_map_feasibility": [
+        {
+          "radius_m": 0.14,
+          "route": [
+            [
+              -0.3,
+              -0.75
+            ],
+            [
+              -0.33000000000000007,
+              0.6699999999999999
+            ],
+            [
+              -0.35,
+              0.7
+            ]
+          ],
+          "all_segments_certified": true,
+          "length_m": 1.4563723788095353
+        },
+        {
+          "radius_m": 0.16,
+          "route": [
+            [
+              -0.3,
+              -0.75
+            ],
+            [
+              -0.29000000000000004,
+              0.5899999999999999
+            ],
+            [
+              -0.35,
+              0.7
+            ]
+          ],
+          "all_segments_certified": true,
+          "length_m": 1.4653369537747547
+        },
+        {
+          "radius_m": 0.18,
+          "route": [
+            [
+              -0.3,
+              -0.75
+            ],
+            [
+              -0.27,
+              -0.050000000000000044
+            ],
+            [
+              -0.35,
+              0.7
+            ]
+          ],
+          "all_segments_certified": true,
+          "length_m": 1.4548971611494574
+        },
+        {
+          "radius_m": 0.2,
+          "route": [
+            [
+              -0.3,
+              -0.75
+            ],
+            [
+              -0.25,
+              -0.16999999999999993
+            ],
+            [
+              -0.33000000000000007,
+              0.6699999999999999
+            ],
+            [
+              -0.35,
+              0.7
+            ]
+          ],
+          "all_segments_certified": true,
+          "length_m": 1.4620076202569146
+        }
+      ]
+    },
+    {
+      "id": "north-center-mode3",
+      "mode": 3,
+      "start": [
+        0.2,
+        1.55
+      ],
+      "goal": [
+        -0.2,
+        -0.7
+      ],
+      "max_sim_seconds": 60.0,
+      "preselection_estimated_map_feasibility": [
+        {
+          "radius_m": 0.14,
+          "route": [
+            [
+              0.2,
+              1.55
+            ],
+            [
+              -0.20999999999999996,
+              0.5699999999999998
+            ],
+            [
+              -0.2,
+              -0.7
+            ]
+          ],
+          "all_segments_certified": true,
+          "length_m": 2.3323481757955706
+        },
+        {
+          "radius_m": 0.16,
+          "route": [
+            [
+              0.2,
+              1.55
+            ],
+            [
+              -0.20999999999999996,
+              0.6299999999999999
+            ],
+            [
+              -0.22999999999999998,
+              0.5100000000000002
+            ],
+            [
+              -0.2,
+              -0.7
+            ]
+          ],
+          "all_segments_certified": true,
+          "length_m": 2.3392510018766255
+        },
+        {
+          "radius_m": 0.18,
+          "route": [
+            [
+              0.2,
+              1.55
+            ],
+            [
+              -0.16999999999999993,
+              0.79
+            ],
+            [
+              -0.25,
+              0.5699999999999998
+            ],
+            [
+              -0.2,
+              -0.7
+            ]
+          ],
+          "all_segments_certified": true,
+          "length_m": 2.3503588874399606
+        },
+        {
+          "radius_m": 0.2,
+          "route": [
+            [
+              0.2,
+              1.55
+            ],
+            [
+              -0.18999999999999995,
+              0.79
+            ],
+            [
+              -0.27,
+              0.5699999999999998
+            ],
+            [
+              -0.2,
+              -0.7
+            ]
+          ],
+          "all_segments_certified": true,
+          "length_m": 2.3602464638840495
+        }
+      ]
+    },
+    {
+      "id": "demo-mode1",
+      "mode": 1,
+      "start": [
+        0.03254007833063689,
+        0.9713217108374255
+      ],
+      "goal": [
+        0.24745992166936648,
+        1.3086782891625797
+      ],
+      "max_sim_seconds": 60.0,
+      "role": "regression; previously exercised, not new held-out route"
+    }
+  ],
+  "failure_controls": [
+    {
+      "id": "stop-mode1",
+      "mode": 1,
+      "start": [
+        0.03254007833063689,
+        0.9713217108374255
+      ],
+      "goal": [
+        0.24745992166936648,
+        1.3086782891625797
+      ],
+      "max_sim_seconds": 60.0,
+      "max_steps": 110,
+      "stop_at_sim_time": 2.0,
+      "stale_goal_after_stop": true,
+      "minimum_end_sim_time": 5.5
+    },
+    {
+      "id": "all-lost-mode2",
+      "mode": 2,
+      "start": [
+        0.03254007833063689,
+        0.9713217108374255
+      ],
+      "goal": [
+        0.24745992166936648,
+        1.3086782891625797
+      ],
+      "max_sim_seconds": 60.0,
+      "max_steps": 180,
+      "camera_dropouts": {
+        "A": [
+          [
+            2.0,
+            5.0
+          ]
+        ],
+        "B": [
+          [
+            2.0,
+            5.0
+          ]
+        ]
+      },
+      "minimum_end_sim_time": 7.0
+    },
+    {
+      "id": "invalid-memory-mode2",
+      "mode": 2,
+      "start": [
+        0.03254007833063689,
+        0.9713217108374255
+      ],
+      "goal": [
+        0.24745992166936648,
+        1.3086782891625797
+      ],
+      "max_sim_seconds": 60.0,
+      "max_steps": 110,
+      "invalidate_memory_at": 2.0,
+      "minimum_end_sim_time": 5.5
+    }
+  ],
+  "arrival_gate": {
+    "distance_m": 0.1,
+    "speed_m_s": 0.03,
+    "continuous_dwell_seconds": 0.5,
+    "fresh_accepted_rgb_and_renderer_visibility_required": true
+  },
+  "selection_rule": "Tuning only. Reject collision/boundary/false arrival/provenance failure/excessive blind motion. Maximize valid arrived goals, then minimize total simulated time and guarded stop episodes. Validation cases and failures retained; no reselection after validation.",
+  "uncertainty_policy": "Do not reduce measurement, dynamics, or map error bounds from correlated historical residual quantiles. Fixed clearance margins are explicit experimental controls, not calibrated confidence changes.",
+  "control_gate": "Control demonstration requires genuine native motion before Stop/dropout/invalid-memory event. All-view loss must brake after existing 1s visual-loss bound and remain stopped until valid RGB; invalid memory and Stop must clear goal and issue zero; stale generation must not resume.",
+  "cases": {
+    "tuning-forward": {
+      "start": [
+        -1.23,
+        1.45
+      ],
+      "goal": [
+        -0.2065534089380967,
+        -0.8665560984356091
+      ],
+      "mode": 1,
+      "duration_s": 60.0,
+      "intent": "arrival"
+    },
+    "tuning-reverse": {
+      "start": [
+        -0.21,
+        -0.87
+      ],
+      "goal": [
+        -1.59,
+        1.41
+      ],
+      "mode": 1,
+      "duration_s": 60.0,
+      "intent": "arrival"
+    },
+    "north-mode1": {
+      "start": [
+        -1.4,
+        1.25
+      ],
+      "goal": [
+        0.2,
+        1.55
+      ],
+      "mode": 1,
+      "duration_s": 60.0,
+      "intent": "arrival"
+    },
+    "center-mode2": {
+      "start": [
+        -0.3,
+        -0.75
+      ],
+      "goal": [
+        -0.35,
+        0.7
+      ],
+      "mode": 2,
+      "duration_s": 60.0,
+      "intent": "arrival"
+    },
+    "north-center-mode3": {
+      "start": [
+        0.2,
+        1.55
+      ],
+      "goal": [
+        -0.2,
+        -0.7
+      ],
+      "mode": 3,
+      "duration_s": 60.0,
+      "intent": "arrival"
+    },
+    "demo-mode1": {
+      "start": [
+        0.03254007833063689,
+        0.9713217108374255
+      ],
+      "goal": [
+        0.24745992166936648,
+        1.3086782891625797
+      ],
+      "mode": 1,
+      "duration_s": 60.0,
+      "intent": "arrival"
+    },
+    "stop-mode1": {
+      "start": [
+        0.03254007833063689,
+        0.9713217108374255
+      ],
+      "goal": [
+        0.24745992166936648,
+        1.3086782891625797
+      ],
+      "mode": 1,
+      "duration_s": 5.5,
+      "intent": "stop",
+      "stop_at": 2.0
+    },
+    "all-lost-mode2": {
+      "start": [
+        0.03254007833063689,
+        0.9713217108374255
+      ],
+      "goal": [
+        0.24745992166936648,
+        1.3086782891625797
+      ],
+      "mode": 2,
+      "duration_s": 9.0,
+      "intent": "arrival",
+      "camera_dropouts": {
+        "A": [
+          [
+            2.0,
+            5.0
+          ]
+        ],
+        "B": [
+          [
+            2.0,
+            5.0
+          ]
+        ]
+      }
+    },
+    "invalid-memory-mode2": {
+      "start": [
+        0.03254007833063689,
+        0.9713217108374255
+      ],
+      "goal": [
+        0.24745992166936648,
+        1.3086782891625797
+      ],
+      "mode": 2,
+      "duration_s": 5.5,
+      "intent": "invalid",
+      "invalidate_memory_at": 2.0
+    }
+  },
+  "interface_note": "cases adds orchestration names and duration fields; route endpoints, controls and scoring policy unchanged from initial pre-native freeze."
+}

@@ -1,0 +1,91 @@
+{
+  "schema": "bb8.m711.selection-decision.v1",
+  "created_at_utc": "2026-09-18T01:09:45.990565+00:00",
+  "selected_profile": "reserve-3cm",
+  "profile": {
+    "name": "reserve-3cm",
+    "margin_m": 0.03,
+    "speed_m_s": 0.15,
+    "lookahead_s": 0.0,
+    "planning_reserve_m": 0.04,
+    "parameters": {
+      "max_occlusion_seconds": 1.0,
+      "max_frame_age": 0.1,
+      "max_interval": 0.15,
+      "speed_cap": 0.15,
+      "max_position_radius": 0.08,
+      "measurement_sigma_multiplier": 3.0,
+      "measurement_radius_floor": 0.005,
+      "innovation_slack": 0.015,
+      "max_reacquisition_distance": 0.12,
+      "robot_radius": 0.037,
+      "clearance_margin": 0.03,
+      "command_horizon": 0.05,
+      "minimum_visual_samples": 3,
+      "max_initial_velocity_radius": 0.05,
+      "arrival_radius": 0.1,
+      "arrival_speed": 0.03,
+      "visible_dwell": 0.5,
+      "proactive_horizon_seconds": 0.0,
+      "proactive_speed_samples": 10
+    }
+  },
+  "protocol_sha256": "18d05f69ce4dfa1720fb24848fe1e097051f19138a14430290071dfd190c8d22",
+  "tuning_result_sha256": {
+    "work/m711/tuning-v1/results.json": "f0ed24fd202703089c4061ccfe803d4e75b887f389f1714bdbe5e059a197a1db",
+    "work/m711/tuning-v2/results.json": "77f11f36e64ccb429c8e21f4c4daae14e543a821eebc71e9bd5acbbe3ea2692c"
+  },
+  "ranked_tuning_profiles": [
+    {
+      "profile": "reserve-3cm",
+      "eligible": true,
+      "valid_goals": 2,
+      "total_simulation_s": 55.349999999999994,
+      "guarded_stop_episodes": 45
+    },
+    {
+      "profile": "margin-3cm",
+      "eligible": true,
+      "valid_goals": 1,
+      "total_simulation_s": 89.15,
+      "guarded_stop_episodes": 65
+    },
+    {
+      "profile": "slow-3cm",
+      "eligible": true,
+      "valid_goals": 1,
+      "total_simulation_s": 93.65,
+      "guarded_stop_episodes": 119
+    },
+    {
+      "profile": "lookahead-100ms",
+      "eligible": true,
+      "valid_goals": 1,
+      "total_simulation_s": 94.0,
+      "guarded_stop_episodes": 103
+    },
+    {
+      "profile": "margin-2cm",
+      "eligible": true,
+      "valid_goals": 1,
+      "total_simulation_s": 94.35,
+      "guarded_stop_episodes": 128
+    },
+    {
+      "profile": "baseline",
+      "eligible": true,
+      "valid_goals": 1,
+      "total_simulation_s": 96.7,
+      "guarded_stop_episodes": 142
+    },
+    {
+      "profile": "lookahead-200ms",
+      "eligible": true,
+      "valid_goals": 1,
+      "total_simulation_s": 112.65,
+      "guarded_stop_episodes": 183
+    }
+  ],
+  "validation_inspected": false,
+  "reason": "Only profile with two independently valid tuning arrivals; original gates and hard exclusions retained."
+}

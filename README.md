@@ -187,10 +187,17 @@ work/            Local models, datasets and evidence — ignored by Git
 ```
 
 CI tests pure camera/control/application contracts without native graphics or
-model assets. The local non-native suite passed **446 tests**. Native and actual
+model assets. The local non-native suite passed **475 tests**. Native and actual
 browser acceptance are documented in the [validation report](docs/M7_9_VALIDATION.md).
 The [route-clearance correction](docs/M7_10_ROUTE_FIX.md) documents the subsequent
 uncertainty-aware planner and arrival-settling regression.
+
+The [clearance comparison](docs/M7_11_RESULTS.md) tests seven configurations in
+14 tuning runs. The selected interactive default uses a **3 cm fixed margin**,
+**15 cm/s speed cap** and **4 cm route-search reserve** for braking room. It
+completed both tuning routes and all seven separate validation cases, including
+one-to-three-camera driving and Stop/dropout/invalid-map controls. Wider planned
+paths can reject tight destinations; these results cover one synthetic room.
 
 ## Current boundaries
 

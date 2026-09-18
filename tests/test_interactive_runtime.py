@@ -199,6 +199,27 @@ def test_planning_grid_cache_rounds_up_and_is_bounded():
             control.route_with_clearance([0, 0], [0.5, 0], radius)
 
 
+def test_selected_parameters_reach_idle_and_active_control_with_planning_reserve():
+    from bb8_rl.control_profiles import get_profile
+
+    profile, memory = get_profile("reserve-3cm"), Memory()
+    parameters = profile.parameters()
+    control = ControlSession(
+        policy=lambda vector: np.array([0.4, 0]), memory=memory, stop=lambda: None,
+        map_version="map", calibration_version="rig", demo_goal=[0.5, 0],
+        parameters=parameters, planning_reserve=profile.planning_reserve_m,
+        clock=lambda: 10.0,
+    )
+    assert control.idle_belief.parameters is parameters
+    control.receive([{"action": "demo", "generation": 1}])
+    for index in range(30):
+        action = advance(control, index)
+    assert control.controller.parameters is parameters
+    assert 0 < np.linalg.norm(control.dynamics.target(action)) <= parameters.speed_cap
+    assert memory.planning_radii[-1] == pytest.approx(0.12)
+    assert all(radius >= 0.037 + 0.03 + 0.006 for _, _, radius in memory.queries)
+
+
 def test_latest_queue_is_bounded_and_newest_event_survives():
     events = queue.Queue(maxsize=1)
     assert publish_latest(events, {"type": "old"})

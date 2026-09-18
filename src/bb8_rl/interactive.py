@@ -77,7 +77,12 @@ def goal_cell(map_data, x, y):
 
 
 class Supervisor:
-    def __init__(self, asset_dir, run_dir, *, mode=1, worker_target=None):
+    def __init__(
+        self, asset_dir, run_dir, *, mode=1, worker_target=None, control_profile=None
+    ):
+        from .control_profiles import get_profile
+
+        self.control_profile = get_profile(control_profile).name
         self.asset_dir, self.run_dir = (
             Path(asset_dir).resolve(),
             Path(run_dir).resolve(),
@@ -131,6 +136,7 @@ class Supervisor:
                 **self.state,
                 "token": self.token,
                 "generation": self.generation,
+                "control_profile": getattr(self, "control_profile", None),
                 "scope": "Synthetic room · lockstep simulation · estimated map",
             }
 
@@ -266,6 +272,7 @@ class Supervisor:
                 "run_dir": str(run),
                 "mode": self.state["mode"],
                 "generation": self.generation,
+                "control_profile": getattr(self, "control_profile", None),
             }
             self.process = self.context.Process(
                 target=target,
@@ -446,19 +453,24 @@ def make_handler(supervisor):
 
 
 def main(argv=None):
+    from .control_profiles import PROFILES
+
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--assets", type=Path, default=ROOT / "work/interactive-assets")
     parser.add_argument("--output", type=Path)
     parser.add_argument("--mode", type=int, choices=(1, 2, 3), default=1)
     parser.add_argument("--port", type=int, default=8765)
     parser.add_argument("--no-browser", action="store_true")
+    parser.add_argument("--control-profile", choices=tuple(PROFILES))
     args = parser.parse_args(argv)
     if not 0 <= args.port <= 65535:
         parser.error("Port must be 0–65535")
     run_dir = args.output or ROOT / "work/interactive" / time.strftime("%Y%m%d-%H%M%S")
     if run_dir.exists():
         parser.error("Choose a fresh output directory")
-    supervisor = Supervisor(args.assets, run_dir, mode=args.mode)
+    supervisor = Supervisor(
+        args.assets, run_dir, mode=args.mode, control_profile=args.control_profile
+    )
     try:
         server = ThreadingHTTPServer(("127.0.0.1", args.port), make_handler(supervisor))
     except OSError:

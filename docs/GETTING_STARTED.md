@@ -61,7 +61,15 @@ positions; it never displays simulator truth as the navigation estimate.
 ./scripts/launch-control-room.sh --mode 2
 ./scripts/launch-control-room.sh --mode 3 --port 8766
 ./scripts/launch-control-room.sh --no-browser --output work/my-interactive-session
+./scripts/launch-control-room.sh --control-profile baseline
 ```
+
+The default `reserve-3cm` profile uses a **3 cm fixed margin**, a **15 cm/s speed
+cap** and **4 cm of extra route-search clearance** to leave room for braking.
+This is not 3 cm total clearance: the robot radius, camera uncertainty and
+stopping motion are still included. The wider search can reject tight goals.
+The previous settings remain available as `baseline`; all seven experimental
+profiles and their outcomes are in the [configuration comparison](M7_11_RESULTS.md).
 
 Choose a fresh output directory. Each worker session records issued requests,
 command acknowledgements, source/model hashes and a separately labeled physics

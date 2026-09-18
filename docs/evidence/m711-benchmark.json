@@ -1,0 +1,2312 @@
+{
+  "schema": "bb8.control-benchmark-summary.v1",
+  "scope": "Synthetic development tuning and separately frozen validation; no real-time or unseen-room claim.",
+  "selection_rule": "Exclude hard failures/incomplete or duplicate case sets; rank valid goals descending, total recorded simulation time ascending, guard episodes ascending. Never rank validation outcomes.",
+  "protocol_sha256": "18d05f69ce4dfa1720fb24848fe1e097051f19138a14430290071dfd190c8d22",
+  "scorer_sha256": "69663aa84d3e22682c3365ef1100b9dd18ff76544767d08fc8d91b7723c9cead",
+  "selection_file_sha256": "7c94efebaa61e7428cf074c87ca0edf2c1659ce1cf1b32ee4676ffd16eaccac3",
+  "tuning": [
+    {
+      "run": "work/m711/tuning-v1/baseline--tuning-forward",
+      "case": "tuning-forward",
+      "profile": {
+        "name": "baseline",
+        "margin_m": 0.04,
+        "speed_m_s": 0.15,
+        "lookahead_s": 0.0,
+        "planning_reserve_m": 0.0,
+        "parameters": {
+          "max_occlusion_seconds": 1.0,
+          "max_frame_age": 0.1,
+          "max_interval": 0.15,
+          "speed_cap": 0.15,
+          "max_position_radius": 0.08,
+          "measurement_sigma_multiplier": 3.0,
+          "measurement_radius_floor": 0.005,
+          "innovation_slack": 0.015,
+          "max_reacquisition_distance": 0.12,
+          "robot_radius": 0.037,
+          "clearance_margin": 0.04,
+          "command_horizon": 0.05,
+          "minimum_visual_samples": 3,
+          "max_initial_velocity_radius": 0.05,
+          "arrival_radius": 0.1,
+          "arrival_speed": 0.03,
+          "visible_dwell": 0.5,
+          "proactive_horizon_seconds": 0.0,
+          "proactive_speed_samples": 10
+        }
+      },
+      "mode": 1,
+      "intent": "arrival",
+      "hard_failures": [],
+      "audit_pass": true,
+      "valid_arrival": true,
+      "intended_pass": true,
+      "control_checks": {
+        "pass": true,
+        "kind": "arrival"
+      },
+      "recorded_simulation_s": 36.7,
+      "first_valid_arrival": {
+        "time": 36.65,
+        "goal": [
+          -0.2065534089380967,
+          -0.8665560984356091
+        ],
+        "distance_m": 0.020140482557536952,
+        "speed_m_s": 0.004302610875681999,
+        "true_dwell_at_capture_s": 0.6799999999999997,
+        "visible_fresh_rgb": true,
+        "passed": true
+      },
+      "guarded_stop_episodes": 63,
+      "status_counts": {
+        "warming_up": 20,
+        "tracking_visible": 572,
+        "stopping_envelope_not_certified": 136,
+        "settling_visible": 5,
+        "arrived_visible": 1
+      },
+      "blind_motion_violation_times": [],
+      "frames": 734,
+      "physics_samples": 7340,
+      "verified_image_artifacts": 0,
+      "unavailable_image_frames": 734,
+      "input_sha256": {
+        "case": "6ad5e3bf7d69ca39d35c652dd04dd0529b26e09c7d8ffe97b3129fd8bf9f7d33",
+        "summary": "f23b78834e5ee41307605815a6ecabafb12fb1553ec46771b95f9e3b83b6258b",
+        "audit": "3a5dc8a98eb957a6688d0fd89cb9d268f9853cfcfd1b2b1b7b828018991c00b7",
+        "manifest": "951298334065f083b9f3cd72e8de14cb01177127d6fcdd504293c11c2af59753",
+        "rows": "c3400043101402a242ffa519a74d4c2ab8c829d22e5c2a021e0c0875bf56a4de",
+        "commands": "a67dd1df5db26aaff5793465d56e303b8832f8c1d7589b760f531ca013e26144",
+        "scorer": "7e59a2e9cddb0c1cff789db76105a664275f25d519c235dc1d5e69c8ac40f003",
+        "harness": "31413ba98c6096f75fed014ccaefe75bce838d323a3c6339c9ad5d500efe55b4"
+      },
+      "recorded_protocol_sha256": "18d05f69ce4dfa1720fb24848fe1e097051f19138a14430290071dfd190c8d22",
+      "source_sha256": {
+        "interactive_runtime.py": "0adf26215c88a1a95cccff027b829e75eb45eb7ea6696b85b52bf890b040fa5f",
+        "occluded_control.py": "03bf1c2717698d22d34e2f4becccb143bda9c22f3f1a66627b993bbab504ca80",
+        "control_profiles.py": "bedb0943496f29c45361f1d72334c865164d17cb3f1dab8e28b2058cafb763bb",
+        "camera.py": "e11c223599adf79551ca492643178e042cd3cca3fa71a1395549a26ef6acd11d",
+        "camera_rig.py": "4ee378b375f81c39cc710beaaff1e86caa322dbe16bbf96456404bf2469c4358",
+        "vision.py": "022513c55dd19ef7d38f78f3ea93b03996302938370fde05444359a08ee98394",
+        "genesis_backend.py": "975951b11adfe5ee808f86990fba8c3805b7120d7498510c61705915758ffec4",
+        "scan_free_space.py": "02392c9dda73c4d9f7f9a33a80f68c7de13b167fbe27c30cd2edc08f55e49343"
+      },
+      "asset_sha256": {
+        "demo.json": "b09ad035e649473c931b7d7751afd5b0228a601e8fabdf3de905d7e22036b2d2",
+        "policy.zip": "97b0f47802515356262a453fb1894c6146ba9f8c66ada958daac3c8b5fe98b93",
+        "vision.pt": "483065dada5480f7ef990f526cec5f8a45c16438fb7931bcd1058d44ccd06ca8",
+        "memory/manifest.json": "07a704a3f24d4c2f8f32056f80a520acd086098ee6e586c81c24fe18e7a52488"
+      }
+    },
+    {
+      "run": "work/m711/tuning-v1/baseline--tuning-reverse",
+      "case": "tuning-reverse",
+      "profile": {
+        "name": "baseline",
+        "margin_m": 0.04,
+        "speed_m_s": 0.15,
+        "lookahead_s": 0.0,
+        "planning_reserve_m": 0.0,
+        "parameters": {
+          "max_occlusion_seconds": 1.0,
+          "max_frame_age": 0.1,
+          "max_interval": 0.15,
+          "speed_cap": 0.15,
+          "max_position_radius": 0.08,
+          "measurement_sigma_multiplier": 3.0,
+          "measurement_radius_floor": 0.005,
+          "innovation_slack": 0.015,
+          "max_reacquisition_distance": 0.12,
+          "robot_radius": 0.037,
+          "clearance_margin": 0.04,
+          "command_horizon": 0.05,
+          "minimum_visual_samples": 3,
+          "max_initial_velocity_radius": 0.05,
+          "arrival_radius": 0.1,
+          "arrival_speed": 0.03,
+          "visible_dwell": 0.5,
+          "proactive_horizon_seconds": 0.0,
+          "proactive_speed_samples": 10
+        }
+      },
+      "mode": 1,
+      "intent": "arrival",
+      "hard_failures": [],
+      "audit_pass": true,
+      "valid_arrival": false,
+      "intended_pass": false,
+      "control_checks": {
+        "pass": false,
+        "kind": "arrival"
+      },
+      "recorded_simulation_s": 60.0,
+      "first_valid_arrival": null,
+      "guarded_stop_episodes": 79,
+      "status_counts": {
+        "warming_up": 20,
+        "tracking_visible": 439,
+        "stopping_envelope_not_certified": 741
+      },
+      "blind_motion_violation_times": [],
+      "frames": 1200,
+      "physics_samples": 12000,
+      "verified_image_artifacts": 0,
+      "unavailable_image_frames": 1200,
+      "input_sha256": {
+        "case": "1a46fd1a7687dc80874db2a7fdfe1bee9744c2e024c1b02fff35113b04ad7f41",
+        "summary": "cea5c96388edfba1020afa1de192584da2d6bc9ca1aa7ad667da5efa35801f97",
+        "audit": "ab30a88dbf3be9208a3912db99ae8fac4b56827f94dd707038e03be5748afd27",
+        "manifest": "40f3bddfb602da539db16ba6f0a3f32f4c0fd0da33df295cc04c933de134b867",
+        "rows": "774f70c365de8190ddebd90750e545f9dd19d09ca5628f67212c8739ea82108e",
+        "commands": "b5ee0c487669fd94156c8d0e0c8014e8451aab32991f3c2508d9210bfc5c7282",
+        "scorer": "7e59a2e9cddb0c1cff789db76105a664275f25d519c235dc1d5e69c8ac40f003",
+        "harness": "2ff327ef78a2aa2830e4555451c14ac96bbb1c5b1d5fadbc94c77a0177fb9cba"
+      },
+      "recorded_protocol_sha256": "18d05f69ce4dfa1720fb24848fe1e097051f19138a14430290071dfd190c8d22",
+      "source_sha256": {
+        "interactive_runtime.py": "0adf26215c88a1a95cccff027b829e75eb45eb7ea6696b85b52bf890b040fa5f",
+        "occluded_control.py": "03bf1c2717698d22d34e2f4becccb143bda9c22f3f1a66627b993bbab504ca80",
+        "control_profiles.py": "bedb0943496f29c45361f1d72334c865164d17cb3f1dab8e28b2058cafb763bb",
+        "camera.py": "e11c223599adf79551ca492643178e042cd3cca3fa71a1395549a26ef6acd11d",
+        "camera_rig.py": "4ee378b375f81c39cc710beaaff1e86caa322dbe16bbf96456404bf2469c4358",
+        "vision.py": "022513c55dd19ef7d38f78f3ea93b03996302938370fde05444359a08ee98394",
+        "genesis_backend.py": "975951b11adfe5ee808f86990fba8c3805b7120d7498510c61705915758ffec4",
+        "scan_free_space.py": "02392c9dda73c4d9f7f9a33a80f68c7de13b167fbe27c30cd2edc08f55e49343"
+      },
+      "asset_sha256": {
+        "demo.json": "b9c0a86e773abcfa67e2559ac533b7530d3b86e81d4712cc41251a89b4fb49f8",
+        "policy.zip": "97b0f47802515356262a453fb1894c6146ba9f8c66ada958daac3c8b5fe98b93",
+        "vision.pt": "483065dada5480f7ef990f526cec5f8a45c16438fb7931bcd1058d44ccd06ca8",
+        "memory/manifest.json": "07a704a3f24d4c2f8f32056f80a520acd086098ee6e586c81c24fe18e7a52488"
+      }
+    },
+    {
+      "run": "work/m711/tuning-v1/lookahead-100ms--tuning-forward",
+      "case": "tuning-forward",
+      "profile": {
+        "name": "lookahead-100ms",
+        "margin_m": 0.03,
+        "speed_m_s": 0.15,
+        "lookahead_s": 0.1,
+        "planning_reserve_m": 0.0,
+        "parameters": {
+          "max_occlusion_seconds": 1.0,
+          "max_frame_age": 0.1,
+          "max_interval": 0.15,
+          "speed_cap": 0.15,
+          "max_position_radius": 0.08,
+          "measurement_sigma_multiplier": 3.0,
+          "measurement_radius_floor": 0.005,
+          "innovation_slack": 0.015,
+          "max_reacquisition_distance": 0.12,
+          "robot_radius": 0.037,
+          "clearance_margin": 0.03,
+          "command_horizon": 0.05,
+          "minimum_visual_samples": 3,
+          "max_initial_velocity_radius": 0.05,
+          "arrival_radius": 0.1,
+          "arrival_speed": 0.03,
+          "visible_dwell": 0.5,
+          "proactive_horizon_seconds": 0.1,
+          "proactive_speed_samples": 10
+        }
+      },
+      "mode": 1,
+      "intent": "arrival",
+      "hard_failures": [],
+      "audit_pass": true,
+      "valid_arrival": true,
+      "intended_pass": true,
+      "control_checks": {
+        "pass": true,
+        "kind": "arrival"
+      },
+      "recorded_simulation_s": 34.0,
+      "first_valid_arrival": {
+        "time": 33.95,
+        "goal": [
+          -0.2065534089380967,
+          -0.8665560984356091
+        ],
+        "distance_m": 0.020211838690233862,
+        "speed_m_s": 0.0038870422945564867,
+        "true_dwell_at_capture_s": 0.7150000000000034,
+        "visible_fresh_rgb": true,
+        "passed": true
+      },
+      "guarded_stop_episodes": 71,
+      "status_counts": {
+        "warming_up": 20,
+        "tracking_visible": 502,
+        "proactive_envelope_not_certified": 151,
+        "settling_visible": 6,
+        "arrived_visible": 1
+      },
+      "blind_motion_violation_times": [],
+      "frames": 680,
+      "physics_samples": 6800,
+      "verified_image_artifacts": 0,
+      "unavailable_image_frames": 680,
+      "input_sha256": {
+        "case": "fbca7424c5a78b4a864b29a9749fe434e27869ebbedfa2b956406ce9febf748f",
+        "summary": "dc1f6dab26e5fcb0ef6c6bda324f4d868f9b8d1652cd4b319e54b05720700b1d",
+        "audit": "1f8026aae8f93ff6e0451178803fda50547ad7c3abed51429eae4e6b2f0ff62b",
+        "manifest": "46a7bb2fef2e29a97df2cb8cafd00f5fb34a37677bd8c49482cddff5ce61a245",
+        "rows": "ae17f9fae4f04eba5ab62eb25236e448ba3f3888de97dabef38d39190e27e817",
+        "commands": "c795bcfa5642dad9fc697475b4d269daf4fba771ad017f38fee303e5bdd76f53",
+        "scorer": "7e59a2e9cddb0c1cff789db76105a664275f25d519c235dc1d5e69c8ac40f003",
+        "harness": "f0a91f0f3cdb4f76d1f11b354b983c58aa65df19581d1a02bac9aaac143851ce"
+      },
+      "recorded_protocol_sha256": "18d05f69ce4dfa1720fb24848fe1e097051f19138a14430290071dfd190c8d22",
+      "source_sha256": {
+        "interactive_runtime.py": "0adf26215c88a1a95cccff027b829e75eb45eb7ea6696b85b52bf890b040fa5f",
+        "occluded_control.py": "03bf1c2717698d22d34e2f4becccb143bda9c22f3f1a66627b993bbab504ca80",
+        "control_profiles.py": "bedb0943496f29c45361f1d72334c865164d17cb3f1dab8e28b2058cafb763bb",
+        "camera.py": "e11c223599adf79551ca492643178e042cd3cca3fa71a1395549a26ef6acd11d",
+        "camera_rig.py": "4ee378b375f81c39cc710beaaff1e86caa322dbe16bbf96456404bf2469c4358",
+        "vision.py": "022513c55dd19ef7d38f78f3ea93b03996302938370fde05444359a08ee98394",
+        "genesis_backend.py": "975951b11adfe5ee808f86990fba8c3805b7120d7498510c61705915758ffec4",
+        "scan_free_space.py": "02392c9dda73c4d9f7f9a33a80f68c7de13b167fbe27c30cd2edc08f55e49343"
+      },
+      "asset_sha256": {
+        "demo.json": "b09ad035e649473c931b7d7751afd5b0228a601e8fabdf3de905d7e22036b2d2",
+        "policy.zip": "97b0f47802515356262a453fb1894c6146ba9f8c66ada958daac3c8b5fe98b93",
+        "vision.pt": "483065dada5480f7ef990f526cec5f8a45c16438fb7931bcd1058d44ccd06ca8",
+        "memory/manifest.json": "07a704a3f24d4c2f8f32056f80a520acd086098ee6e586c81c24fe18e7a52488"
+      }
+    },
+    {
+      "run": "work/m711/tuning-v1/lookahead-100ms--tuning-reverse",
+      "case": "tuning-reverse",
+      "profile": {
+        "name": "lookahead-100ms",
+        "margin_m": 0.03,
+        "speed_m_s": 0.15,
+        "lookahead_s": 0.1,
+        "planning_reserve_m": 0.0,
+        "parameters": {
+          "max_occlusion_seconds": 1.0,
+          "max_frame_age": 0.1,
+          "max_interval": 0.15,
+          "speed_cap": 0.15,
+          "max_position_radius": 0.08,
+          "measurement_sigma_multiplier": 3.0,
+          "measurement_radius_floor": 0.005,
+          "innovation_slack": 0.015,
+          "max_reacquisition_distance": 0.12,
+          "robot_radius": 0.037,
+          "clearance_margin": 0.03,
+          "command_horizon": 0.05,
+          "minimum_visual_samples": 3,
+          "max_initial_velocity_radius": 0.05,
+          "arrival_radius": 0.1,
+          "arrival_speed": 0.03,
+          "visible_dwell": 0.5,
+          "proactive_horizon_seconds": 0.1,
+          "proactive_speed_samples": 10
+        }
+      },
+      "mode": 1,
+      "intent": "arrival",
+      "hard_failures": [],
+      "audit_pass": true,
+      "valid_arrival": false,
+      "intended_pass": false,
+      "control_checks": {
+        "pass": false,
+        "kind": "arrival"
+      },
+      "recorded_simulation_s": 60.0,
+      "first_valid_arrival": null,
+      "guarded_stop_episodes": 32,
+      "status_counts": {
+        "warming_up": 20,
+        "tracking_visible": 154,
+        "proactive_envelope_not_certified": 1026
+      },
+      "blind_motion_violation_times": [],
+      "frames": 1200,
+      "physics_samples": 12000,
+      "verified_image_artifacts": 0,
+      "unavailable_image_frames": 1200,
+      "input_sha256": {
+        "case": "ed1d70f7dfd5ecf2ece2e724944cb243108d1ccaba03f8fba71699b973cb003f",
+        "summary": "cd7366948b680c14b4dcf03a986f746d396734763a2618e5a10097a222122e20",
+        "audit": "6fb36e4f4efb666f9817d57deb806eabb916b68c15e5744fb9ddc0aacfa33234",
+        "manifest": "457e407b86ab03dc378658a32a4710ec5d04aadb695908c4ce7e83cae042a1fb",
+        "rows": "cac1b4c0435829148921c1d72b385f68b2cba2e6653e09cebbc56eb31614b93b",
+        "commands": "7f3916de5a5522927df7cc9931b084efe69260dd659a7b49009d3b529f439589",
+        "scorer": "7e59a2e9cddb0c1cff789db76105a664275f25d519c235dc1d5e69c8ac40f003",
+        "harness": "bf615a5805500d2b910afc30da1a50c1825e5f7de2a5b693ef2706b8d2e0553c"
+      },
+      "recorded_protocol_sha256": "18d05f69ce4dfa1720fb24848fe1e097051f19138a14430290071dfd190c8d22",
+      "source_sha256": {
+        "interactive_runtime.py": "0adf26215c88a1a95cccff027b829e75eb45eb7ea6696b85b52bf890b040fa5f",
+        "occluded_control.py": "03bf1c2717698d22d34e2f4becccb143bda9c22f3f1a66627b993bbab504ca80",
+        "control_profiles.py": "bedb0943496f29c45361f1d72334c865164d17cb3f1dab8e28b2058cafb763bb",
+        "camera.py": "e11c223599adf79551ca492643178e042cd3cca3fa71a1395549a26ef6acd11d",
+        "camera_rig.py": "4ee378b375f81c39cc710beaaff1e86caa322dbe16bbf96456404bf2469c4358",
+        "vision.py": "022513c55dd19ef7d38f78f3ea93b03996302938370fde05444359a08ee98394",
+        "genesis_backend.py": "975951b11adfe5ee808f86990fba8c3805b7120d7498510c61705915758ffec4",
+        "scan_free_space.py": "02392c9dda73c4d9f7f9a33a80f68c7de13b167fbe27c30cd2edc08f55e49343"
+      },
+      "asset_sha256": {
+        "demo.json": "b9c0a86e773abcfa67e2559ac533b7530d3b86e81d4712cc41251a89b4fb49f8",
+        "policy.zip": "97b0f47802515356262a453fb1894c6146ba9f8c66ada958daac3c8b5fe98b93",
+        "vision.pt": "483065dada5480f7ef990f526cec5f8a45c16438fb7931bcd1058d44ccd06ca8",
+        "memory/manifest.json": "07a704a3f24d4c2f8f32056f80a520acd086098ee6e586c81c24fe18e7a52488"
+      }
+    },
+    {
+      "run": "work/m711/tuning-v1/lookahead-200ms--tuning-forward",
+      "case": "tuning-forward",
+      "profile": {
+        "name": "lookahead-200ms",
+        "margin_m": 0.03,
+        "speed_m_s": 0.15,
+        "lookahead_s": 0.2,
+        "planning_reserve_m": 0.0,
+        "parameters": {
+          "max_occlusion_seconds": 1.0,
+          "max_frame_age": 0.1,
+          "max_interval": 0.15,
+          "speed_cap": 0.15,
+          "max_position_radius": 0.08,
+          "measurement_sigma_multiplier": 3.0,
+          "measurement_radius_floor": 0.005,
+          "innovation_slack": 0.015,
+          "max_reacquisition_distance": 0.12,
+          "robot_radius": 0.037,
+          "clearance_margin": 0.03,
+          "command_horizon": 0.05,
+          "minimum_visual_samples": 3,
+          "max_initial_velocity_radius": 0.05,
+          "arrival_radius": 0.1,
+          "arrival_speed": 0.03,
+          "visible_dwell": 0.5,
+          "proactive_horizon_seconds": 0.2,
+          "proactive_speed_samples": 10
+        }
+      },
+      "mode": 1,
+      "intent": "arrival",
+      "hard_failures": [],
+      "audit_pass": true,
+      "valid_arrival": true,
+      "intended_pass": true,
+      "control_checks": {
+        "pass": true,
+        "kind": "arrival"
+      },
+      "recorded_simulation_s": 52.65,
+      "first_valid_arrival": {
+        "time": 52.6,
+        "goal": [
+          -0.2065534089380967,
+          -0.8665560984356091
+        ],
+        "distance_m": 0.020351743706233234,
+        "speed_m_s": 0.0039059554907090793,
+        "true_dwell_at_capture_s": 0.7100000000000009,
+        "visible_fresh_rgb": true,
+        "passed": true
+      },
+      "guarded_stop_episodes": 151,
+      "status_counts": {
+        "warming_up": 20,
+        "tracking_visible": 674,
+        "proactive_envelope_not_certified": 352,
+        "settling_visible": 6,
+        "arrived_visible": 1
+      },
+      "blind_motion_violation_times": [],
+      "frames": 1053,
+      "physics_samples": 10530,
+      "verified_image_artifacts": 0,
+      "unavailable_image_frames": 1053,
+      "input_sha256": {
+        "case": "46845a4b4703df316e528be642dca29df133d2c88be1e503940564afccdaf4c2",
+        "summary": "af88a4be1b907fbba9eeed5aaeec213712ce1becb27cadf02501da14bfd5753e",
+        "audit": "eabb65bd3cd1f9405a81b680a7157a49060026a2286c1db396acf22a64748ac5",
+        "manifest": "ddf729f07dd5dc1ffd21de533a142c14ec38467d3f92c059f61d8478b3d459f0",
+        "rows": "b6cf0ca8b46a9e0f69d6a453000205bbb9ad01aa3924407b7137bf5da19fd723",
+        "commands": "e7e4aede2105b0ff768cc0ad7a7dc50b0e3d2b04ef06d092d05f33a633cfc89c",
+        "scorer": "7e59a2e9cddb0c1cff789db76105a664275f25d519c235dc1d5e69c8ac40f003",
+        "harness": "ae69e84f6b24ded32a522343ca31c06392a45d70031acc906d6fdd54bcc3c7a2"
+      },
+      "recorded_protocol_sha256": "18d05f69ce4dfa1720fb24848fe1e097051f19138a14430290071dfd190c8d22",
+      "source_sha256": {
+        "interactive_runtime.py": "0adf26215c88a1a95cccff027b829e75eb45eb7ea6696b85b52bf890b040fa5f",
+        "occluded_control.py": "03bf1c2717698d22d34e2f4becccb143bda9c22f3f1a66627b993bbab504ca80",
+        "control_profiles.py": "bedb0943496f29c45361f1d72334c865164d17cb3f1dab8e28b2058cafb763bb",
+        "camera.py": "e11c223599adf79551ca492643178e042cd3cca3fa71a1395549a26ef6acd11d",
+        "camera_rig.py": "4ee378b375f81c39cc710beaaff1e86caa322dbe16bbf96456404bf2469c4358",
+        "vision.py": "022513c55dd19ef7d38f78f3ea93b03996302938370fde05444359a08ee98394",
+        "genesis_backend.py": "975951b11adfe5ee808f86990fba8c3805b7120d7498510c61705915758ffec4",
+        "scan_free_space.py": "02392c9dda73c4d9f7f9a33a80f68c7de13b167fbe27c30cd2edc08f55e49343"
+      },
+      "asset_sha256": {
+        "demo.json": "b09ad035e649473c931b7d7751afd5b0228a601e8fabdf3de905d7e22036b2d2",
+        "policy.zip": "97b0f47802515356262a453fb1894c6146ba9f8c66ada958daac3c8b5fe98b93",
+        "vision.pt": "483065dada5480f7ef990f526cec5f8a45c16438fb7931bcd1058d44ccd06ca8",
+        "memory/manifest.json": "07a704a3f24d4c2f8f32056f80a520acd086098ee6e586c81c24fe18e7a52488"
+      }
+    },
+    {
+      "run": "work/m711/tuning-v1/lookahead-200ms--tuning-reverse",
+      "case": "tuning-reverse",
+      "profile": {
+        "name": "lookahead-200ms",
+        "margin_m": 0.03,
+        "speed_m_s": 0.15,
+        "lookahead_s": 0.2,
+        "planning_reserve_m": 0.0,
+        "parameters": {
+          "max_occlusion_seconds": 1.0,
+          "max_frame_age": 0.1,
+          "max_interval": 0.15,
+          "speed_cap": 0.15,
+          "max_position_radius": 0.08,
+          "measurement_sigma_multiplier": 3.0,
+          "measurement_radius_floor": 0.005,
+          "innovation_slack": 0.015,
+          "max_reacquisition_distance": 0.12,
+          "robot_radius": 0.037,
+          "clearance_margin": 0.03,
+          "command_horizon": 0.05,
+          "minimum_visual_samples": 3,
+          "max_initial_velocity_radius": 0.05,
+          "arrival_radius": 0.1,
+          "arrival_speed": 0.03,
+          "visible_dwell": 0.5,
+          "proactive_horizon_seconds": 0.2,
+          "proactive_speed_samples": 10
+        }
+      },
+      "mode": 1,
+      "intent": "arrival",
+      "hard_failures": [],
+      "audit_pass": true,
+      "valid_arrival": false,
+      "intended_pass": false,
+      "control_checks": {
+        "pass": false,
+        "kind": "arrival"
+      },
+      "recorded_simulation_s": 60.0,
+      "first_valid_arrival": null,
+      "guarded_stop_episodes": 32,
+      "status_counts": {
+        "warming_up": 20,
+        "tracking_visible": 151,
+        "proactive_envelope_not_certified": 1029
+      },
+      "blind_motion_violation_times": [],
+      "frames": 1200,
+      "physics_samples": 12000,
+      "verified_image_artifacts": 0,
+      "unavailable_image_frames": 1200,
+      "input_sha256": {
+        "case": "08fba07dc2b05d93e708c1267165d2eb987858dc78258b24934442fd1805ed96",
+        "summary": "b741f4e3580a691bf3b1ebc330b7d465f5d1d0cfd9324e3d90c94e90d1e697ed",
+        "audit": "f5a3a771c57179816958461c9cb0ab7423f83694c469390f91953e2e1f9f1e47",
+        "manifest": "644baf0b60951427be276bf8d76c98309dae056f0ff4c735f6a1e4d133b62a33",
+        "rows": "4da397088de63097eb8f28d7e39a50d54c6cad3fd36f48fd4cc2d06570522b77",
+        "commands": "76644652fd4c95cb2062772983e765d4e8dab960b3506e601df309574f8f7111",
+        "scorer": "7e59a2e9cddb0c1cff789db76105a664275f25d519c235dc1d5e69c8ac40f003",
+        "harness": "d8ffbd0b7e10ce73a165b6f6a8f6c8dcae6217fac4871fbe91b1be48d8180278"
+      },
+      "recorded_protocol_sha256": "18d05f69ce4dfa1720fb24848fe1e097051f19138a14430290071dfd190c8d22",
+      "source_sha256": {
+        "interactive_runtime.py": "0adf26215c88a1a95cccff027b829e75eb45eb7ea6696b85b52bf890b040fa5f",
+        "occluded_control.py": "03bf1c2717698d22d34e2f4becccb143bda9c22f3f1a66627b993bbab504ca80",
+        "control_profiles.py": "bedb0943496f29c45361f1d72334c865164d17cb3f1dab8e28b2058cafb763bb",
+        "camera.py": "e11c223599adf79551ca492643178e042cd3cca3fa71a1395549a26ef6acd11d",
+        "camera_rig.py": "4ee378b375f81c39cc710beaaff1e86caa322dbe16bbf96456404bf2469c4358",
+        "vision.py": "022513c55dd19ef7d38f78f3ea93b03996302938370fde05444359a08ee98394",
+        "genesis_backend.py": "975951b11adfe5ee808f86990fba8c3805b7120d7498510c61705915758ffec4",
+        "scan_free_space.py": "02392c9dda73c4d9f7f9a33a80f68c7de13b167fbe27c30cd2edc08f55e49343"
+      },
+      "asset_sha256": {
+        "demo.json": "b9c0a86e773abcfa67e2559ac533b7530d3b86e81d4712cc41251a89b4fb49f8",
+        "policy.zip": "97b0f47802515356262a453fb1894c6146ba9f8c66ada958daac3c8b5fe98b93",
+        "vision.pt": "483065dada5480f7ef990f526cec5f8a45c16438fb7931bcd1058d44ccd06ca8",
+        "memory/manifest.json": "07a704a3f24d4c2f8f32056f80a520acd086098ee6e586c81c24fe18e7a52488"
+      }
+    },
+    {
+      "run": "work/m711/tuning-v1/margin-2cm--tuning-forward",
+      "case": "tuning-forward",
+      "profile": {
+        "name": "margin-2cm",
+        "margin_m": 0.02,
+        "speed_m_s": 0.15,
+        "lookahead_s": 0.0,
+        "planning_reserve_m": 0.0,
+        "parameters": {
+          "max_occlusion_seconds": 1.0,
+          "max_frame_age": 0.1,
+          "max_interval": 0.15,
+          "speed_cap": 0.15,
+          "max_position_radius": 0.08,
+          "measurement_sigma_multiplier": 3.0,
+          "measurement_radius_floor": 0.005,
+          "innovation_slack": 0.015,
+          "max_reacquisition_distance": 0.12,
+          "robot_radius": 0.037,
+          "clearance_margin": 0.02,
+          "command_horizon": 0.05,
+          "minimum_visual_samples": 3,
+          "max_initial_velocity_radius": 0.05,
+          "arrival_radius": 0.1,
+          "arrival_speed": 0.03,
+          "visible_dwell": 0.5,
+          "proactive_horizon_seconds": 0.0,
+          "proactive_speed_samples": 10
+        }
+      },
+      "mode": 1,
+      "intent": "arrival",
+      "hard_failures": [],
+      "audit_pass": true,
+      "valid_arrival": true,
+      "intended_pass": true,
+      "control_checks": {
+        "pass": true,
+        "kind": "arrival"
+      },
+      "recorded_simulation_s": 34.35,
+      "first_valid_arrival": {
+        "time": 34.300000000000004,
+        "goal": [
+          -0.2065534089380967,
+          -0.8665560984356091
+        ],
+        "distance_m": 0.020029602241247786,
+        "speed_m_s": 0.004189686224065335,
+        "true_dwell_at_capture_s": 0.6850000000000023,
+        "visible_fresh_rgb": true,
+        "passed": true
+      },
+      "guarded_stop_episodes": 55,
+      "status_counts": {
+        "warming_up": 20,
+        "tracking_visible": 545,
+        "stopping_envelope_not_certified": 116,
+        "settling_visible": 5,
+        "arrived_visible": 1
+      },
+      "blind_motion_violation_times": [],
+      "frames": 687,
+      "physics_samples": 6870,
+      "verified_image_artifacts": 0,
+      "unavailable_image_frames": 687,
+      "input_sha256": {
+        "case": "a5f7bdc14751c4924c3eeedeec8d5a7fb8e833815c02d6a9bbfb22b5e1e1cfd3",
+        "summary": "b9cb135e0b744e7f2882c8f6cc25d3a3f1f2efe6a7d37c29cd1c7229f83d6de7",
+        "audit": "32b74aaf61b9c41a1047e90fe023031e3414b3fc07980b5b6ec5bf8dc4a9644e",
+        "manifest": "2affc9a9ad2d762b4102a93c1e315541c4304897b242e4d95a5f65ba01879aee",
+        "rows": "ea3b608ed5bfb34c6bdfe1f54335ff4a147eaf2790511049e7a32372c9ecd9aa",
+        "commands": "eca3236db6ca72b9391b0d6c0878bc0d2fa2e3aacd37389e902f38fc54e2f7cb",
+        "scorer": "7e59a2e9cddb0c1cff789db76105a664275f25d519c235dc1d5e69c8ac40f003",
+        "harness": "3b1691ccafee6b4d42cb6740cc9c90a773aac2f82df2780ff7c6a85d5f6438f8"
+      },
+      "recorded_protocol_sha256": "18d05f69ce4dfa1720fb24848fe1e097051f19138a14430290071dfd190c8d22",
+      "source_sha256": {
+        "interactive_runtime.py": "0adf26215c88a1a95cccff027b829e75eb45eb7ea6696b85b52bf890b040fa5f",
+        "occluded_control.py": "03bf1c2717698d22d34e2f4becccb143bda9c22f3f1a66627b993bbab504ca80",
+        "control_profiles.py": "bedb0943496f29c45361f1d72334c865164d17cb3f1dab8e28b2058cafb763bb",
+        "camera.py": "e11c223599adf79551ca492643178e042cd3cca3fa71a1395549a26ef6acd11d",
+        "camera_rig.py": "4ee378b375f81c39cc710beaaff1e86caa322dbe16bbf96456404bf2469c4358",
+        "vision.py": "022513c55dd19ef7d38f78f3ea93b03996302938370fde05444359a08ee98394",
+        "genesis_backend.py": "975951b11adfe5ee808f86990fba8c3805b7120d7498510c61705915758ffec4",
+        "scan_free_space.py": "02392c9dda73c4d9f7f9a33a80f68c7de13b167fbe27c30cd2edc08f55e49343"
+      },
+      "asset_sha256": {
+        "demo.json": "b09ad035e649473c931b7d7751afd5b0228a601e8fabdf3de905d7e22036b2d2",
+        "policy.zip": "97b0f47802515356262a453fb1894c6146ba9f8c66ada958daac3c8b5fe98b93",
+        "vision.pt": "483065dada5480f7ef990f526cec5f8a45c16438fb7931bcd1058d44ccd06ca8",
+        "memory/manifest.json": "07a704a3f24d4c2f8f32056f80a520acd086098ee6e586c81c24fe18e7a52488"
+      }
+    },
+    {
+      "run": "work/m711/tuning-v1/margin-2cm--tuning-reverse",
+      "case": "tuning-reverse",
+      "profile": {
+        "name": "margin-2cm",
+        "margin_m": 0.02,
+        "speed_m_s": 0.15,
+        "lookahead_s": 0.0,
+        "planning_reserve_m": 0.0,
+        "parameters": {
+          "max_occlusion_seconds": 1.0,
+          "max_frame_age": 0.1,
+          "max_interval": 0.15,
+          "speed_cap": 0.15,
+          "max_position_radius": 0.08,
+          "measurement_sigma_multiplier": 3.0,
+          "measurement_radius_floor": 0.005,
+          "innovation_slack": 0.015,
+          "max_reacquisition_distance": 0.12,
+          "robot_radius": 0.037,
+          "clearance_margin": 0.02,
+          "command_horizon": 0.05,
+          "minimum_visual_samples": 3,
+          "max_initial_velocity_radius": 0.05,
+          "arrival_radius": 0.1,
+          "arrival_speed": 0.03,
+          "visible_dwell": 0.5,
+          "proactive_horizon_seconds": 0.0,
+          "proactive_speed_samples": 10
+        }
+      },
+      "mode": 1,
+      "intent": "arrival",
+      "hard_failures": [],
+      "audit_pass": true,
+      "valid_arrival": false,
+      "intended_pass": false,
+      "control_checks": {
+        "pass": false,
+        "kind": "arrival"
+      },
+      "recorded_simulation_s": 60.0,
+      "first_valid_arrival": null,
+      "guarded_stop_episodes": 73,
+      "status_counts": {
+        "warming_up": 20,
+        "tracking_visible": 427,
+        "stopping_envelope_not_certified": 753
+      },
+      "blind_motion_violation_times": [],
+      "frames": 1200,
+      "physics_samples": 12000,
+      "verified_image_artifacts": 0,
+      "unavailable_image_frames": 1200,
+      "input_sha256": {
+        "case": "ba6f8edb2eeb601b06d8905190b074a989c108eafd085634e37742a3caa828ec",
+        "summary": "024184c3690c36de6f247c131876268f711c8cf69f24ddfeb7a9194686691734",
+        "audit": "84f55789ed9ad53bb5d09fd852da74039381a8d0ad06025e722d506c87b4acd4",
+        "manifest": "c4c4d6f9a5ecea5d64da021e5fb872acef3b31e234cedab1a7af421325426981",
+        "rows": "7729232b86150f9ce7e6405713d4d75890f17922d25a19c96df918162864745f",
+        "commands": "c97c043ba5570a5a95a1c8dcf549979d04a35ab1408fd9c5f5dc27f464a106e5",
+        "scorer": "7e59a2e9cddb0c1cff789db76105a664275f25d519c235dc1d5e69c8ac40f003",
+        "harness": "9f0167dce0316b46e2332381ff4a893a4bfefda61cc7228b5521cc214d21a3bf"
+      },
+      "recorded_protocol_sha256": "18d05f69ce4dfa1720fb24848fe1e097051f19138a14430290071dfd190c8d22",
+      "source_sha256": {
+        "interactive_runtime.py": "0adf26215c88a1a95cccff027b829e75eb45eb7ea6696b85b52bf890b040fa5f",
+        "occluded_control.py": "03bf1c2717698d22d34e2f4becccb143bda9c22f3f1a66627b993bbab504ca80",
+        "control_profiles.py": "bedb0943496f29c45361f1d72334c865164d17cb3f1dab8e28b2058cafb763bb",
+        "camera.py": "e11c223599adf79551ca492643178e042cd3cca3fa71a1395549a26ef6acd11d",
+        "camera_rig.py": "4ee378b375f81c39cc710beaaff1e86caa322dbe16bbf96456404bf2469c4358",
+        "vision.py": "022513c55dd19ef7d38f78f3ea93b03996302938370fde05444359a08ee98394",
+        "genesis_backend.py": "975951b11adfe5ee808f86990fba8c3805b7120d7498510c61705915758ffec4",
+        "scan_free_space.py": "02392c9dda73c4d9f7f9a33a80f68c7de13b167fbe27c30cd2edc08f55e49343"
+      },
+      "asset_sha256": {
+        "demo.json": "b9c0a86e773abcfa67e2559ac533b7530d3b86e81d4712cc41251a89b4fb49f8",
+        "policy.zip": "97b0f47802515356262a453fb1894c6146ba9f8c66ada958daac3c8b5fe98b93",
+        "vision.pt": "483065dada5480f7ef990f526cec5f8a45c16438fb7931bcd1058d44ccd06ca8",
+        "memory/manifest.json": "07a704a3f24d4c2f8f32056f80a520acd086098ee6e586c81c24fe18e7a52488"
+      }
+    },
+    {
+      "run": "work/m711/tuning-v1/margin-3cm--tuning-forward",
+      "case": "tuning-forward",
+      "profile": {
+        "name": "margin-3cm",
+        "margin_m": 0.03,
+        "speed_m_s": 0.15,
+        "lookahead_s": 0.0,
+        "planning_reserve_m": 0.0,
+        "parameters": {
+          "max_occlusion_seconds": 1.0,
+          "max_frame_age": 0.1,
+          "max_interval": 0.15,
+          "speed_cap": 0.15,
+          "max_position_radius": 0.08,
+          "measurement_sigma_multiplier": 3.0,
+          "measurement_radius_floor": 0.005,
+          "innovation_slack": 0.015,
+          "max_reacquisition_distance": 0.12,
+          "robot_radius": 0.037,
+          "clearance_margin": 0.03,
+          "command_horizon": 0.05,
+          "minimum_visual_samples": 3,
+          "max_initial_velocity_radius": 0.05,
+          "arrival_radius": 0.1,
+          "arrival_speed": 0.03,
+          "visible_dwell": 0.5,
+          "proactive_horizon_seconds": 0.0,
+          "proactive_speed_samples": 10
+        }
+      },
+      "mode": 1,
+      "intent": "arrival",
+      "hard_failures": [],
+      "audit_pass": true,
+      "valid_arrival": true,
+      "intended_pass": true,
+      "control_checks": {
+        "pass": true,
+        "kind": "arrival"
+      },
+      "recorded_simulation_s": 29.150000000000002,
+      "first_valid_arrival": {
+        "time": 29.1,
+        "goal": [
+          -0.2065534089380967,
+          -0.8665560984356091
+        ],
+        "distance_m": 0.02021455467033302,
+        "speed_m_s": 0.004258357584953781,
+        "true_dwell_at_capture_s": 0.6799999999999997,
+        "visible_fresh_rgb": true,
+        "passed": true
+      },
+      "guarded_stop_episodes": 38,
+      "status_counts": {
+        "warming_up": 20,
+        "tracking_visible": 484,
+        "stopping_envelope_not_certified": 73,
+        "settling_visible": 5,
+        "arrived_visible": 1
+      },
+      "blind_motion_violation_times": [],
+      "frames": 583,
+      "physics_samples": 5830,
+      "verified_image_artifacts": 0,
+      "unavailable_image_frames": 583,
+      "input_sha256": {
+        "case": "a6b32a92e70c174270335330f791085bb9f3be96dbcf9315f43ec30b1eb024c1",
+        "summary": "f285ab771af5e018a95d383b956ec1373b3b04f9f7cae8c935666505f4642496",
+        "audit": "39f62fd75176f888d7d0e3cc459f9016918a6fcd6b804e68c4af620fc0e25b1f",
+        "manifest": "6b2789c3f17234d4932e80d8647b243c7a6325ad2b1f21f22d7e1c805c2d0643",
+        "rows": "472fc200ed9cbccaa876db18f1f9499bee06ee37b1b7a7687f5f0058bf3fd095",
+        "commands": "44e0e5cf62198ff8ce8e8e2ee9f32ab81cbdb7aea9237c9711e9494ca0119527",
+        "scorer": "7e59a2e9cddb0c1cff789db76105a664275f25d519c235dc1d5e69c8ac40f003",
+        "harness": "f7dab586bd1254e50ab8ec91f743e387ea090b21bee51ead548eb459e4b877ac"
+      },
+      "recorded_protocol_sha256": "18d05f69ce4dfa1720fb24848fe1e097051f19138a14430290071dfd190c8d22",
+      "source_sha256": {
+        "interactive_runtime.py": "0adf26215c88a1a95cccff027b829e75eb45eb7ea6696b85b52bf890b040fa5f",
+        "occluded_control.py": "03bf1c2717698d22d34e2f4becccb143bda9c22f3f1a66627b993bbab504ca80",
+        "control_profiles.py": "bedb0943496f29c45361f1d72334c865164d17cb3f1dab8e28b2058cafb763bb",
+        "camera.py": "e11c223599adf79551ca492643178e042cd3cca3fa71a1395549a26ef6acd11d",
+        "camera_rig.py": "4ee378b375f81c39cc710beaaff1e86caa322dbe16bbf96456404bf2469c4358",
+        "vision.py": "022513c55dd19ef7d38f78f3ea93b03996302938370fde05444359a08ee98394",
+        "genesis_backend.py": "975951b11adfe5ee808f86990fba8c3805b7120d7498510c61705915758ffec4",
+        "scan_free_space.py": "02392c9dda73c4d9f7f9a33a80f68c7de13b167fbe27c30cd2edc08f55e49343"
+      },
+      "asset_sha256": {
+        "demo.json": "b09ad035e649473c931b7d7751afd5b0228a601e8fabdf3de905d7e22036b2d2",
+        "policy.zip": "97b0f47802515356262a453fb1894c6146ba9f8c66ada958daac3c8b5fe98b93",
+        "vision.pt": "483065dada5480f7ef990f526cec5f8a45c16438fb7931bcd1058d44ccd06ca8",
+        "memory/manifest.json": "07a704a3f24d4c2f8f32056f80a520acd086098ee6e586c81c24fe18e7a52488"
+      }
+    },
+    {
+      "run": "work/m711/tuning-v1/margin-3cm--tuning-reverse",
+      "case": "tuning-reverse",
+      "profile": {
+        "name": "margin-3cm",
+        "margin_m": 0.03,
+        "speed_m_s": 0.15,
+        "lookahead_s": 0.0,
+        "planning_reserve_m": 0.0,
+        "parameters": {
+          "max_occlusion_seconds": 1.0,
+          "max_frame_age": 0.1,
+          "max_interval": 0.15,
+          "speed_cap": 0.15,
+          "max_position_radius": 0.08,
+          "measurement_sigma_multiplier": 3.0,
+          "measurement_radius_floor": 0.005,
+          "innovation_slack": 0.015,
+          "max_reacquisition_distance": 0.12,
+          "robot_radius": 0.037,
+          "clearance_margin": 0.03,
+          "command_horizon": 0.05,
+          "minimum_visual_samples": 3,
+          "max_initial_velocity_radius": 0.05,
+          "arrival_radius": 0.1,
+          "arrival_speed": 0.03,
+          "visible_dwell": 0.5,
+          "proactive_horizon_seconds": 0.0,
+          "proactive_speed_samples": 10
+        }
+      },
+      "mode": 1,
+      "intent": "arrival",
+      "hard_failures": [],
+      "audit_pass": true,
+      "valid_arrival": false,
+      "intended_pass": false,
+      "control_checks": {
+        "pass": false,
+        "kind": "arrival"
+      },
+      "recorded_simulation_s": 60.0,
+      "first_valid_arrival": null,
+      "guarded_stop_episodes": 27,
+      "status_counts": {
+        "warming_up": 20,
+        "tracking_visible": 163,
+        "stopping_envelope_not_certified": 1017
+      },
+      "blind_motion_violation_times": [],
+      "frames": 1200,
+      "physics_samples": 12000,
+      "verified_image_artifacts": 0,
+      "unavailable_image_frames": 1200,
+      "input_sha256": {
+        "case": "34e6ae82a22c4dbc962d9f0b372e0a52841d5815b22bd845672e4a9e99c2b5ff",
+        "summary": "41e1fc60b72edc448f6c88063aedd6c18aec7fc799821f3ccd36ebc90829200d",
+        "audit": "23d5c595ce978a1db1856f99cff8677976363d3ec6a11c94f5e9c73943778818",
+        "manifest": "e3fd76b4920a5555cb28b49a27ee6e8287e68364a0031f6e5fe40780d7f9b78e",
+        "rows": "6b5acec325726e9c0e8eac8f2d847c1c6291f1635ead438fa830b6e67603ad7e",
+        "commands": "2b13b27a8431b8223df1dff3dd621d03ed4ef02e844546cc85ffe59a31769335",
+        "scorer": "7e59a2e9cddb0c1cff789db76105a664275f25d519c235dc1d5e69c8ac40f003",
+        "harness": "a104875a905a7356489c15b0d760b7135881d60b47f463ec43f7be13867583df"
+      },
+      "recorded_protocol_sha256": "18d05f69ce4dfa1720fb24848fe1e097051f19138a14430290071dfd190c8d22",
+      "source_sha256": {
+        "interactive_runtime.py": "0adf26215c88a1a95cccff027b829e75eb45eb7ea6696b85b52bf890b040fa5f",
+        "occluded_control.py": "03bf1c2717698d22d34e2f4becccb143bda9c22f3f1a66627b993bbab504ca80",
+        "control_profiles.py": "bedb0943496f29c45361f1d72334c865164d17cb3f1dab8e28b2058cafb763bb",
+        "camera.py": "e11c223599adf79551ca492643178e042cd3cca3fa71a1395549a26ef6acd11d",
+        "camera_rig.py": "4ee378b375f81c39cc710beaaff1e86caa322dbe16bbf96456404bf2469c4358",
+        "vision.py": "022513c55dd19ef7d38f78f3ea93b03996302938370fde05444359a08ee98394",
+        "genesis_backend.py": "975951b11adfe5ee808f86990fba8c3805b7120d7498510c61705915758ffec4",
+        "scan_free_space.py": "02392c9dda73c4d9f7f9a33a80f68c7de13b167fbe27c30cd2edc08f55e49343"
+      },
+      "asset_sha256": {
+        "demo.json": "b9c0a86e773abcfa67e2559ac533b7530d3b86e81d4712cc41251a89b4fb49f8",
+        "policy.zip": "97b0f47802515356262a453fb1894c6146ba9f8c66ada958daac3c8b5fe98b93",
+        "vision.pt": "483065dada5480f7ef990f526cec5f8a45c16438fb7931bcd1058d44ccd06ca8",
+        "memory/manifest.json": "07a704a3f24d4c2f8f32056f80a520acd086098ee6e586c81c24fe18e7a52488"
+      }
+    },
+    {
+      "run": "work/m711/tuning-v1/slow-3cm--tuning-forward",
+      "case": "tuning-forward",
+      "profile": {
+        "name": "slow-3cm",
+        "margin_m": 0.03,
+        "speed_m_s": 0.1,
+        "lookahead_s": 0.0,
+        "planning_reserve_m": 0.0,
+        "parameters": {
+          "max_occlusion_seconds": 1.0,
+          "max_frame_age": 0.1,
+          "max_interval": 0.15,
+          "speed_cap": 0.1,
+          "max_position_radius": 0.08,
+          "measurement_sigma_multiplier": 3.0,
+          "measurement_radius_floor": 0.005,
+          "innovation_slack": 0.015,
+          "max_reacquisition_distance": 0.12,
+          "robot_radius": 0.037,
+          "clearance_margin": 0.03,
+          "command_horizon": 0.05,
+          "minimum_visual_samples": 3,
+          "max_initial_velocity_radius": 0.05,
+          "arrival_radius": 0.1,
+          "arrival_speed": 0.03,
+          "visible_dwell": 0.5,
+          "proactive_horizon_seconds": 0.0,
+          "proactive_speed_samples": 10
+        }
+      },
+      "mode": 1,
+      "intent": "arrival",
+      "hard_failures": [],
+      "audit_pass": true,
+      "valid_arrival": true,
+      "intended_pass": true,
+      "control_checks": {
+        "pass": true,
+        "kind": "arrival"
+      },
+      "recorded_simulation_s": 33.65,
+      "first_valid_arrival": {
+        "time": 33.6,
+        "goal": [
+          -0.2065534089380967,
+          -0.8665560984356091
+        ],
+        "distance_m": 0.021365912659652552,
+        "speed_m_s": 0.003994192363864276,
+        "true_dwell_at_capture_s": 0.7049999999999983,
+        "visible_fresh_rgb": true,
+        "passed": true
+      },
+      "guarded_stop_episodes": 32,
+      "status_counts": {
+        "warming_up": 20,
+        "tracking_visible": 577,
+        "stopping_envelope_not_certified": 70,
+        "settling_visible": 5,
+        "arrived_visible": 1
+      },
+      "blind_motion_violation_times": [],
+      "frames": 673,
+      "physics_samples": 6730,
+      "verified_image_artifacts": 0,
+      "unavailable_image_frames": 673,
+      "input_sha256": {
+        "case": "d958c0428eb7234e111e4874fee69e1fd6fcf54ce076282fcebf008a14f85720",
+        "summary": "23f5785c4cad3760a250d675671b26f1e2d0a5004d0179da99b88bca5d7b2a62",
+        "audit": "7e8bbc2686752fbb07225cb20f84e1f711b66a11a1860e41ccf45d463f600ac3",
+        "manifest": "81cfc43cea9527663a44319e04f45ff16da4872d6d5ab358aeedefc368067fb2",
+        "rows": "0f07f374ff875829fde47c9338be78ec24ef8748f34fcb4dd9096cb73b535a99",
+        "commands": "002a0ddc5f95a71b7e36a235d8c9fa7b649efa44462997f6340ee9854612264d",
+        "scorer": "7e59a2e9cddb0c1cff789db76105a664275f25d519c235dc1d5e69c8ac40f003",
+        "harness": "0319a8574af7f9da48ce3abcb9037d823c3e08f75c60e11cbd28d0a47dea753a"
+      },
+      "recorded_protocol_sha256": "18d05f69ce4dfa1720fb24848fe1e097051f19138a14430290071dfd190c8d22",
+      "source_sha256": {
+        "interactive_runtime.py": "0adf26215c88a1a95cccff027b829e75eb45eb7ea6696b85b52bf890b040fa5f",
+        "occluded_control.py": "03bf1c2717698d22d34e2f4becccb143bda9c22f3f1a66627b993bbab504ca80",
+        "control_profiles.py": "bedb0943496f29c45361f1d72334c865164d17cb3f1dab8e28b2058cafb763bb",
+        "camera.py": "e11c223599adf79551ca492643178e042cd3cca3fa71a1395549a26ef6acd11d",
+        "camera_rig.py": "4ee378b375f81c39cc710beaaff1e86caa322dbe16bbf96456404bf2469c4358",
+        "vision.py": "022513c55dd19ef7d38f78f3ea93b03996302938370fde05444359a08ee98394",
+        "genesis_backend.py": "975951b11adfe5ee808f86990fba8c3805b7120d7498510c61705915758ffec4",
+        "scan_free_space.py": "02392c9dda73c4d9f7f9a33a80f68c7de13b167fbe27c30cd2edc08f55e49343"
+      },
+      "asset_sha256": {
+        "demo.json": "b09ad035e649473c931b7d7751afd5b0228a601e8fabdf3de905d7e22036b2d2",
+        "policy.zip": "97b0f47802515356262a453fb1894c6146ba9f8c66ada958daac3c8b5fe98b93",
+        "vision.pt": "483065dada5480f7ef990f526cec5f8a45c16438fb7931bcd1058d44ccd06ca8",
+        "memory/manifest.json": "07a704a3f24d4c2f8f32056f80a520acd086098ee6e586c81c24fe18e7a52488"
+      }
+    },
+    {
+      "run": "work/m711/tuning-v1/slow-3cm--tuning-reverse",
+      "case": "tuning-reverse",
+      "profile": {
+        "name": "slow-3cm",
+        "margin_m": 0.03,
+        "speed_m_s": 0.1,
+        "lookahead_s": 0.0,
+        "planning_reserve_m": 0.0,
+        "parameters": {
+          "max_occlusion_seconds": 1.0,
+          "max_frame_age": 0.1,
+          "max_interval": 0.15,
+          "speed_cap": 0.1,
+          "max_position_radius": 0.08,
+          "measurement_sigma_multiplier": 3.0,
+          "measurement_radius_floor": 0.005,
+          "innovation_slack": 0.015,
+          "max_reacquisition_distance": 0.12,
+          "robot_radius": 0.037,
+          "clearance_margin": 0.03,
+          "command_horizon": 0.05,
+          "minimum_visual_samples": 3,
+          "max_initial_velocity_radius": 0.05,
+          "arrival_radius": 0.1,
+          "arrival_speed": 0.03,
+          "visible_dwell": 0.5,
+          "proactive_horizon_seconds": 0.0,
+          "proactive_speed_samples": 10
+        }
+      },
+      "mode": 1,
+      "intent": "arrival",
+      "hard_failures": [],
+      "audit_pass": true,
+      "valid_arrival": false,
+      "intended_pass": false,
+      "control_checks": {
+        "pass": false,
+        "kind": "arrival"
+      },
+      "recorded_simulation_s": 60.0,
+      "first_valid_arrival": null,
+      "guarded_stop_episodes": 87,
+      "status_counts": {
+        "warming_up": 20,
+        "tracking_visible": 436,
+        "stopping_envelope_not_certified": 744
+      },
+      "blind_motion_violation_times": [],
+      "frames": 1200,
+      "physics_samples": 12000,
+      "verified_image_artifacts": 0,
+      "unavailable_image_frames": 1200,
+      "input_sha256": {
+        "case": "e5935ea9a0ffa2ea1dbc8b8da95087442f99a1d133c357d7fb7b994ba911b674",
+        "summary": "f7af6a1980a19f258d65256e10df75be156a7f86e742c013a7f9bc2a1789f9d6",
+        "audit": "0c29dfeda95ffbe2c03baf462cbc5632bf556bd59cec24e427a76df65c60622e",
+        "manifest": "428588b4e1e8855f2f2e21bcc3c174af4ed00b10f8b92d902dce0d53f565d209",
+        "rows": "0fe67b28c1dabe2635303fd986da2af042829d753871c1e95caecae387bdb907",
+        "commands": "dd2bc9028969abd4a1c9321526897e599b71d4e8d3e301b3254f7443e6d4fcb7",
+        "scorer": "7e59a2e9cddb0c1cff789db76105a664275f25d519c235dc1d5e69c8ac40f003",
+        "harness": "0aa52b5d27eb220e6d1f2a7b2824c479cd5cc57b7c647fc216ccb793395acc88"
+      },
+      "recorded_protocol_sha256": "18d05f69ce4dfa1720fb24848fe1e097051f19138a14430290071dfd190c8d22",
+      "source_sha256": {
+        "interactive_runtime.py": "0adf26215c88a1a95cccff027b829e75eb45eb7ea6696b85b52bf890b040fa5f",
+        "occluded_control.py": "03bf1c2717698d22d34e2f4becccb143bda9c22f3f1a66627b993bbab504ca80",
+        "control_profiles.py": "bedb0943496f29c45361f1d72334c865164d17cb3f1dab8e28b2058cafb763bb",
+        "camera.py": "e11c223599adf79551ca492643178e042cd3cca3fa71a1395549a26ef6acd11d",
+        "camera_rig.py": "4ee378b375f81c39cc710beaaff1e86caa322dbe16bbf96456404bf2469c4358",
+        "vision.py": "022513c55dd19ef7d38f78f3ea93b03996302938370fde05444359a08ee98394",
+        "genesis_backend.py": "975951b11adfe5ee808f86990fba8c3805b7120d7498510c61705915758ffec4",
+        "scan_free_space.py": "02392c9dda73c4d9f7f9a33a80f68c7de13b167fbe27c30cd2edc08f55e49343"
+      },
+      "asset_sha256": {
+        "demo.json": "b9c0a86e773abcfa67e2559ac533b7530d3b86e81d4712cc41251a89b4fb49f8",
+        "policy.zip": "97b0f47802515356262a453fb1894c6146ba9f8c66ada958daac3c8b5fe98b93",
+        "vision.pt": "483065dada5480f7ef990f526cec5f8a45c16438fb7931bcd1058d44ccd06ca8",
+        "memory/manifest.json": "07a704a3f24d4c2f8f32056f80a520acd086098ee6e586c81c24fe18e7a52488"
+      }
+    },
+    {
+      "run": "work/m711/tuning-v2/reserve-3cm--tuning-forward",
+      "case": "tuning-forward",
+      "profile": {
+        "name": "reserve-3cm",
+        "margin_m": 0.03,
+        "speed_m_s": 0.15,
+        "lookahead_s": 0.0,
+        "planning_reserve_m": 0.04,
+        "parameters": {
+          "max_occlusion_seconds": 1.0,
+          "max_frame_age": 0.1,
+          "max_interval": 0.15,
+          "speed_cap": 0.15,
+          "max_position_radius": 0.08,
+          "measurement_sigma_multiplier": 3.0,
+          "measurement_radius_floor": 0.005,
+          "innovation_slack": 0.015,
+          "max_reacquisition_distance": 0.12,
+          "robot_radius": 0.037,
+          "clearance_margin": 0.03,
+          "command_horizon": 0.05,
+          "minimum_visual_samples": 3,
+          "max_initial_velocity_radius": 0.05,
+          "arrival_radius": 0.1,
+          "arrival_speed": 0.03,
+          "visible_dwell": 0.5,
+          "proactive_horizon_seconds": 0.0,
+          "proactive_speed_samples": 10
+        }
+      },
+      "mode": 1,
+      "intent": "arrival",
+      "hard_failures": [],
+      "audit_pass": true,
+      "valid_arrival": true,
+      "intended_pass": true,
+      "control_checks": {
+        "pass": true,
+        "kind": "arrival"
+      },
+      "recorded_simulation_s": 21.7,
+      "first_valid_arrival": {
+        "time": 21.650000000000002,
+        "goal": [
+          -0.2065534089380967,
+          -0.8665560984356091
+        ],
+        "distance_m": 0.019484153554435047,
+        "speed_m_s": 0.003965305386342993,
+        "true_dwell_at_capture_s": 0.7050000000000018,
+        "visible_fresh_rgb": true,
+        "passed": true
+      },
+      "guarded_stop_episodes": 0,
+      "status_counts": {
+        "warming_up": 20,
+        "tracking_visible": 408,
+        "settling_visible": 5,
+        "arrived_visible": 1
+      },
+      "blind_motion_violation_times": [],
+      "frames": 434,
+      "physics_samples": 4340,
+      "verified_image_artifacts": 0,
+      "unavailable_image_frames": 434,
+      "input_sha256": {
+        "case": "467f1106193384fea16c05162cd4a247fb4d3fb7a9d8f26768aa1df80510d54d",
+        "summary": "21caf10538d99c45ef37035ddb8f551b921ad70f6da96ad3bab79b0b5ba52576",
+        "audit": "caf7f413208fef9524b3e2186a970fa857e1c768ba4da42312c19561cace8b73",
+        "manifest": "2347cc70a1f9e458d64dc17e13b06ec705c2d2e9ee5db240dc446bf256bc0aea",
+        "rows": "a1579875d599781619f68903b52a1f88bd711399da8f84036e34a26e2da438ba",
+        "commands": "0978e6303184f338e47d632efaff4d22adf0e680f9144b4d9f5233a8ed9631f0",
+        "scorer": "7e59a2e9cddb0c1cff789db76105a664275f25d519c235dc1d5e69c8ac40f003",
+        "harness": "72c7d2f7d15726b0e9243de4f7274ca1177e24ccf185e59b3b0544caf2c7157c"
+      },
+      "recorded_protocol_sha256": "18d05f69ce4dfa1720fb24848fe1e097051f19138a14430290071dfd190c8d22",
+      "source_sha256": {
+        "interactive_runtime.py": "0adf26215c88a1a95cccff027b829e75eb45eb7ea6696b85b52bf890b040fa5f",
+        "occluded_control.py": "03bf1c2717698d22d34e2f4becccb143bda9c22f3f1a66627b993bbab504ca80",
+        "control_profiles.py": "8be89da1b1d2d1d969feb94be9df899dedf1ba00822e8ad3cd293f53b2d3d489",
+        "camera.py": "e11c223599adf79551ca492643178e042cd3cca3fa71a1395549a26ef6acd11d",
+        "camera_rig.py": "4ee378b375f81c39cc710beaaff1e86caa322dbe16bbf96456404bf2469c4358",
+        "vision.py": "022513c55dd19ef7d38f78f3ea93b03996302938370fde05444359a08ee98394",
+        "genesis_backend.py": "975951b11adfe5ee808f86990fba8c3805b7120d7498510c61705915758ffec4",
+        "scan_free_space.py": "02392c9dda73c4d9f7f9a33a80f68c7de13b167fbe27c30cd2edc08f55e49343"
+      },
+      "asset_sha256": {
+        "demo.json": "b09ad035e649473c931b7d7751afd5b0228a601e8fabdf3de905d7e22036b2d2",
+        "policy.zip": "97b0f47802515356262a453fb1894c6146ba9f8c66ada958daac3c8b5fe98b93",
+        "vision.pt": "483065dada5480f7ef990f526cec5f8a45c16438fb7931bcd1058d44ccd06ca8",
+        "memory/manifest.json": "07a704a3f24d4c2f8f32056f80a520acd086098ee6e586c81c24fe18e7a52488"
+      }
+    },
+    {
+      "run": "work/m711/tuning-v2/reserve-3cm--tuning-reverse",
+      "case": "tuning-reverse",
+      "profile": {
+        "name": "reserve-3cm",
+        "margin_m": 0.03,
+        "speed_m_s": 0.15,
+        "lookahead_s": 0.0,
+        "planning_reserve_m": 0.04,
+        "parameters": {
+          "max_occlusion_seconds": 1.0,
+          "max_frame_age": 0.1,
+          "max_interval": 0.15,
+          "speed_cap": 0.15,
+          "max_position_radius": 0.08,
+          "measurement_sigma_multiplier": 3.0,
+          "measurement_radius_floor": 0.005,
+          "innovation_slack": 0.015,
+          "max_reacquisition_distance": 0.12,
+          "robot_radius": 0.037,
+          "clearance_margin": 0.03,
+          "command_horizon": 0.05,
+          "minimum_visual_samples": 3,
+          "max_initial_velocity_radius": 0.05,
+          "arrival_radius": 0.1,
+          "arrival_speed": 0.03,
+          "visible_dwell": 0.5,
+          "proactive_horizon_seconds": 0.0,
+          "proactive_speed_samples": 10
+        }
+      },
+      "mode": 1,
+      "intent": "arrival",
+      "hard_failures": [],
+      "audit_pass": true,
+      "valid_arrival": true,
+      "intended_pass": true,
+      "control_checks": {
+        "pass": true,
+        "kind": "arrival"
+      },
+      "recorded_simulation_s": 33.65,
+      "first_valid_arrival": {
+        "time": 33.6,
+        "goal": [
+          -1.59,
+          1.41
+        ],
+        "distance_m": 0.037991357977782136,
+        "speed_m_s": 0.003431055826863764,
+        "true_dwell_at_capture_s": 0.759999999999998,
+        "visible_fresh_rgb": true,
+        "passed": true
+      },
+      "guarded_stop_episodes": 45,
+      "status_counts": {
+        "warming_up": 20,
+        "tracking_visible": 557,
+        "stopping_envelope_not_certified": 89,
+        "settling_visible": 6,
+        "arrived_visible": 1
+      },
+      "blind_motion_violation_times": [],
+      "frames": 673,
+      "physics_samples": 6730,
+      "verified_image_artifacts": 0,
+      "unavailable_image_frames": 673,
+      "input_sha256": {
+        "case": "4776383420cf135a3358882ffe8ef7ac596c4b8be854dbbbf86cd5bb6dd4a831",
+        "summary": "d63c104f97019e1281f65524c39aae67ed6bed2258f88087641b9edb3af6699e",
+        "audit": "f167482fd9499c2efc4357dc69f1da7f66b663713b3952f71cda7dca1fac598b",
+        "manifest": "7250949c382c7488cfd1b512c42d9efc60682033468e55104b1b2e49fb0c49ef",
+        "rows": "40593678031f27d934e098f68bc5c58a1298c4624fe2b0a982894608ab60f384",
+        "commands": "13ad5c74722d7905310ecee4d5697a5827517ab59826329ca6656b84a467716a",
+        "scorer": "7e59a2e9cddb0c1cff789db76105a664275f25d519c235dc1d5e69c8ac40f003",
+        "harness": "09ba9f1a520daba8576ac4806d3d68c2f26979dab9a48b7ead9464892147ac1b"
+      },
+      "recorded_protocol_sha256": "18d05f69ce4dfa1720fb24848fe1e097051f19138a14430290071dfd190c8d22",
+      "source_sha256": {
+        "interactive_runtime.py": "0adf26215c88a1a95cccff027b829e75eb45eb7ea6696b85b52bf890b040fa5f",
+        "occluded_control.py": "03bf1c2717698d22d34e2f4becccb143bda9c22f3f1a66627b993bbab504ca80",
+        "control_profiles.py": "8be89da1b1d2d1d969feb94be9df899dedf1ba00822e8ad3cd293f53b2d3d489",
+        "camera.py": "e11c223599adf79551ca492643178e042cd3cca3fa71a1395549a26ef6acd11d",
+        "camera_rig.py": "4ee378b375f81c39cc710beaaff1e86caa322dbe16bbf96456404bf2469c4358",
+        "vision.py": "022513c55dd19ef7d38f78f3ea93b03996302938370fde05444359a08ee98394",
+        "genesis_backend.py": "975951b11adfe5ee808f86990fba8c3805b7120d7498510c61705915758ffec4",
+        "scan_free_space.py": "02392c9dda73c4d9f7f9a33a80f68c7de13b167fbe27c30cd2edc08f55e49343"
+      },
+      "asset_sha256": {
+        "demo.json": "b9c0a86e773abcfa67e2559ac533b7530d3b86e81d4712cc41251a89b4fb49f8",
+        "policy.zip": "97b0f47802515356262a453fb1894c6146ba9f8c66ada958daac3c8b5fe98b93",
+        "vision.pt": "483065dada5480f7ef990f526cec5f8a45c16438fb7931bcd1058d44ccd06ca8",
+        "memory/manifest.json": "07a704a3f24d4c2f8f32056f80a520acd086098ee6e586c81c24fe18e7a52488"
+      }
+    }
+  ],
+  "ranking": [
+    {
+      "profile": "reserve-3cm",
+      "settings": {
+        "name": "reserve-3cm",
+        "margin_m": 0.03,
+        "speed_m_s": 0.15,
+        "lookahead_s": 0.0,
+        "planning_reserve_m": 0.04,
+        "parameters": {
+          "max_occlusion_seconds": 1.0,
+          "max_frame_age": 0.1,
+          "max_interval": 0.15,
+          "speed_cap": 0.15,
+          "max_position_radius": 0.08,
+          "measurement_sigma_multiplier": 3.0,
+          "measurement_radius_floor": 0.005,
+          "innovation_slack": 0.015,
+          "max_reacquisition_distance": 0.12,
+          "robot_radius": 0.037,
+          "clearance_margin": 0.03,
+          "command_horizon": 0.05,
+          "minimum_visual_samples": 3,
+          "max_initial_velocity_radius": 0.05,
+          "arrival_radius": 0.1,
+          "arrival_speed": 0.03,
+          "visible_dwell": 0.5,
+          "proactive_horizon_seconds": 0.0,
+          "proactive_speed_samples": 10
+        }
+      },
+      "eligible": true,
+      "exclusions": [],
+      "attempted_cases": 2,
+      "expected_cases": 2,
+      "valid_goals": 2,
+      "recorded_simulation_s": 55.349999999999994,
+      "guarded_stop_episodes": 45
+    },
+    {
+      "profile": "margin-3cm",
+      "settings": {
+        "name": "margin-3cm",
+        "margin_m": 0.03,
+        "speed_m_s": 0.15,
+        "lookahead_s": 0.0,
+        "planning_reserve_m": 0.0,
+        "parameters": {
+          "max_occlusion_seconds": 1.0,
+          "max_frame_age": 0.1,
+          "max_interval": 0.15,
+          "speed_cap": 0.15,
+          "max_position_radius": 0.08,
+          "measurement_sigma_multiplier": 3.0,
+          "measurement_radius_floor": 0.005,
+          "innovation_slack": 0.015,
+          "max_reacquisition_distance": 0.12,
+          "robot_radius": 0.037,
+          "clearance_margin": 0.03,
+          "command_horizon": 0.05,
+          "minimum_visual_samples": 3,
+          "max_initial_velocity_radius": 0.05,
+          "arrival_radius": 0.1,
+          "arrival_speed": 0.03,
+          "visible_dwell": 0.5,
+          "proactive_horizon_seconds": 0.0,
+          "proactive_speed_samples": 10
+        }
+      },
+      "eligible": true,
+      "exclusions": [],
+      "attempted_cases": 2,
+      "expected_cases": 2,
+      "valid_goals": 1,
+      "recorded_simulation_s": 89.15,
+      "guarded_stop_episodes": 65
+    },
+    {
+      "profile": "slow-3cm",
+      "settings": {
+        "name": "slow-3cm",
+        "margin_m": 0.03,
+        "speed_m_s": 0.1,
+        "lookahead_s": 0.0,
+        "planning_reserve_m": 0.0,
+        "parameters": {
+          "max_occlusion_seconds": 1.0,
+          "max_frame_age": 0.1,
+          "max_interval": 0.15,
+          "speed_cap": 0.1,
+          "max_position_radius": 0.08,
+          "measurement_sigma_multiplier": 3.0,
+          "measurement_radius_floor": 0.005,
+          "innovation_slack": 0.015,
+          "max_reacquisition_distance": 0.12,
+          "robot_radius": 0.037,
+          "clearance_margin": 0.03,
+          "command_horizon": 0.05,
+          "minimum_visual_samples": 3,
+          "max_initial_velocity_radius": 0.05,
+          "arrival_radius": 0.1,
+          "arrival_speed": 0.03,
+          "visible_dwell": 0.5,
+          "proactive_horizon_seconds": 0.0,
+          "proactive_speed_samples": 10
+        }
+      },
+      "eligible": true,
+      "exclusions": [],
+      "attempted_cases": 2,
+      "expected_cases": 2,
+      "valid_goals": 1,
+      "recorded_simulation_s": 93.65,
+      "guarded_stop_episodes": 119
+    },
+    {
+      "profile": "lookahead-100ms",
+      "settings": {
+        "name": "lookahead-100ms",
+        "margin_m": 0.03,
+        "speed_m_s": 0.15,
+        "lookahead_s": 0.1,
+        "planning_reserve_m": 0.0,
+        "parameters": {
+          "max_occlusion_seconds": 1.0,
+          "max_frame_age": 0.1,
+          "max_interval": 0.15,
+          "speed_cap": 0.15,
+          "max_position_radius": 0.08,
+          "measurement_sigma_multiplier": 3.0,
+          "measurement_radius_floor": 0.005,
+          "innovation_slack": 0.015,
+          "max_reacquisition_distance": 0.12,
+          "robot_radius": 0.037,
+          "clearance_margin": 0.03,
+          "command_horizon": 0.05,
+          "minimum_visual_samples": 3,
+          "max_initial_velocity_radius": 0.05,
+          "arrival_radius": 0.1,
+          "arrival_speed": 0.03,
+          "visible_dwell": 0.5,
+          "proactive_horizon_seconds": 0.1,
+          "proactive_speed_samples": 10
+        }
+      },
+      "eligible": true,
+      "exclusions": [],
+      "attempted_cases": 2,
+      "expected_cases": 2,
+      "valid_goals": 1,
+      "recorded_simulation_s": 94.0,
+      "guarded_stop_episodes": 103
+    },
+    {
+      "profile": "margin-2cm",
+      "settings": {
+        "name": "margin-2cm",
+        "margin_m": 0.02,
+        "speed_m_s": 0.15,
+        "lookahead_s": 0.0,
+        "planning_reserve_m": 0.0,
+        "parameters": {
+          "max_occlusion_seconds": 1.0,
+          "max_frame_age": 0.1,
+          "max_interval": 0.15,
+          "speed_cap": 0.15,
+          "max_position_radius": 0.08,
+          "measurement_sigma_multiplier": 3.0,
+          "measurement_radius_floor": 0.005,
+          "innovation_slack": 0.015,
+          "max_reacquisition_distance": 0.12,
+          "robot_radius": 0.037,
+          "clearance_margin": 0.02,
+          "command_horizon": 0.05,
+          "minimum_visual_samples": 3,
+          "max_initial_velocity_radius": 0.05,
+          "arrival_radius": 0.1,
+          "arrival_speed": 0.03,
+          "visible_dwell": 0.5,
+          "proactive_horizon_seconds": 0.0,
+          "proactive_speed_samples": 10
+        }
+      },
+      "eligible": true,
+      "exclusions": [],
+      "attempted_cases": 2,
+      "expected_cases": 2,
+      "valid_goals": 1,
+      "recorded_simulation_s": 94.35,
+      "guarded_stop_episodes": 128
+    },
+    {
+      "profile": "baseline",
+      "settings": {
+        "name": "baseline",
+        "margin_m": 0.04,
+        "speed_m_s": 0.15,
+        "lookahead_s": 0.0,
+        "planning_reserve_m": 0.0,
+        "parameters": {
+          "max_occlusion_seconds": 1.0,
+          "max_frame_age": 0.1,
+          "max_interval": 0.15,
+          "speed_cap": 0.15,
+          "max_position_radius": 0.08,
+          "measurement_sigma_multiplier": 3.0,
+          "measurement_radius_floor": 0.005,
+          "innovation_slack": 0.015,
+          "max_reacquisition_distance": 0.12,
+          "robot_radius": 0.037,
+          "clearance_margin": 0.04,
+          "command_horizon": 0.05,
+          "minimum_visual_samples": 3,
+          "max_initial_velocity_radius": 0.05,
+          "arrival_radius": 0.1,
+          "arrival_speed": 0.03,
+          "visible_dwell": 0.5,
+          "proactive_horizon_seconds": 0.0,
+          "proactive_speed_samples": 10
+        }
+      },
+      "eligible": true,
+      "exclusions": [],
+      "attempted_cases": 2,
+      "expected_cases": 2,
+      "valid_goals": 1,
+      "recorded_simulation_s": 96.7,
+      "guarded_stop_episodes": 142
+    },
+    {
+      "profile": "lookahead-200ms",
+      "settings": {
+        "name": "lookahead-200ms",
+        "margin_m": 0.03,
+        "speed_m_s": 0.15,
+        "lookahead_s": 0.2,
+        "planning_reserve_m": 0.0,
+        "parameters": {
+          "max_occlusion_seconds": 1.0,
+          "max_frame_age": 0.1,
+          "max_interval": 0.15,
+          "speed_cap": 0.15,
+          "max_position_radius": 0.08,
+          "measurement_sigma_multiplier": 3.0,
+          "measurement_radius_floor": 0.005,
+          "innovation_slack": 0.015,
+          "max_reacquisition_distance": 0.12,
+          "robot_radius": 0.037,
+          "clearance_margin": 0.03,
+          "command_horizon": 0.05,
+          "minimum_visual_samples": 3,
+          "max_initial_velocity_radius": 0.05,
+          "arrival_radius": 0.1,
+          "arrival_speed": 0.03,
+          "visible_dwell": 0.5,
+          "proactive_horizon_seconds": 0.2,
+          "proactive_speed_samples": 10
+        }
+      },
+      "eligible": true,
+      "exclusions": [],
+      "attempted_cases": 2,
+      "expected_cases": 2,
+      "valid_goals": 1,
+      "recorded_simulation_s": 112.65,
+      "guarded_stop_episodes": 183
+    }
+  ],
+  "selection": {
+    "schema": "bb8.m711.selection-decision.v1",
+    "created_at_utc": "2026-09-18T01:09:45.990565+00:00",
+    "selected_profile": "reserve-3cm",
+    "profile": {
+      "name": "reserve-3cm",
+      "margin_m": 0.03,
+      "speed_m_s": 0.15,
+      "lookahead_s": 0.0,
+      "planning_reserve_m": 0.04,
+      "parameters": {
+        "max_occlusion_seconds": 1.0,
+        "max_frame_age": 0.1,
+        "max_interval": 0.15,
+        "speed_cap": 0.15,
+        "max_position_radius": 0.08,
+        "measurement_sigma_multiplier": 3.0,
+        "measurement_radius_floor": 0.005,
+        "innovation_slack": 0.015,
+        "max_reacquisition_distance": 0.12,
+        "robot_radius": 0.037,
+        "clearance_margin": 0.03,
+        "command_horizon": 0.05,
+        "minimum_visual_samples": 3,
+        "max_initial_velocity_radius": 0.05,
+        "arrival_radius": 0.1,
+        "arrival_speed": 0.03,
+        "visible_dwell": 0.5,
+        "proactive_horizon_seconds": 0.0,
+        "proactive_speed_samples": 10
+      }
+    },
+    "protocol_sha256": "18d05f69ce4dfa1720fb24848fe1e097051f19138a14430290071dfd190c8d22",
+    "tuning_result_sha256": {
+      "work/m711/tuning-v1/results.json": "f0ed24fd202703089c4061ccfe803d4e75b887f389f1714bdbe5e059a197a1db",
+      "work/m711/tuning-v2/results.json": "77f11f36e64ccb429c8e21f4c4daae14e543a821eebc71e9bd5acbbe3ea2692c"
+    },
+    "ranked_tuning_profiles": [
+      {
+        "profile": "reserve-3cm",
+        "eligible": true,
+        "valid_goals": 2,
+        "total_simulation_s": 55.349999999999994,
+        "guarded_stop_episodes": 45
+      },
+      {
+        "profile": "margin-3cm",
+        "eligible": true,
+        "valid_goals": 1,
+        "total_simulation_s": 89.15,
+        "guarded_stop_episodes": 65
+      },
+      {
+        "profile": "slow-3cm",
+        "eligible": true,
+        "valid_goals": 1,
+        "total_simulation_s": 93.65,
+        "guarded_stop_episodes": 119
+      },
+      {
+        "profile": "lookahead-100ms",
+        "eligible": true,
+        "valid_goals": 1,
+        "total_simulation_s": 94.0,
+        "guarded_stop_episodes": 103
+      },
+      {
+        "profile": "margin-2cm",
+        "eligible": true,
+        "valid_goals": 1,
+        "total_simulation_s": 94.35,
+        "guarded_stop_episodes": 128
+      },
+      {
+        "profile": "baseline",
+        "eligible": true,
+        "valid_goals": 1,
+        "total_simulation_s": 96.7,
+        "guarded_stop_episodes": 142
+      },
+      {
+        "profile": "lookahead-200ms",
+        "eligible": true,
+        "valid_goals": 1,
+        "total_simulation_s": 112.65,
+        "guarded_stop_episodes": 183
+      }
+    ],
+    "validation_inspected": false,
+    "reason": "Only profile with two independently valid tuning arrivals; original gates and hard exclusions retained."
+  },
+  "selection_checks": {
+    "frozen_tuning_result_hashes_match": true,
+    "all_tuning_audits_pinned_by_frozen_results": true,
+    "complete_tuning_ranking_matches": true,
+    "selection_was_tuning_only": true,
+    "protocol_unchanged": true,
+    "tuning_winner_unchanged": true,
+    "validation_uses_frozen_profile": true
+  },
+  "validation": [
+    {
+      "run": "work/m711/validation-v1/reserve-3cm--all-lost-mode2",
+      "case": "all-lost-mode2",
+      "profile": {
+        "name": "reserve-3cm",
+        "margin_m": 0.03,
+        "speed_m_s": 0.15,
+        "lookahead_s": 0.0,
+        "planning_reserve_m": 0.04,
+        "parameters": {
+          "max_occlusion_seconds": 1.0,
+          "max_frame_age": 0.1,
+          "max_interval": 0.15,
+          "speed_cap": 0.15,
+          "max_position_radius": 0.08,
+          "measurement_sigma_multiplier": 3.0,
+          "measurement_radius_floor": 0.005,
+          "innovation_slack": 0.015,
+          "max_reacquisition_distance": 0.12,
+          "robot_radius": 0.037,
+          "clearance_margin": 0.03,
+          "command_horizon": 0.05,
+          "minimum_visual_samples": 3,
+          "max_initial_velocity_radius": 0.05,
+          "arrival_radius": 0.1,
+          "arrival_speed": 0.03,
+          "visible_dwell": 0.5,
+          "proactive_horizon_seconds": 0.0,
+          "proactive_speed_samples": 10
+        }
+      },
+      "mode": 2,
+      "intent": "arrival",
+      "hard_failures": [],
+      "audit_pass": true,
+      "valid_arrival": true,
+      "intended_pass": true,
+      "control_checks": {
+        "loss_window_s": [
+          2.0,
+          5.0
+        ],
+        "motion_before_event": {
+          "recent_physical_motion": true,
+          "recent_nonzero_acknowledged_target": true,
+          "pass": true
+        },
+        "loss_captures": 60,
+        "expired_loss_captures": 40,
+        "all_loss_frames_missing": true,
+        "all_expired_loss_requests_zero": true,
+        "all_cameras_omitted": true,
+        "complete_loss_window": true,
+        "recovery_valid_arrival": true,
+        "observed_through_minimum_7s": true,
+        "last_expired_loss_true_speed_m_s": 0.0005445657108240969,
+        "pass": true
+      },
+      "recorded_simulation_s": 7.15,
+      "first_valid_arrival": {
+        "time": 7.1000000000000005,
+        "goal": [
+          0.24745992166936648,
+          1.3086782891625797
+        ],
+        "distance_m": 0.032643731855418474,
+        "speed_m_s": 0.0029727566419322127,
+        "true_dwell_at_capture_s": 0.8100000000000005,
+        "visible_fresh_rgb": true,
+        "passed": true
+      },
+      "guarded_stop_episodes": 0,
+      "status_counts": {
+        "warming_up": 20,
+        "tracking_visible": 55,
+        "tracking_hidden": 20,
+        "occlusion_timeout": 40,
+        "settling_visible": 7,
+        "arrived_visible": 1
+      },
+      "blind_motion_violation_times": [],
+      "frames": 143,
+      "physics_samples": 1430,
+      "verified_image_artifacts": 572,
+      "unavailable_image_frames": 0,
+      "input_sha256": {
+        "case": "04fba06eb54e0b69a679cc9fe3861c2993d3586e49ab820db72398e8a8f40f71",
+        "summary": "fbd9aea630bb4a9c52d6b4b31f706dc8670a636ceb2f423a8df15c09a54743d8",
+        "audit": "ca84cac4878697e52cfb47cde362f917a4629fa98187a20ebfb49a57d94f6341",
+        "manifest": "ed63a9456b77e7fd9afaa785abae1976765dda791a1d85f37ce22a3ea1439aa7",
+        "rows": "26f51b74a6edb84256c17f8e3f3c212900b33bae97b8a09758d2b3f0d2f1f545",
+        "commands": "d9f4b6909bc2a76c82e423f6ffb77a11b79be21b9aa2b7abee1299c85388f6bd",
+        "scorer": "7e59a2e9cddb0c1cff789db76105a664275f25d519c235dc1d5e69c8ac40f003",
+        "harness": "5c8daf1603f8719e58d05d3c82650c2f29a0aaa7bda182879c4e09fcd3dfa829"
+      },
+      "recorded_protocol_sha256": "18d05f69ce4dfa1720fb24848fe1e097051f19138a14430290071dfd190c8d22",
+      "source_sha256": {
+        "interactive_runtime.py": "0adf26215c88a1a95cccff027b829e75eb45eb7ea6696b85b52bf890b040fa5f",
+        "occluded_control.py": "03bf1c2717698d22d34e2f4becccb143bda9c22f3f1a66627b993bbab504ca80",
+        "control_profiles.py": "8be89da1b1d2d1d969feb94be9df899dedf1ba00822e8ad3cd293f53b2d3d489",
+        "camera.py": "e11c223599adf79551ca492643178e042cd3cca3fa71a1395549a26ef6acd11d",
+        "camera_rig.py": "4ee378b375f81c39cc710beaaff1e86caa322dbe16bbf96456404bf2469c4358",
+        "vision.py": "022513c55dd19ef7d38f78f3ea93b03996302938370fde05444359a08ee98394",
+        "genesis_backend.py": "975951b11adfe5ee808f86990fba8c3805b7120d7498510c61705915758ffec4",
+        "scan_free_space.py": "02392c9dda73c4d9f7f9a33a80f68c7de13b167fbe27c30cd2edc08f55e49343"
+      },
+      "asset_sha256": {
+        "demo.json": "e7239da91723e0e984bb11554a903664c5a8a9fc1c5d096ec97e8bdb872b0041",
+        "policy.zip": "97b0f47802515356262a453fb1894c6146ba9f8c66ada958daac3c8b5fe98b93",
+        "vision.pt": "483065dada5480f7ef990f526cec5f8a45c16438fb7931bcd1058d44ccd06ca8",
+        "memory/manifest.json": "07a704a3f24d4c2f8f32056f80a520acd086098ee6e586c81c24fe18e7a52488"
+      }
+    },
+    {
+      "run": "work/m711/validation-v1/reserve-3cm--center-mode2",
+      "case": "center-mode2",
+      "profile": {
+        "name": "reserve-3cm",
+        "margin_m": 0.03,
+        "speed_m_s": 0.15,
+        "lookahead_s": 0.0,
+        "planning_reserve_m": 0.04,
+        "parameters": {
+          "max_occlusion_seconds": 1.0,
+          "max_frame_age": 0.1,
+          "max_interval": 0.15,
+          "speed_cap": 0.15,
+          "max_position_radius": 0.08,
+          "measurement_sigma_multiplier": 3.0,
+          "measurement_radius_floor": 0.005,
+          "innovation_slack": 0.015,
+          "max_reacquisition_distance": 0.12,
+          "robot_radius": 0.037,
+          "clearance_margin": 0.03,
+          "command_horizon": 0.05,
+          "minimum_visual_samples": 3,
+          "max_initial_velocity_radius": 0.05,
+          "arrival_radius": 0.1,
+          "arrival_speed": 0.03,
+          "visible_dwell": 0.5,
+          "proactive_horizon_seconds": 0.0,
+          "proactive_speed_samples": 10
+        }
+      },
+      "mode": 2,
+      "intent": "arrival",
+      "hard_failures": [],
+      "audit_pass": true,
+      "valid_arrival": true,
+      "intended_pass": true,
+      "control_checks": {
+        "pass": true,
+        "kind": "arrival"
+      },
+      "recorded_simulation_s": 12.950000000000001,
+      "first_valid_arrival": {
+        "time": 12.9,
+        "goal": [
+          -0.35,
+          0.7
+        ],
+        "distance_m": 0.03512903351287104,
+        "speed_m_s": 0.00305956665731782,
+        "true_dwell_at_capture_s": 0.7949999999999999,
+        "visible_fresh_rgb": true,
+        "passed": true
+      },
+      "guarded_stop_episodes": 6,
+      "status_counts": {
+        "warming_up": 20,
+        "tracking_visible": 220,
+        "stopping_envelope_not_certified": 11,
+        "settling_visible": 7,
+        "arrived_visible": 1
+      },
+      "blind_motion_violation_times": [],
+      "frames": 259,
+      "physics_samples": 2590,
+      "verified_image_artifacts": 1036,
+      "unavailable_image_frames": 0,
+      "input_sha256": {
+        "case": "34eddac6541073f5483c84f58bedb6924e01a6ab1434421765d3971e31e8a99a",
+        "summary": "064d907cbf49135f15271e409a84965b4d32dadb7b64f27fa37c58487795ced1",
+        "audit": "f883d411f9232602121b751e72082fae87271bac384dae11e4becbd0336809c8",
+        "manifest": "8ddbf098cf121f2b6a48da01c6fa47ee63b39b2d0df652c3b73d3e11cc263536",
+        "rows": "1fb6583c65f4e2d5aacc481ee22645bfe7d5bbe200876cb8e7d6269e5fc9df1f",
+        "commands": "9dfee339bd33ea36735e7bbba480a34f016158bb372d2a2f04a6a71d36c42ef1",
+        "scorer": "7e59a2e9cddb0c1cff789db76105a664275f25d519c235dc1d5e69c8ac40f003",
+        "harness": "4ad3155b0468740b7b60901acc7eaea9e2a5312bb9d48efa4dcbd61ee4e003b5"
+      },
+      "recorded_protocol_sha256": "18d05f69ce4dfa1720fb24848fe1e097051f19138a14430290071dfd190c8d22",
+      "source_sha256": {
+        "interactive_runtime.py": "0adf26215c88a1a95cccff027b829e75eb45eb7ea6696b85b52bf890b040fa5f",
+        "occluded_control.py": "03bf1c2717698d22d34e2f4becccb143bda9c22f3f1a66627b993bbab504ca80",
+        "control_profiles.py": "8be89da1b1d2d1d969feb94be9df899dedf1ba00822e8ad3cd293f53b2d3d489",
+        "camera.py": "e11c223599adf79551ca492643178e042cd3cca3fa71a1395549a26ef6acd11d",
+        "camera_rig.py": "4ee378b375f81c39cc710beaaff1e86caa322dbe16bbf96456404bf2469c4358",
+        "vision.py": "022513c55dd19ef7d38f78f3ea93b03996302938370fde05444359a08ee98394",
+        "genesis_backend.py": "975951b11adfe5ee808f86990fba8c3805b7120d7498510c61705915758ffec4",
+        "scan_free_space.py": "02392c9dda73c4d9f7f9a33a80f68c7de13b167fbe27c30cd2edc08f55e49343"
+      },
+      "asset_sha256": {
+        "demo.json": "e4a07bcbdf760d8005dd50098a6d6980c4867e21cc36de538785e2e0a8f6fe83",
+        "policy.zip": "97b0f47802515356262a453fb1894c6146ba9f8c66ada958daac3c8b5fe98b93",
+        "vision.pt": "483065dada5480f7ef990f526cec5f8a45c16438fb7931bcd1058d44ccd06ca8",
+        "memory/manifest.json": "07a704a3f24d4c2f8f32056f80a520acd086098ee6e586c81c24fe18e7a52488"
+      }
+    },
+    {
+      "run": "work/m711/validation-v1/reserve-3cm--demo-mode1",
+      "case": "demo-mode1",
+      "profile": {
+        "name": "reserve-3cm",
+        "margin_m": 0.03,
+        "speed_m_s": 0.15,
+        "lookahead_s": 0.0,
+        "planning_reserve_m": 0.04,
+        "parameters": {
+          "max_occlusion_seconds": 1.0,
+          "max_frame_age": 0.1,
+          "max_interval": 0.15,
+          "speed_cap": 0.15,
+          "max_position_radius": 0.08,
+          "measurement_sigma_multiplier": 3.0,
+          "measurement_radius_floor": 0.005,
+          "innovation_slack": 0.015,
+          "max_reacquisition_distance": 0.12,
+          "robot_radius": 0.037,
+          "clearance_margin": 0.03,
+          "command_horizon": 0.05,
+          "minimum_visual_samples": 3,
+          "max_initial_velocity_radius": 0.05,
+          "arrival_radius": 0.1,
+          "arrival_speed": 0.03,
+          "visible_dwell": 0.5,
+          "proactive_horizon_seconds": 0.0,
+          "proactive_speed_samples": 10
+        }
+      },
+      "mode": 1,
+      "intent": "arrival",
+      "hard_failures": [],
+      "audit_pass": true,
+      "valid_arrival": true,
+      "intended_pass": true,
+      "control_checks": {
+        "pass": true,
+        "kind": "arrival"
+      },
+      "recorded_simulation_s": 5.15,
+      "first_valid_arrival": {
+        "time": 5.1000000000000005,
+        "goal": [
+          0.24745992166936648,
+          1.3086782891625797
+        ],
+        "distance_m": 0.03316278135806092,
+        "speed_m_s": 0.003557679509175608,
+        "true_dwell_at_capture_s": 0.7450000000000001,
+        "visible_fresh_rgb": true,
+        "passed": true
+      },
+      "guarded_stop_episodes": 0,
+      "status_counts": {
+        "warming_up": 20,
+        "tracking_visible": 60,
+        "tracking_hidden": 16,
+        "settling_visible": 6,
+        "arrived_visible": 1
+      },
+      "blind_motion_violation_times": [],
+      "frames": 103,
+      "physics_samples": 1030,
+      "verified_image_artifacts": 206,
+      "unavailable_image_frames": 0,
+      "input_sha256": {
+        "case": "3fdc36ca7ecf773786cc68aa70ae92eee3db9ccfa24abd749d291c3b18baba88",
+        "summary": "f94dd0de88f9b237f6e8e72b0f44c3da1d2bac93bb0fd3ce2333ca516157eac2",
+        "audit": "023ea7e47863b4aa93ce74e1f795e46e02d141d800910464e71e9172748036b7",
+        "manifest": "97b35c10d759e8b4e00191924775fdafc7c7d96f390bb75462ce2e3831ab5fa0",
+        "rows": "05e110b8d49681ff3104d4ff9d2b550fd60f0405737fec20ff83a5746c42b33c",
+        "commands": "c4b11f8538dd82e424d94f180e405371485374a3a93ca08c80b0ff4d9def9ef2",
+        "scorer": "7e59a2e9cddb0c1cff789db76105a664275f25d519c235dc1d5e69c8ac40f003",
+        "harness": "3ee22934c23934953acb4d12ff3ef40f325fcc9eee61a31db07e7a02cc01397c"
+      },
+      "recorded_protocol_sha256": "18d05f69ce4dfa1720fb24848fe1e097051f19138a14430290071dfd190c8d22",
+      "source_sha256": {
+        "interactive_runtime.py": "0adf26215c88a1a95cccff027b829e75eb45eb7ea6696b85b52bf890b040fa5f",
+        "occluded_control.py": "03bf1c2717698d22d34e2f4becccb143bda9c22f3f1a66627b993bbab504ca80",
+        "control_profiles.py": "8be89da1b1d2d1d969feb94be9df899dedf1ba00822e8ad3cd293f53b2d3d489",
+        "camera.py": "e11c223599adf79551ca492643178e042cd3cca3fa71a1395549a26ef6acd11d",
+        "camera_rig.py": "4ee378b375f81c39cc710beaaff1e86caa322dbe16bbf96456404bf2469c4358",
+        "vision.py": "022513c55dd19ef7d38f78f3ea93b03996302938370fde05444359a08ee98394",
+        "genesis_backend.py": "975951b11adfe5ee808f86990fba8c3805b7120d7498510c61705915758ffec4",
+        "scan_free_space.py": "02392c9dda73c4d9f7f9a33a80f68c7de13b167fbe27c30cd2edc08f55e49343"
+      },
+      "asset_sha256": {
+        "demo.json": "e7239da91723e0e984bb11554a903664c5a8a9fc1c5d096ec97e8bdb872b0041",
+        "policy.zip": "97b0f47802515356262a453fb1894c6146ba9f8c66ada958daac3c8b5fe98b93",
+        "vision.pt": "483065dada5480f7ef990f526cec5f8a45c16438fb7931bcd1058d44ccd06ca8",
+        "memory/manifest.json": "07a704a3f24d4c2f8f32056f80a520acd086098ee6e586c81c24fe18e7a52488"
+      }
+    },
+    {
+      "run": "work/m711/validation-v1/reserve-3cm--invalid-memory-mode2",
+      "case": "invalid-memory-mode2",
+      "profile": {
+        "name": "reserve-3cm",
+        "margin_m": 0.03,
+        "speed_m_s": 0.15,
+        "lookahead_s": 0.0,
+        "planning_reserve_m": 0.04,
+        "parameters": {
+          "max_occlusion_seconds": 1.0,
+          "max_frame_age": 0.1,
+          "max_interval": 0.15,
+          "speed_cap": 0.15,
+          "max_position_radius": 0.08,
+          "measurement_sigma_multiplier": 3.0,
+          "measurement_radius_floor": 0.005,
+          "innovation_slack": 0.015,
+          "max_reacquisition_distance": 0.12,
+          "robot_radius": 0.037,
+          "clearance_margin": 0.03,
+          "command_horizon": 0.05,
+          "minimum_visual_samples": 3,
+          "max_initial_velocity_radius": 0.05,
+          "arrival_radius": 0.1,
+          "arrival_speed": 0.03,
+          "visible_dwell": 0.5,
+          "proactive_horizon_seconds": 0.0,
+          "proactive_speed_samples": 10
+        }
+      },
+      "mode": 2,
+      "intent": "invalid",
+      "hard_failures": [],
+      "audit_pass": true,
+      "valid_arrival": false,
+      "intended_pass": true,
+      "control_checks": {
+        "event_time_s": 2.0,
+        "motion_before_event": {
+          "recent_physical_motion": true,
+          "recent_nonzero_acknowledged_target": true,
+          "pass": true
+        },
+        "after_event_frames": 70,
+        "all_postevent_zero_and_goal_cleared": true,
+        "final_true_speed_m_s": 5.990693893753408e-06,
+        "complete_observation_window": true,
+        "pass": true
+      },
+      "recorded_simulation_s": 5.5,
+      "first_valid_arrival": null,
+      "guarded_stop_episodes": 0,
+      "status_counts": {
+        "warming_up": 20,
+        "tracking_visible": 20,
+        "guarded_stop": 70
+      },
+      "blind_motion_violation_times": [],
+      "frames": 110,
+      "physics_samples": 1100,
+      "verified_image_artifacts": 440,
+      "unavailable_image_frames": 0,
+      "input_sha256": {
+        "case": "d9e60217e5c5887348d9643f8c2d218425a76a73b233d0567664ec1ae0ab5bd2",
+        "summary": "ed42b0685a135268585d43fa30c669409816c191da2d4c8893de6ad535417cfa",
+        "audit": "5cfb7a707b85476d1101068b13949ccc514ec7868b4ac801f7006ba5512b39e6",
+        "manifest": "aafca8b8b21d21e2cb7f2b0db5709af3150bb11168828473b8fb4e569f055533",
+        "rows": "da6ddf435c30e802988f3e32b6d75a474b714eb2eae5264f0b8b02df595208ff",
+        "commands": "41900bcb22b9f360537f970b1e95080e7191e8505b5d01ae10f58b9befc2a26a",
+        "scorer": "7e59a2e9cddb0c1cff789db76105a664275f25d519c235dc1d5e69c8ac40f003",
+        "harness": "68c2588652e005f3700991c2fd38b7538e494f325f521cd1b4003c2f68cbd351"
+      },
+      "recorded_protocol_sha256": "18d05f69ce4dfa1720fb24848fe1e097051f19138a14430290071dfd190c8d22",
+      "source_sha256": {
+        "interactive_runtime.py": "0adf26215c88a1a95cccff027b829e75eb45eb7ea6696b85b52bf890b040fa5f",
+        "occluded_control.py": "03bf1c2717698d22d34e2f4becccb143bda9c22f3f1a66627b993bbab504ca80",
+        "control_profiles.py": "8be89da1b1d2d1d969feb94be9df899dedf1ba00822e8ad3cd293f53b2d3d489",
+        "camera.py": "e11c223599adf79551ca492643178e042cd3cca3fa71a1395549a26ef6acd11d",
+        "camera_rig.py": "4ee378b375f81c39cc710beaaff1e86caa322dbe16bbf96456404bf2469c4358",
+        "vision.py": "022513c55dd19ef7d38f78f3ea93b03996302938370fde05444359a08ee98394",
+        "genesis_backend.py": "975951b11adfe5ee808f86990fba8c3805b7120d7498510c61705915758ffec4",
+        "scan_free_space.py": "02392c9dda73c4d9f7f9a33a80f68c7de13b167fbe27c30cd2edc08f55e49343"
+      },
+      "asset_sha256": {
+        "demo.json": "e7239da91723e0e984bb11554a903664c5a8a9fc1c5d096ec97e8bdb872b0041",
+        "policy.zip": "97b0f47802515356262a453fb1894c6146ba9f8c66ada958daac3c8b5fe98b93",
+        "vision.pt": "483065dada5480f7ef990f526cec5f8a45c16438fb7931bcd1058d44ccd06ca8",
+        "memory/manifest.json": "07a704a3f24d4c2f8f32056f80a520acd086098ee6e586c81c24fe18e7a52488"
+      }
+    },
+    {
+      "run": "work/m711/validation-v1/reserve-3cm--north-center-mode3",
+      "case": "north-center-mode3",
+      "profile": {
+        "name": "reserve-3cm",
+        "margin_m": 0.03,
+        "speed_m_s": 0.15,
+        "lookahead_s": 0.0,
+        "planning_reserve_m": 0.04,
+        "parameters": {
+          "max_occlusion_seconds": 1.0,
+          "max_frame_age": 0.1,
+          "max_interval": 0.15,
+          "speed_cap": 0.15,
+          "max_position_radius": 0.08,
+          "measurement_sigma_multiplier": 3.0,
+          "measurement_radius_floor": 0.005,
+          "innovation_slack": 0.015,
+          "max_reacquisition_distance": 0.12,
+          "robot_radius": 0.037,
+          "clearance_margin": 0.03,
+          "command_horizon": 0.05,
+          "minimum_visual_samples": 3,
+          "max_initial_velocity_radius": 0.05,
+          "arrival_radius": 0.1,
+          "arrival_speed": 0.03,
+          "visible_dwell": 0.5,
+          "proactive_horizon_seconds": 0.0,
+          "proactive_speed_samples": 10
+        }
+      },
+      "mode": 3,
+      "intent": "arrival",
+      "hard_failures": [],
+      "audit_pass": true,
+      "valid_arrival": true,
+      "intended_pass": true,
+      "control_checks": {
+        "pass": true,
+        "kind": "arrival"
+      },
+      "recorded_simulation_s": 19.75,
+      "first_valid_arrival": {
+        "time": 19.7,
+        "goal": [
+          -0.2,
+          -0.7
+        ],
+        "distance_m": 0.02280637880095805,
+        "speed_m_s": 0.003860730858391115,
+        "true_dwell_at_capture_s": 0.7149999999999999,
+        "visible_fresh_rgb": true,
+        "passed": true
+      },
+      "guarded_stop_episodes": 7,
+      "status_counts": {
+        "warming_up": 20,
+        "tracking_visible": 353,
+        "stopping_envelope_not_certified": 15,
+        "settling_visible": 6,
+        "arrived_visible": 1
+      },
+      "blind_motion_violation_times": [],
+      "frames": 395,
+      "physics_samples": 3950,
+      "verified_image_artifacts": 2370,
+      "unavailable_image_frames": 0,
+      "input_sha256": {
+        "case": "ce70ab5bc333667d30648051679ad5fc3cae39ddc4ef9a5c71a0caf2e439de9d",
+        "summary": "4bc62f0015117754aef7972e4b8fe7171acbf2e28ac6875f96615c4b3abf5a0a",
+        "audit": "8519935bead7812d60ce66dc724616ef432e5d1a322c8f37f8ed11430b372a31",
+        "manifest": "4718f1f267679a66db7cc44ee1b6e59564ee8ff1e4026a36fa08e9ad91dced9b",
+        "rows": "028e618a9402e24800adf370cd1fffbbb1ba5edf61355ff2d38b045eaa246c27",
+        "commands": "54ec35209033b011b73ff95c115df8e76b8b908a649286524ed9ed3b1556524e",
+        "scorer": "7e59a2e9cddb0c1cff789db76105a664275f25d519c235dc1d5e69c8ac40f003",
+        "harness": "3f9627919ffb40f79d157d414dca7ec11ba34c9dc3ef1c95d5474e3f487ad8e5"
+      },
+      "recorded_protocol_sha256": "18d05f69ce4dfa1720fb24848fe1e097051f19138a14430290071dfd190c8d22",
+      "source_sha256": {
+        "interactive_runtime.py": "0adf26215c88a1a95cccff027b829e75eb45eb7ea6696b85b52bf890b040fa5f",
+        "occluded_control.py": "03bf1c2717698d22d34e2f4becccb143bda9c22f3f1a66627b993bbab504ca80",
+        "control_profiles.py": "8be89da1b1d2d1d969feb94be9df899dedf1ba00822e8ad3cd293f53b2d3d489",
+        "camera.py": "e11c223599adf79551ca492643178e042cd3cca3fa71a1395549a26ef6acd11d",
+        "camera_rig.py": "4ee378b375f81c39cc710beaaff1e86caa322dbe16bbf96456404bf2469c4358",
+        "vision.py": "022513c55dd19ef7d38f78f3ea93b03996302938370fde05444359a08ee98394",
+        "genesis_backend.py": "975951b11adfe5ee808f86990fba8c3805b7120d7498510c61705915758ffec4",
+        "scan_free_space.py": "02392c9dda73c4d9f7f9a33a80f68c7de13b167fbe27c30cd2edc08f55e49343"
+      },
+      "asset_sha256": {
+        "demo.json": "dacf81e137818e7448511a3eee7eefcb3820608cee5a8bcd308000a70f750881",
+        "policy.zip": "97b0f47802515356262a453fb1894c6146ba9f8c66ada958daac3c8b5fe98b93",
+        "vision.pt": "483065dada5480f7ef990f526cec5f8a45c16438fb7931bcd1058d44ccd06ca8",
+        "memory/manifest.json": "07a704a3f24d4c2f8f32056f80a520acd086098ee6e586c81c24fe18e7a52488"
+      }
+    },
+    {
+      "run": "work/m711/validation-v1/reserve-3cm--north-mode1",
+      "case": "north-mode1",
+      "profile": {
+        "name": "reserve-3cm",
+        "margin_m": 0.03,
+        "speed_m_s": 0.15,
+        "lookahead_s": 0.0,
+        "planning_reserve_m": 0.04,
+        "parameters": {
+          "max_occlusion_seconds": 1.0,
+          "max_frame_age": 0.1,
+          "max_interval": 0.15,
+          "speed_cap": 0.15,
+          "max_position_radius": 0.08,
+          "measurement_sigma_multiplier": 3.0,
+          "measurement_radius_floor": 0.005,
+          "innovation_slack": 0.015,
+          "max_reacquisition_distance": 0.12,
+          "robot_radius": 0.037,
+          "clearance_margin": 0.03,
+          "command_horizon": 0.05,
+          "minimum_visual_samples": 3,
+          "max_initial_velocity_radius": 0.05,
+          "arrival_radius": 0.1,
+          "arrival_speed": 0.03,
+          "visible_dwell": 0.5,
+          "proactive_horizon_seconds": 0.0,
+          "proactive_speed_samples": 10
+        }
+      },
+      "mode": 1,
+      "intent": "arrival",
+      "hard_failures": [],
+      "audit_pass": true,
+      "valid_arrival": true,
+      "intended_pass": true,
+      "control_checks": {
+        "pass": true,
+        "kind": "arrival"
+      },
+      "recorded_simulation_s": 13.35,
+      "first_valid_arrival": {
+        "time": 13.3,
+        "goal": [
+          0.2,
+          1.55
+        ],
+        "distance_m": 0.021084704511511114,
+        "speed_m_s": 0.003422194224406331,
+        "true_dwell_at_capture_s": 0.7599999999999998,
+        "visible_fresh_rgb": true,
+        "passed": true
+      },
+      "guarded_stop_episodes": 0,
+      "status_counts": {
+        "warming_up": 20,
+        "tracking_visible": 239,
+        "settling_visible": 7,
+        "arrived_visible": 1
+      },
+      "blind_motion_violation_times": [],
+      "frames": 267,
+      "physics_samples": 2670,
+      "verified_image_artifacts": 534,
+      "unavailable_image_frames": 0,
+      "input_sha256": {
+        "case": "ee326f775ce83114f7ae765fb46f3e9cb196100c73ad1ec9ff489c88bef33150",
+        "summary": "bce4e4e194d8fefb918ade596245065a7ab5f8c4c148946b5d6c46c8533c262f",
+        "audit": "d3086234614fa8db8a1da2eb3d344cbfd1864a2ad411b7ece603d3a4f8e7be18",
+        "manifest": "a2180fd12300898024f5be45d36207937ddf90af51b0d6e3bebf61d36bc7662a",
+        "rows": "08b222165393461fff54f21c94ee61ee29de9368520e939fd43bc0a8391cca3a",
+        "commands": "76e3bbb8578c9d3f96bd1957d27382ea21b786860c203f85399e470a6837b5c2",
+        "scorer": "7e59a2e9cddb0c1cff789db76105a664275f25d519c235dc1d5e69c8ac40f003",
+        "harness": "6009ad3c9021c018123d2c3e34e571753af37467174c37dd23742d5008cc1aad"
+      },
+      "recorded_protocol_sha256": "18d05f69ce4dfa1720fb24848fe1e097051f19138a14430290071dfd190c8d22",
+      "source_sha256": {
+        "interactive_runtime.py": "0adf26215c88a1a95cccff027b829e75eb45eb7ea6696b85b52bf890b040fa5f",
+        "occluded_control.py": "03bf1c2717698d22d34e2f4becccb143bda9c22f3f1a66627b993bbab504ca80",
+        "control_profiles.py": "8be89da1b1d2d1d969feb94be9df899dedf1ba00822e8ad3cd293f53b2d3d489",
+        "camera.py": "e11c223599adf79551ca492643178e042cd3cca3fa71a1395549a26ef6acd11d",
+        "camera_rig.py": "4ee378b375f81c39cc710beaaff1e86caa322dbe16bbf96456404bf2469c4358",
+        "vision.py": "022513c55dd19ef7d38f78f3ea93b03996302938370fde05444359a08ee98394",
+        "genesis_backend.py": "975951b11adfe5ee808f86990fba8c3805b7120d7498510c61705915758ffec4",
+        "scan_free_space.py": "02392c9dda73c4d9f7f9a33a80f68c7de13b167fbe27c30cd2edc08f55e49343"
+      },
+      "asset_sha256": {
+        "demo.json": "6892840b8ebde4a762d8a2fa34b413c2ac2f3f63140b6cd8a58619d09b64eff8",
+        "policy.zip": "97b0f47802515356262a453fb1894c6146ba9f8c66ada958daac3c8b5fe98b93",
+        "vision.pt": "483065dada5480f7ef990f526cec5f8a45c16438fb7931bcd1058d44ccd06ca8",
+        "memory/manifest.json": "07a704a3f24d4c2f8f32056f80a520acd086098ee6e586c81c24fe18e7a52488"
+      }
+    },
+    {
+      "run": "work/m711/validation-v1/reserve-3cm--stop-mode1",
+      "case": "stop-mode1",
+      "profile": {
+        "name": "reserve-3cm",
+        "margin_m": 0.03,
+        "speed_m_s": 0.15,
+        "lookahead_s": 0.0,
+        "planning_reserve_m": 0.04,
+        "parameters": {
+          "max_occlusion_seconds": 1.0,
+          "max_frame_age": 0.1,
+          "max_interval": 0.15,
+          "speed_cap": 0.15,
+          "max_position_radius": 0.08,
+          "measurement_sigma_multiplier": 3.0,
+          "measurement_radius_floor": 0.005,
+          "innovation_slack": 0.015,
+          "max_reacquisition_distance": 0.12,
+          "robot_radius": 0.037,
+          "clearance_margin": 0.03,
+          "command_horizon": 0.05,
+          "minimum_visual_samples": 3,
+          "max_initial_velocity_radius": 0.05,
+          "arrival_radius": 0.1,
+          "arrival_speed": 0.03,
+          "visible_dwell": 0.5,
+          "proactive_horizon_seconds": 0.0,
+          "proactive_speed_samples": 10
+        }
+      },
+      "mode": 1,
+      "intent": "stop",
+      "hard_failures": [],
+      "audit_pass": true,
+      "valid_arrival": false,
+      "intended_pass": true,
+      "control_checks": {
+        "event_time_s": 2.05,
+        "motion_before_event": {
+          "recent_physical_motion": true,
+          "recent_nonzero_acknowledged_target": true,
+          "pass": true
+        },
+        "after_event_frames": 69,
+        "all_postevent_zero_and_goal_cleared": true,
+        "final_true_speed_m_s": 6.975878235864234e-06,
+        "complete_observation_window": true,
+        "pass": true
+      },
+      "recorded_simulation_s": 5.5,
+      "first_valid_arrival": null,
+      "guarded_stop_episodes": 0,
+      "status_counts": {
+        "warming_up": 20,
+        "tracking_visible": 21,
+        "stopped": 69
+      },
+      "blind_motion_violation_times": [],
+      "frames": 110,
+      "physics_samples": 1100,
+      "verified_image_artifacts": 220,
+      "unavailable_image_frames": 0,
+      "input_sha256": {
+        "case": "d2d8f50cd67ba3de0980044cc95c17ba6d92cc5516e32184ab252d7714ed8d97",
+        "summary": "317e2ed21e42c1398e7162e1666fd4977928a3252f7ec1f6b5a49232640eba38",
+        "audit": "5f18a35ccb3c5053e8c8e207ba9ede90a25d0d235fef7c544889a01f5f1d489d",
+        "manifest": "9278b67f683d008f0196218224db60b09efb9b263190521868da6fdf4f00cff2",
+        "rows": "cac7e6d63c137ca5e5489be61d31f382110a4e85583f96a6de2e55d1c2ba83bc",
+        "commands": "ffff26f685f9bf4d9de9209119dfe2f8880090c232181c2f1026b393746acdaf",
+        "scorer": "7e59a2e9cddb0c1cff789db76105a664275f25d519c235dc1d5e69c8ac40f003",
+        "harness": "fa01f61e5ed00586f1fce500ebfc4095b124f2367c81db1a149928ffdf24f9c5"
+      },
+      "recorded_protocol_sha256": "18d05f69ce4dfa1720fb24848fe1e097051f19138a14430290071dfd190c8d22",
+      "source_sha256": {
+        "interactive_runtime.py": "0adf26215c88a1a95cccff027b829e75eb45eb7ea6696b85b52bf890b040fa5f",
+        "occluded_control.py": "03bf1c2717698d22d34e2f4becccb143bda9c22f3f1a66627b993bbab504ca80",
+        "control_profiles.py": "8be89da1b1d2d1d969feb94be9df899dedf1ba00822e8ad3cd293f53b2d3d489",
+        "camera.py": "e11c223599adf79551ca492643178e042cd3cca3fa71a1395549a26ef6acd11d",
+        "camera_rig.py": "4ee378b375f81c39cc710beaaff1e86caa322dbe16bbf96456404bf2469c4358",
+        "vision.py": "022513c55dd19ef7d38f78f3ea93b03996302938370fde05444359a08ee98394",
+        "genesis_backend.py": "975951b11adfe5ee808f86990fba8c3805b7120d7498510c61705915758ffec4",
+        "scan_free_space.py": "02392c9dda73c4d9f7f9a33a80f68c7de13b167fbe27c30cd2edc08f55e49343"
+      },
+      "asset_sha256": {
+        "demo.json": "e7239da91723e0e984bb11554a903664c5a8a9fc1c5d096ec97e8bdb872b0041",
+        "policy.zip": "97b0f47802515356262a453fb1894c6146ba9f8c66ada958daac3c8b5fe98b93",
+        "vision.pt": "483065dada5480f7ef990f526cec5f8a45c16438fb7931bcd1058d44ccd06ca8",
+        "memory/manifest.json": "07a704a3f24d4c2f8f32056f80a520acd086098ee6e586c81c24fe18e7a52488"
+      }
+    }
+  ],
+  "validation_totals": {
+    "expected_cases": 7,
+    "recorded_cases": 7,
+    "intended_passes": 7,
+    "complete_unique_case_set": true,
+    "all_pass": true
+  }
+}

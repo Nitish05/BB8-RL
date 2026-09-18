@@ -82,6 +82,8 @@ class ControlSession:
         demo_goal,
         generation=0,
         planning_radius=0.10,
+        parameters=None,
+        planning_reserve=0.0,
         heartbeat_seconds=3.0,
         clock=time.monotonic,
     ):
@@ -99,11 +101,15 @@ class ControlSession:
         self.generation = int(generation)
         self.last_motion_generation = self.generation - 1
         self.planning_radius = float(planning_radius)
+        if not math.isfinite(planning_reserve) or planning_reserve < 0:
+            raise ValueError("Planning reserve must be finite and nonnegative")
+        self.planning_reserve = float(planning_reserve)
         self.grid = memory.planning_grid(self.planning_radius)
         self.route_grids = {}
         self.clock, self.heartbeat_seconds = clock, float(heartbeat_seconds)
         self.last_heartbeat = clock()
-        self.parameters, self.dynamics = OcclusionParameters(), CommandDynamics()
+        self.parameters = parameters or OcclusionParameters()
+        self.dynamics = CommandDynamics()
         self.idle_belief = CommandBelief(self.dynamics, self.parameters)
         self.controller = None
         self.goal = self.pending_goal = None
@@ -119,7 +125,9 @@ class ControlSession:
             raise ValueError("Route clearance must be finite and nonnegative")
         # Round upwards, never below the independently required capsule radius.
         # Two-centimeter buckets limit grid churn as RGB covariance changes.
-        clearance = math.ceil(max(self.planning_radius, radius) / 0.02) * 0.02
+        clearance = math.ceil(
+            max(self.planning_radius, radius + self.planning_reserve) / 0.02
+        ) * 0.02
         if clearance not in self.route_grids:
             if len(self.route_grids) >= 16:
                 self.route_grids.pop(next(iter(self.route_grids)))
@@ -290,6 +298,7 @@ class ControlSession:
                     map_version=self.map_version,
                     calibration_version=self.calibration_version,
                     route_planner=self.route_with_clearance,
+                    parameters=self.parameters,
                 )
                 self.pending_goal = None
                 self.message = (
@@ -322,6 +331,9 @@ class ControlSession:
             "stopping_envelope_not_certified": (
                 "Stopped: the next motion lacks stopping clearance. "
                 "Try a more open destination or another camera mode."
+            ),
+            "proactive_envelope_not_certified": (
+                "Stopped early to retain stopping clearance along the route."
             ),
         }.get(
             self.status,
@@ -400,6 +412,9 @@ def worker_main(config, command_queue, event_queue, stop_event):
 
         demo = validate_assets(asset_dir)
         bundle = json.loads((asset_dir / "bundle.json").read_text())
+        from .control_profiles import get_profile
+
+        profile = get_profile(config.get("control_profile"))
 
         def asset(name):
             path = (asset_dir / demo[name]).resolve()
@@ -462,6 +477,7 @@ def worker_main(config, command_queue, event_queue, stop_event):
         sources = [
             Path(__file__),
             Path(__file__).with_name("occluded_control.py"),
+            Path(__file__).with_name("control_profiles.py"),
             Path(__file__).with_name("camera.py"),
             Path(__file__).with_name("camera_rig.py"),
             Path(__file__).with_name("vision.py"),
@@ -500,6 +516,7 @@ def worker_main(config, command_queue, event_queue, stop_event):
             },
             "source_sha256": {source.name: _digest(source) for source in sources},
             "config": jsonable(config),
+            "control_profile": profile.record(),
             "map_version": map_version,
             "calibration_version": calibration_version,
             "generation": int(config.get("generation", 0)),
@@ -551,6 +568,8 @@ def worker_main(config, command_queue, event_queue, stop_event):
             demo_goal=demo["goal"],
             generation=config.get("generation", 0),
             planning_radius=demo.get("planning_radius", 0.10),
+            parameters=profile.parameters(),
+            planning_reserve=profile.planning_reserve_m,
         )
         command_trace, physics_trace, pending = [], [], []
         original_advance, original_step = env.world.backend.advance, env.world.step
