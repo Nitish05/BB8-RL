@@ -1,0 +1,193 @@
+{
+  "schema": "bb8.supplemental-scan-plan.v1",
+  "scope": "Uniform room coverage; camera positions fixed before captures and independent geometry scoring.",
+  "seed": 78100,
+  "layout_seed": 11178,
+  "parked_robot_xy": [
+    -1.75,
+    -1.75
+  ],
+  "excluded_query_ids": [
+    14,
+    17,
+    20,
+    23
+  ],
+  "resolution_wh": [
+    1280,
+    960
+  ],
+  "views": [
+    {
+      "id": "scan-024",
+      "index": 24,
+      "position": [
+        -1.0,
+        -1.0,
+        3.2
+      ],
+      "lookat": [
+        -1.0,
+        -0.95,
+        0.0
+      ]
+    },
+    {
+      "id": "scan-025",
+      "index": 25,
+      "position": [
+        0.0,
+        -1.0,
+        3.2
+      ],
+      "lookat": [
+        0.0,
+        -0.95,
+        0.0
+      ]
+    },
+    {
+      "id": "scan-026",
+      "index": 26,
+      "position": [
+        1.0,
+        -1.0,
+        3.2
+      ],
+      "lookat": [
+        1.0,
+        -0.95,
+        0.0
+      ]
+    },
+    {
+      "id": "scan-027",
+      "index": 27,
+      "position": [
+        -1.0,
+        0.0,
+        3.2
+      ],
+      "lookat": [
+        -1.0,
+        0.05,
+        0.0
+      ]
+    },
+    {
+      "id": "scan-028",
+      "index": 28,
+      "position": [
+        0.0,
+        0.0,
+        3.2
+      ],
+      "lookat": [
+        0.0,
+        0.05,
+        0.0
+      ]
+    },
+    {
+      "id": "scan-029",
+      "index": 29,
+      "position": [
+        1.0,
+        0.0,
+        3.2
+      ],
+      "lookat": [
+        1.0,
+        0.05,
+        0.0
+      ]
+    },
+    {
+      "id": "scan-030",
+      "index": 30,
+      "position": [
+        -1.0,
+        1.0,
+        3.2
+      ],
+      "lookat": [
+        -1.0,
+        1.05,
+        0.0
+      ]
+    },
+    {
+      "id": "scan-031",
+      "index": 31,
+      "position": [
+        0.0,
+        1.0,
+        3.2
+      ],
+      "lookat": [
+        0.0,
+        1.05,
+        0.0
+      ]
+    },
+    {
+      "id": "scan-032",
+      "index": 32,
+      "position": [
+        1.0,
+        1.0,
+        3.2
+      ],
+      "lookat": [
+        1.0,
+        1.05,
+        0.0
+      ]
+    },
+    {
+      "id": "scan-033",
+      "index": 33,
+      "position": [
+        -1.5,
+        -1.5,
+        4.0
+      ],
+      "lookat": [
+        -1.5,
+        -1.45,
+        0.0
+      ]
+    },
+    {
+      "id": "scan-034",
+      "index": 34,
+      "position": [
+        1.5,
+        -1.5,
+        4.0
+      ],
+      "lookat": [
+        1.5,
+        -1.45,
+        0.0
+      ]
+    },
+    {
+      "id": "scan-035",
+      "index": 35,
+      "position": [
+        0.0,
+        1.5,
+        4.0
+      ],
+      "lookat": [
+        0.0,
+        1.55,
+        0.0
+      ]
+    }
+  ],
+  "depth_used": false,
+  "segmentation_used": false,
+  "camera_moving_robot_stationary": true
+}

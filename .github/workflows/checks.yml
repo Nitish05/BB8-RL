@@ -13,7 +13,7 @@ jobs:
         with:
           python-version: '3.12'
       - name: Install pure-test dependencies
-        run: python -m pip install 'numpy>=1.26,<3' 'opencv-python-headless>=4.10,<6' 'pytest>=8.3,<9' 'ruff>=0.16,<1'
+        run: python -m pip install 'numpy>=1.26,<3' 'scipy>=1.13,<2' 'opencv-python-headless>=4.10,<6' 'Pillow>=11,<13' 'pytest>=8.3,<9' 'ruff>=0.16,<1'
       - name: Lint project
         run: ruff check src tests scripts
       - name: Test control and application contracts
@@ -23,6 +23,10 @@ jobs:
           pytest -q tests/test_interactive.py tests/test_demo_assets.py
           tests/test_control_profiles.py tests/test_control_calibration.py
           tests/test_control_benchmark_summary.py
+          tests/test_scan_free_space.py tests/test_grounded_column_memory.py
+          tests/test_map_improvement_audit.py
+          tests/test_extended_scan_memory.py tests/test_scan_revision.py
+          tests/test_dense_scan_memory.py
           tests/test_interactive_runtime.py tests/test_occluded_control.py
           tests/test_camera.py tests/test_camera_rig.py tests/test_camera_runtime.py
           -k 'not world_rejects_invalid_rig_before_loading_scene'

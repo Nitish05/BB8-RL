@@ -1,0 +1,6122 @@
+{
+  "grounded-column-v1": {
+    "schema": "bb8.map-improvement-audit.v1",
+    "scope": "Offline whole-volume safety and static connectivity; truth never repairs or enters a candidate map.",
+    "native_trial_gate_pass": false,
+    "runtime_promotion_authorized": false,
+    "protocol_sha256": "dc54257010c8b81dc155d475bbe2f3cfe7cf3ce2c4cd69eba636dff4ce4c1895",
+    "scorer_sha256": "099a47f56e7496eba1e1de8e0532f8f95b14d63044b6918cc271ce8bc7c175c0",
+    "legacy_fullvolume_scorer_sha256": "3b2e06718c8fad7da239646110d50de9296d3dc6a20def921e3dee0d51ee5ddb",
+    "baseline_manifest_sha256": "2a97e0edf3b41edad81494ada880646b4c793042c217b53bd58ee0086d40e541",
+    "candidate_manifest_sha256": "c54a80ecf2c1d08e9884f1543fc02a691b830945653c21caa8fdff62197d3938",
+    "candidate_artifact_sha256": {
+      "room-memory.json": "7b36909b772cc97bf3d16aa87c1e314b67d19befa40fb2747e80454a2289dcf2",
+      "free-grid.npz": "1a3e993dc1c9bf7e1c7a0064d9cee0c0ca4693bf9dfb8af84369d5fc003797e5",
+      "floor-masks.npz": "a83fd99165f0c82d979f968871ccc32c8b46e48e38a55a4f63b84cf03a402a9f"
+    },
+    "declared_candidate_semantics": {
+      "assumptions": [
+        "static original room",
+        "known planar floor and scan K/poses",
+        "known synthetic color candidates overlap obstacle colors; palette alone does not establish floor",
+        "opaque grounded scene objects with no overhangs",
+        "no scene change since scan",
+        "For every occupied point above the support plane, the entire vertical column down to that plane is occupied. This stronger assumption holds for vertical solid fixture boxes, not arbitrary grounded objects, rounded bodies, overhangs, or suspended objects."
+      ],
+      "free_evidence_mode": "grounded_column",
+      "free_evidence_semantics": "all pixels in expanded ground-footprint projection observed as floor in three pairwise-separated cameras; body-height freedom inferred only under the explicit floor-connected-column assumption",
+      "uncertainty_status": "projection/pixel guards are explicit assumptions, not calibrated physical coverage"
+    },
+    "full_volume": {
+      "status": "fail",
+      "directory": "<BB8-RL>/work/m712-map-improvement/grounded-column-v1",
+      "manifest_sha256": "c54a80ecf2c1d08e9884f1543fc02a691b830945653c21caa8fdff62197d3938",
+      "meaning": "Full positive-volume intersection with static boxes; no oracle correction, no physical/general guarantee.",
+      "free_voxels": 161714,
+      "occupied_voxels": 99142,
+      "retained_unknown_voxels": 339144,
+      "false_free_solid_intersection_voxels": 1104,
+      "free_solid_face_contact_voxels": 0,
+      "free_voxels_outside_room_or_below_floor": 0,
+      "free_prisms": 26399,
+      "candidate_prisms": 28032,
+      "candidate_solid_intersections": 209,
+      "free_solid_intersection_prisms": 184,
+      "free_solid_face_contact_prisms": 0,
+      "retained_unknown_prisms": 3979,
+      "free_without_two_view_support": 0,
+      "support_bits_outside_view_ids": false,
+      "heldout_query_in_map": [],
+      "free_sources_rgb_only": true,
+      "input_provenance_checks": {
+        "occupied_source_hash": false,
+        "scan-000:rgb": true,
+        "scan-000:calibration": true,
+        "scan-001:rgb": true,
+        "scan-001:calibration": true,
+        "scan-002:rgb": true,
+        "scan-002:calibration": true,
+        "scan-003:rgb": true,
+        "scan-003:calibration": true,
+        "scan-004:rgb": true,
+        "scan-004:calibration": true,
+        "scan-005:rgb": true,
+        "scan-005:calibration": true,
+        "scan-006:rgb": true,
+        "scan-006:calibration": true,
+        "scan-007:rgb": true,
+        "scan-007:calibration": true,
+        "scan-008:rgb": true,
+        "scan-008:calibration": true,
+        "scan-009:rgb": true,
+        "scan-009:calibration": true,
+        "scan-010:rgb": true,
+        "scan-010:calibration": true,
+        "scan-011:rgb": true,
+        "scan-011:calibration": true,
+        "scan-012:rgb": true,
+        "scan-012:calibration": true,
+        "scan-013:rgb": true,
+        "scan-013:calibration": true,
+        "scan-015:rgb": true,
+        "scan-015:calibration": true,
+        "scan-016:rgb": true,
+        "scan-016:calibration": true,
+        "scan-018:rgb": true,
+        "scan-018:calibration": true,
+        "scan-019:rgb": true,
+        "scan-019:calibration": true,
+        "scan-021:rgb": true,
+        "scan-021:calibration": true,
+        "scan-022:rgb": true,
+        "scan-022:calibration": true
+      },
+      "source_rgb_hashes_checked": true,
+      "body_height_m": 0.12,
+      "mapping_input_view_ids": [
+        "scan-000",
+        "scan-001",
+        "scan-002",
+        "scan-003",
+        "scan-004",
+        "scan-005",
+        "scan-006",
+        "scan-007",
+        "scan-008",
+        "scan-009",
+        "scan-010",
+        "scan-011",
+        "scan-012",
+        "scan-013",
+        "scan-015",
+        "scan-016",
+        "scan-018",
+        "scan-019",
+        "scan-021",
+        "scan-022"
+      ],
+      "failing_voxel_indices_first20": [
+        [
+          57,
+          30,
+          0
+        ],
+        [
+          57,
+          30,
+          1
+        ],
+        [
+          57,
+          30,
+          2
+        ],
+        [
+          57,
+          30,
+          3
+        ],
+        [
+          57,
+          30,
+          4
+        ],
+        [
+          57,
+          30,
+          5
+        ],
+        [
+          57,
+          31,
+          0
+        ],
+        [
+          57,
+          31,
+          1
+        ],
+        [
+          57,
+          31,
+          2
+        ],
+        [
+          57,
+          31,
+          3
+        ],
+        [
+          57,
+          31,
+          4
+        ],
+        [
+          57,
+          31,
+          5
+        ],
+        [
+          57,
+          32,
+          0
+        ],
+        [
+          57,
+          32,
+          1
+        ],
+        [
+          57,
+          32,
+          2
+        ],
+        [
+          57,
+          32,
+          3
+        ],
+        [
+          57,
+          32,
+          4
+        ],
+        [
+          57,
+          32,
+          5
+        ],
+        [
+          57,
+          33,
+          0
+        ],
+        [
+          57,
+          33,
+          1
+        ]
+      ]
+    },
+    "evidence": {
+      "checks": {
+        "all_original_input_hashes_unchanged": true,
+        "input_hash_ids_exactly_original_twenty": true,
+        "mapping_ancestry_exactly_original_twenty": true,
+        "support_ids_exactly_original_twenty": true,
+        "source_paths_present_for_rehash": true,
+        "body_height_preserved": true,
+        "resolution_preserved": true,
+        "extent_preserved": true,
+        "declared_minimum_views_preserved": true,
+        "every_free_cell_has_declared_support_count": true,
+        "projection_xy_guard_not_shrunk": true,
+        "pairwise_baseline_gate_not_shrunk": true,
+        "pairwise_angle_gate_not_shrunk": true,
+        "all_baseline_occupied_records_retained": true,
+        "all_baseline_occupied_cells_retained": true,
+        "retains_unknown_cells": true,
+        "missing_geometry_never_declared_free": true
+      },
+      "pass": true,
+      "limit": "Support bits and declared producer assumptions are checked, not interpreted as independently calibrated confidence. Producer source and RGB causality need separate review."
+    },
+    "scan_time_robot": {
+      "scope": "Supplementary scan-time movable-object assumption check; not a static obstacle inserted into online control.",
+      "body": {
+        "center_scoring_only": [
+          -1.75,
+          -1.75,
+          0.037
+        ],
+        "radius_m": 0.037,
+        "free_voxel_solid_intersections": 0,
+        "free_voxel_face_contacts": 0,
+        "free_prism_solid_intersections": 0,
+        "free_prism_face_contacts": 0,
+        "collision_object": true
+      },
+      "head": {
+        "center_scoring_only": [
+          -1.75,
+          -1.75,
+          0.083
+        ],
+        "radius_m": 0.019,
+        "free_voxel_solid_intersections": 0,
+        "free_voxel_face_contacts": 0,
+        "free_prism_solid_intersections": 0,
+        "free_prism_face_contacts": 0,
+        "collision_object": false
+      },
+      "pass": true
+    },
+    "baseline_scan_time_robot": {
+      "scope": "Supplementary scan-time movable-object assumption check; not a static obstacle inserted into online control.",
+      "body": {
+        "center_scoring_only": [
+          -1.75,
+          -1.75,
+          0.037
+        ],
+        "radius_m": 0.037,
+        "free_voxel_solid_intersections": 0,
+        "free_voxel_face_contacts": 0,
+        "free_prism_solid_intersections": 0,
+        "free_prism_face_contacts": 0,
+        "collision_object": true
+      },
+      "head": {
+        "center_scoring_only": [
+          -1.75,
+          -1.75,
+          0.083
+        ],
+        "radius_m": 0.019,
+        "free_voxel_solid_intersections": 0,
+        "free_voxel_face_contacts": 0,
+        "free_prism_solid_intersections": 0,
+        "free_prism_face_contacts": 0,
+        "collision_object": false
+      },
+      "pass": true
+    },
+    "coverage_gate": {
+      "complete_case_radius_denominator": true,
+      "reported_gap_at_required_radius": false,
+      "regressions": [],
+      "pass": false
+    },
+    "baseline_coverage": [
+      {
+        "case_id": "reported-gap",
+        "family": "reported_request",
+        "radius_m": 0.1,
+        "start_free": true,
+        "goal_free": true,
+        "connected_and_certified": false,
+        "failure_reason": "Start and goal are disconnected after footprint inflation"
+      },
+      {
+        "case_id": "reported-gap",
+        "family": "reported_request",
+        "radius_m": 0.14,
+        "start_free": true,
+        "goal_free": true,
+        "connected_and_certified": false,
+        "failure_reason": "Start and goal are disconnected after footprint inflation"
+      },
+      {
+        "case_id": "reported-gap",
+        "family": "reported_request",
+        "radius_m": 0.18,
+        "start_free": true,
+        "goal_free": true,
+        "connected_and_certified": false,
+        "failure_reason": "Start and goal are disconnected after footprint inflation"
+      },
+      {
+        "case_id": "m78-natural_0",
+        "family": "original_m78_failed",
+        "radius_m": 0.1,
+        "start_free": true,
+        "goal_free": false,
+        "connected_and_certified": false,
+        "failure_reason": "Start or goal is blocked after footprint inflation"
+      },
+      {
+        "case_id": "m78-natural_0",
+        "family": "original_m78_failed",
+        "radius_m": 0.14,
+        "start_free": true,
+        "goal_free": false,
+        "connected_and_certified": false,
+        "failure_reason": "Start or goal is blocked after footprint inflation"
+      },
+      {
+        "case_id": "m78-natural_0",
+        "family": "original_m78_failed",
+        "radius_m": 0.18,
+        "start_free": true,
+        "goal_free": false,
+        "connected_and_certified": false,
+        "failure_reason": "Start or goal is blocked after footprint inflation"
+      },
+      {
+        "case_id": "m78-natural_1",
+        "family": "original_m78_failed",
+        "radius_m": 0.1,
+        "start_free": false,
+        "goal_free": false,
+        "connected_and_certified": false,
+        "failure_reason": "Start or goal is blocked after footprint inflation"
+      },
+      {
+        "case_id": "m78-natural_1",
+        "family": "original_m78_failed",
+        "radius_m": 0.14,
+        "start_free": false,
+        "goal_free": false,
+        "connected_and_certified": false,
+        "failure_reason": "Start or goal is blocked after footprint inflation"
+      },
+      {
+        "case_id": "m78-natural_1",
+        "family": "original_m78_failed",
+        "radius_m": 0.18,
+        "start_free": false,
+        "goal_free": false,
+        "connected_and_certified": false,
+        "failure_reason": "Start or goal is blocked after footprint inflation"
+      },
+      {
+        "case_id": "m78-visible_baseline",
+        "family": "original_m78_failed",
+        "radius_m": 0.1,
+        "start_free": true,
+        "goal_free": false,
+        "connected_and_certified": false,
+        "failure_reason": "Start or goal is blocked after footprint inflation"
+      },
+      {
+        "case_id": "m78-visible_baseline",
+        "family": "original_m78_failed",
+        "radius_m": 0.14,
+        "start_free": true,
+        "goal_free": false,
+        "connected_and_certified": false,
+        "failure_reason": "Start or goal is blocked after footprint inflation"
+      },
+      {
+        "case_id": "m78-visible_baseline",
+        "family": "original_m78_failed",
+        "radius_m": 0.18,
+        "start_free": false,
+        "goal_free": false,
+        "connected_and_certified": false,
+        "failure_reason": "Start or goal is blocked after footprint inflation"
+      },
+      {
+        "case_id": "m78-brief_dropout",
+        "family": "original_m78_failed",
+        "radius_m": 0.1,
+        "start_free": true,
+        "goal_free": false,
+        "connected_and_certified": false,
+        "failure_reason": "Start or goal is blocked after footprint inflation"
+      },
+      {
+        "case_id": "m78-brief_dropout",
+        "family": "original_m78_failed",
+        "radius_m": 0.14,
+        "start_free": true,
+        "goal_free": false,
+        "connected_and_certified": false,
+        "failure_reason": "Start or goal is blocked after footprint inflation"
+      },
+      {
+        "case_id": "m78-brief_dropout",
+        "family": "original_m78_failed",
+        "radius_m": 0.18,
+        "start_free": false,
+        "goal_free": false,
+        "connected_and_certified": false,
+        "failure_reason": "Start or goal is blocked after footprint inflation"
+      },
+      {
+        "case_id": "m78-long_dropout",
+        "family": "original_m78_failed",
+        "radius_m": 0.1,
+        "start_free": true,
+        "goal_free": false,
+        "connected_and_certified": false,
+        "failure_reason": "Start or goal is blocked after footprint inflation"
+      },
+      {
+        "case_id": "m78-long_dropout",
+        "family": "original_m78_failed",
+        "radius_m": 0.14,
+        "start_free": true,
+        "goal_free": false,
+        "connected_and_certified": false,
+        "failure_reason": "Start or goal is blocked after footprint inflation"
+      },
+      {
+        "case_id": "m78-long_dropout",
+        "family": "original_m78_failed",
+        "radius_m": 0.18,
+        "start_free": false,
+        "goal_free": false,
+        "connected_and_certified": false,
+        "failure_reason": "Start or goal is blocked after footprint inflation"
+      },
+      {
+        "case_id": "m78-invalid_memory",
+        "family": "original_m78_failed",
+        "radius_m": 0.1,
+        "start_free": true,
+        "goal_free": false,
+        "connected_and_certified": false,
+        "failure_reason": "Start or goal is blocked after footprint inflation"
+      },
+      {
+        "case_id": "m78-invalid_memory",
+        "family": "original_m78_failed",
+        "radius_m": 0.14,
+        "start_free": true,
+        "goal_free": false,
+        "connected_and_certified": false,
+        "failure_reason": "Start or goal is blocked after footprint inflation"
+      },
+      {
+        "case_id": "m78-invalid_memory",
+        "family": "original_m78_failed",
+        "radius_m": 0.18,
+        "start_free": false,
+        "goal_free": false,
+        "connected_and_certified": false,
+        "failure_reason": "Start or goal is blocked after footprint inflation"
+      },
+      {
+        "case_id": "m711-north-mode1",
+        "family": "previous_validated",
+        "radius_m": 0.1,
+        "start_free": true,
+        "goal_free": true,
+        "connected_and_certified": true,
+        "route": [
+          [
+            -1.4,
+            1.25
+          ],
+          [
+            0.2,
+            1.55
+          ]
+        ],
+        "exact_segment_certificates": [
+          true
+        ],
+        "route_length_m": 1.6278820596099706
+      },
+      {
+        "case_id": "m711-north-mode1",
+        "family": "previous_validated",
+        "radius_m": 0.14,
+        "start_free": true,
+        "goal_free": true,
+        "connected_and_certified": true,
+        "route": [
+          [
+            -1.4,
+            1.25
+          ],
+          [
+            0.2,
+            1.55
+          ]
+        ],
+        "exact_segment_certificates": [
+          true
+        ],
+        "route_length_m": 1.6278820596099706
+      },
+      {
+        "case_id": "m711-north-mode1",
+        "family": "previous_validated",
+        "radius_m": 0.18,
+        "start_free": true,
+        "goal_free": true,
+        "connected_and_certified": true,
+        "route": [
+          [
+            -1.4,
+            1.25
+          ],
+          [
+            0.2,
+            1.55
+          ]
+        ],
+        "exact_segment_certificates": [
+          true
+        ],
+        "route_length_m": 1.6278820596099706
+      },
+      {
+        "case_id": "m711-center-mode2",
+        "family": "previous_validated",
+        "radius_m": 0.1,
+        "start_free": true,
+        "goal_free": true,
+        "connected_and_certified": true,
+        "route": [
+          [
+            -0.3,
+            -0.75
+          ],
+          [
+            -0.35,
+            0.7
+          ]
+        ],
+        "exact_segment_certificates": [
+          true
+        ],
+        "route_length_m": 1.4508618128546908
+      },
+      {
+        "case_id": "m711-center-mode2",
+        "family": "previous_validated",
+        "radius_m": 0.14,
+        "start_free": true,
+        "goal_free": true,
+        "connected_and_certified": true,
+        "route": [
+          [
+            -0.3,
+            -0.75
+          ],
+          [
+            -0.33000000000000007,
+            0.6699999999999999
+          ],
+          [
+            -0.35,
+            0.7
+          ]
+        ],
+        "exact_segment_certificates": [
+          true,
+          true
+        ],
+        "route_length_m": 1.4563723788095353
+      },
+      {
+        "case_id": "m711-center-mode2",
+        "family": "previous_validated",
+        "radius_m": 0.18,
+        "start_free": true,
+        "goal_free": true,
+        "connected_and_certified": true,
+        "route": [
+          [
+            -0.3,
+            -0.75
+          ],
+          [
+            -0.27,
+            -0.050000000000000044
+          ],
+          [
+            -0.35,
+            0.7
+          ]
+        ],
+        "exact_segment_certificates": [
+          true,
+          true
+        ],
+        "route_length_m": 1.4548971611494574
+      },
+      {
+        "case_id": "m711-north-center-mode3",
+        "family": "previous_validated",
+        "radius_m": 0.1,
+        "start_free": true,
+        "goal_free": true,
+        "connected_and_certified": true,
+        "route": [
+          [
+            0.2,
+            1.55
+          ],
+          [
+            -0.16999999999999993,
+            0.5500000000000003
+          ],
+          [
+            -0.2,
+            -0.7
+          ]
+        ],
+        "exact_segment_certificates": [
+          true,
+          true
+        ],
+        "route_length_m": 2.3166150771192124
+      },
+      {
+        "case_id": "m711-north-center-mode3",
+        "family": "previous_validated",
+        "radius_m": 0.14,
+        "start_free": true,
+        "goal_free": true,
+        "connected_and_certified": true,
+        "route": [
+          [
+            0.2,
+            1.55
+          ],
+          [
+            -0.20999999999999996,
+            0.5699999999999998
+          ],
+          [
+            -0.2,
+            -0.7
+          ]
+        ],
+        "exact_segment_certificates": [
+          true,
+          true
+        ],
+        "route_length_m": 2.3323481757955706
+      },
+      {
+        "case_id": "m711-north-center-mode3",
+        "family": "previous_validated",
+        "radius_m": 0.18,
+        "start_free": true,
+        "goal_free": true,
+        "connected_and_certified": true,
+        "route": [
+          [
+            0.2,
+            1.55
+          ],
+          [
+            -0.16999999999999993,
+            0.79
+          ],
+          [
+            -0.25,
+            0.5699999999999998
+          ],
+          [
+            -0.2,
+            -0.7
+          ]
+        ],
+        "exact_segment_certificates": [
+          true,
+          true,
+          true
+        ],
+        "route_length_m": 2.3503588874399606
+      },
+      {
+        "case_id": "m711-demo-mode1",
+        "family": "previous_validated",
+        "radius_m": 0.1,
+        "start_free": true,
+        "goal_free": true,
+        "connected_and_certified": true,
+        "route": [
+          [
+            0.03254007833063689,
+            0.9713217108374255
+          ],
+          [
+            0.24745992166936648,
+            1.3086782891625797
+          ]
+        ],
+        "exact_segment_certificates": [
+          true
+        ],
+        "route_length_m": 0.39999999999999997
+      },
+      {
+        "case_id": "m711-demo-mode1",
+        "family": "previous_validated",
+        "radius_m": 0.14,
+        "start_free": true,
+        "goal_free": true,
+        "connected_and_certified": true,
+        "route": [
+          [
+            0.03254007833063689,
+            0.9713217108374255
+          ],
+          [
+            0.24745992166936648,
+            1.3086782891625797
+          ]
+        ],
+        "exact_segment_certificates": [
+          true
+        ],
+        "route_length_m": 0.39999999999999997
+      },
+      {
+        "case_id": "m711-demo-mode1",
+        "family": "previous_validated",
+        "radius_m": 0.18,
+        "start_free": true,
+        "goal_free": true,
+        "connected_and_certified": true,
+        "route": [
+          [
+            0.03254007833063689,
+            0.9713217108374255
+          ],
+          [
+            0.22999999999999998,
+            1.31
+          ],
+          [
+            0.24745992166936648,
+            1.3086782891625797
+          ]
+        ],
+        "exact_segment_certificates": [
+          true,
+          true
+        ],
+        "route_length_m": 0.40954738034572186
+      }
+    ],
+    "candidate_coverage": [
+      {
+        "case_id": "reported-gap",
+        "family": "reported_request",
+        "radius_m": 0.1,
+        "start_free": true,
+        "goal_free": true,
+        "connected_and_certified": false,
+        "failure_reason": "Start and goal are disconnected after footprint inflation"
+      },
+      {
+        "case_id": "reported-gap",
+        "family": "reported_request",
+        "radius_m": 0.14,
+        "start_free": true,
+        "goal_free": true,
+        "connected_and_certified": false,
+        "failure_reason": "Start and goal are disconnected after footprint inflation"
+      },
+      {
+        "case_id": "reported-gap",
+        "family": "reported_request",
+        "radius_m": 0.18,
+        "start_free": true,
+        "goal_free": true,
+        "connected_and_certified": false,
+        "failure_reason": "Start and goal are disconnected after footprint inflation"
+      },
+      {
+        "case_id": "m78-natural_0",
+        "family": "original_m78_failed",
+        "radius_m": 0.1,
+        "start_free": true,
+        "goal_free": false,
+        "connected_and_certified": false,
+        "failure_reason": "Start or goal is blocked after footprint inflation"
+      },
+      {
+        "case_id": "m78-natural_0",
+        "family": "original_m78_failed",
+        "radius_m": 0.14,
+        "start_free": true,
+        "goal_free": false,
+        "connected_and_certified": false,
+        "failure_reason": "Start or goal is blocked after footprint inflation"
+      },
+      {
+        "case_id": "m78-natural_0",
+        "family": "original_m78_failed",
+        "radius_m": 0.18,
+        "start_free": true,
+        "goal_free": false,
+        "connected_and_certified": false,
+        "failure_reason": "Start or goal is blocked after footprint inflation"
+      },
+      {
+        "case_id": "m78-natural_1",
+        "family": "original_m78_failed",
+        "radius_m": 0.1,
+        "start_free": false,
+        "goal_free": false,
+        "connected_and_certified": false,
+        "failure_reason": "Start or goal is blocked after footprint inflation"
+      },
+      {
+        "case_id": "m78-natural_1",
+        "family": "original_m78_failed",
+        "radius_m": 0.14,
+        "start_free": false,
+        "goal_free": false,
+        "connected_and_certified": false,
+        "failure_reason": "Start or goal is blocked after footprint inflation"
+      },
+      {
+        "case_id": "m78-natural_1",
+        "family": "original_m78_failed",
+        "radius_m": 0.18,
+        "start_free": false,
+        "goal_free": false,
+        "connected_and_certified": false,
+        "failure_reason": "Start or goal is blocked after footprint inflation"
+      },
+      {
+        "case_id": "m78-visible_baseline",
+        "family": "original_m78_failed",
+        "radius_m": 0.1,
+        "start_free": true,
+        "goal_free": false,
+        "connected_and_certified": false,
+        "failure_reason": "Start or goal is blocked after footprint inflation"
+      },
+      {
+        "case_id": "m78-visible_baseline",
+        "family": "original_m78_failed",
+        "radius_m": 0.14,
+        "start_free": true,
+        "goal_free": false,
+        "connected_and_certified": false,
+        "failure_reason": "Start or goal is blocked after footprint inflation"
+      },
+      {
+        "case_id": "m78-visible_baseline",
+        "family": "original_m78_failed",
+        "radius_m": 0.18,
+        "start_free": false,
+        "goal_free": false,
+        "connected_and_certified": false,
+        "failure_reason": "Start or goal is blocked after footprint inflation"
+      },
+      {
+        "case_id": "m78-brief_dropout",
+        "family": "original_m78_failed",
+        "radius_m": 0.1,
+        "start_free": true,
+        "goal_free": false,
+        "connected_and_certified": false,
+        "failure_reason": "Start or goal is blocked after footprint inflation"
+      },
+      {
+        "case_id": "m78-brief_dropout",
+        "family": "original_m78_failed",
+        "radius_m": 0.14,
+        "start_free": true,
+        "goal_free": false,
+        "connected_and_certified": false,
+        "failure_reason": "Start or goal is blocked after footprint inflation"
+      },
+      {
+        "case_id": "m78-brief_dropout",
+        "family": "original_m78_failed",
+        "radius_m": 0.18,
+        "start_free": false,
+        "goal_free": false,
+        "connected_and_certified": false,
+        "failure_reason": "Start or goal is blocked after footprint inflation"
+      },
+      {
+        "case_id": "m78-long_dropout",
+        "family": "original_m78_failed",
+        "radius_m": 0.1,
+        "start_free": true,
+        "goal_free": false,
+        "connected_and_certified": false,
+        "failure_reason": "Start or goal is blocked after footprint inflation"
+      },
+      {
+        "case_id": "m78-long_dropout",
+        "family": "original_m78_failed",
+        "radius_m": 0.14,
+        "start_free": true,
+        "goal_free": false,
+        "connected_and_certified": false,
+        "failure_reason": "Start or goal is blocked after footprint inflation"
+      },
+      {
+        "case_id": "m78-long_dropout",
+        "family": "original_m78_failed",
+        "radius_m": 0.18,
+        "start_free": false,
+        "goal_free": false,
+        "connected_and_certified": false,
+        "failure_reason": "Start or goal is blocked after footprint inflation"
+      },
+      {
+        "case_id": "m78-invalid_memory",
+        "family": "original_m78_failed",
+        "radius_m": 0.1,
+        "start_free": true,
+        "goal_free": false,
+        "connected_and_certified": false,
+        "failure_reason": "Start or goal is blocked after footprint inflation"
+      },
+      {
+        "case_id": "m78-invalid_memory",
+        "family": "original_m78_failed",
+        "radius_m": 0.14,
+        "start_free": true,
+        "goal_free": false,
+        "connected_and_certified": false,
+        "failure_reason": "Start or goal is blocked after footprint inflation"
+      },
+      {
+        "case_id": "m78-invalid_memory",
+        "family": "original_m78_failed",
+        "radius_m": 0.18,
+        "start_free": false,
+        "goal_free": false,
+        "connected_and_certified": false,
+        "failure_reason": "Start or goal is blocked after footprint inflation"
+      },
+      {
+        "case_id": "m711-north-mode1",
+        "family": "previous_validated",
+        "radius_m": 0.1,
+        "start_free": true,
+        "goal_free": true,
+        "connected_and_certified": true,
+        "route": [
+          [
+            -1.4,
+            1.25
+          ],
+          [
+            0.2,
+            1.55
+          ]
+        ],
+        "exact_segment_certificates": [
+          true
+        ],
+        "route_length_m": 1.6278820596099706
+      },
+      {
+        "case_id": "m711-north-mode1",
+        "family": "previous_validated",
+        "radius_m": 0.14,
+        "start_free": true,
+        "goal_free": true,
+        "connected_and_certified": true,
+        "route": [
+          [
+            -1.4,
+            1.25
+          ],
+          [
+            0.2,
+            1.55
+          ]
+        ],
+        "exact_segment_certificates": [
+          true
+        ],
+        "route_length_m": 1.6278820596099706
+      },
+      {
+        "case_id": "m711-north-mode1",
+        "family": "previous_validated",
+        "radius_m": 0.18,
+        "start_free": true,
+        "goal_free": true,
+        "connected_and_certified": true,
+        "route": [
+          [
+            -1.4,
+            1.25
+          ],
+          [
+            0.2,
+            1.55
+          ]
+        ],
+        "exact_segment_certificates": [
+          true
+        ],
+        "route_length_m": 1.6278820596099706
+      },
+      {
+        "case_id": "m711-center-mode2",
+        "family": "previous_validated",
+        "radius_m": 0.1,
+        "start_free": true,
+        "goal_free": true,
+        "connected_and_certified": true,
+        "route": [
+          [
+            -0.3,
+            -0.75
+          ],
+          [
+            -0.35,
+            0.7
+          ]
+        ],
+        "exact_segment_certificates": [
+          true
+        ],
+        "route_length_m": 1.4508618128546908
+      },
+      {
+        "case_id": "m711-center-mode2",
+        "family": "previous_validated",
+        "radius_m": 0.14,
+        "start_free": true,
+        "goal_free": true,
+        "connected_and_certified": true,
+        "route": [
+          [
+            -0.3,
+            -0.75
+          ],
+          [
+            -0.35,
+            0.7
+          ]
+        ],
+        "exact_segment_certificates": [
+          true
+        ],
+        "route_length_m": 1.4508618128546908
+      },
+      {
+        "case_id": "m711-center-mode2",
+        "family": "previous_validated",
+        "radius_m": 0.18,
+        "start_free": true,
+        "goal_free": true,
+        "connected_and_certified": true,
+        "route": [
+          [
+            -0.3,
+            -0.75
+          ],
+          [
+            -0.35,
+            0.7
+          ]
+        ],
+        "exact_segment_certificates": [
+          true
+        ],
+        "route_length_m": 1.4508618128546908
+      },
+      {
+        "case_id": "m711-north-center-mode3",
+        "family": "previous_validated",
+        "radius_m": 0.1,
+        "start_free": true,
+        "goal_free": true,
+        "connected_and_certified": true,
+        "route": [
+          [
+            0.2,
+            1.55
+          ],
+          [
+            -0.1299999999999999,
+            0.5300000000000002
+          ],
+          [
+            -0.2,
+            -0.7
+          ]
+        ],
+        "exact_segment_certificates": [
+          true,
+          true
+        ],
+        "route_length_m": 2.3040443628140945
+      },
+      {
+        "case_id": "m711-north-center-mode3",
+        "family": "previous_validated",
+        "radius_m": 0.14,
+        "start_free": true,
+        "goal_free": true,
+        "connected_and_certified": true,
+        "route": [
+          [
+            0.2,
+            1.55
+          ],
+          [
+            -0.16999999999999993,
+            0.5500000000000003
+          ],
+          [
+            -0.2,
+            -0.7
+          ]
+        ],
+        "exact_segment_certificates": [
+          true,
+          true
+        ],
+        "route_length_m": 2.3166150771192124
+      },
+      {
+        "case_id": "m711-north-center-mode3",
+        "family": "previous_validated",
+        "radius_m": 0.18,
+        "start_free": true,
+        "goal_free": true,
+        "connected_and_certified": true,
+        "route": [
+          [
+            0.2,
+            1.55
+          ],
+          [
+            -0.20999999999999996,
+            0.5699999999999998
+          ],
+          [
+            -0.2,
+            -0.7
+          ]
+        ],
+        "exact_segment_certificates": [
+          true,
+          true
+        ],
+        "route_length_m": 2.3323481757955706
+      },
+      {
+        "case_id": "m711-demo-mode1",
+        "family": "previous_validated",
+        "radius_m": 0.1,
+        "start_free": true,
+        "goal_free": true,
+        "connected_and_certified": true,
+        "route": [
+          [
+            0.03254007833063689,
+            0.9713217108374255
+          ],
+          [
+            0.24745992166936648,
+            1.3086782891625797
+          ]
+        ],
+        "exact_segment_certificates": [
+          true
+        ],
+        "route_length_m": 0.39999999999999997
+      },
+      {
+        "case_id": "m711-demo-mode1",
+        "family": "previous_validated",
+        "radius_m": 0.14,
+        "start_free": true,
+        "goal_free": true,
+        "connected_and_certified": true,
+        "route": [
+          [
+            0.03254007833063689,
+            0.9713217108374255
+          ],
+          [
+            0.24745992166936648,
+            1.3086782891625797
+          ]
+        ],
+        "exact_segment_certificates": [
+          true
+        ],
+        "route_length_m": 0.39999999999999997
+      },
+      {
+        "case_id": "m711-demo-mode1",
+        "family": "previous_validated",
+        "radius_m": 0.18,
+        "start_free": true,
+        "goal_free": true,
+        "connected_and_certified": true,
+        "route": [
+          [
+            0.03254007833063689,
+            0.9713217108374255
+          ],
+          [
+            0.22999999999999998,
+            1.31
+          ],
+          [
+            0.24745992166936648,
+            1.3086782891625797
+          ]
+        ],
+        "exact_segment_certificates": [
+          true,
+          true
+        ],
+        "route_length_m": 0.40954738034572186
+      }
+    ],
+    "coverage_counts": {
+      "0.1": {
+        "case_denominator": 11,
+        "unique_endpoint_denominator": 8,
+        "baseline_connected": 4,
+        "candidate_connected": 4
+      },
+      "0.14": {
+        "case_denominator": 11,
+        "unique_endpoint_denominator": 8,
+        "baseline_connected": 4,
+        "candidate_connected": 4
+      },
+      "0.18": {
+        "case_denominator": 11,
+        "unique_endpoint_denominator": 8,
+        "baseline_connected": 4,
+        "candidate_connected": 4
+      }
+    },
+    "limitations": [
+      "All geometry is authored synthetic scorer data; no unseen-room or physical safety claim.",
+      "Six original failed case IDs include four identical endpoint pairs. Map connectivity cannot establish their original occlusion/control intent.",
+      "The reported route and regression endpoints are development cases; all candidate attempts and failed gates must remain visible.",
+      "A passing static gate permits fresh bounded native trials only; original arrival, visibility, actuation and failure-control gates remain mandatory."
+    ]
+  },
+  "full-prism-extended-v1": {
+    "schema": "bb8.map-improvement-audit.v1",
+    "scope": "Offline whole-volume safety and static connectivity; truth never repairs or enters a candidate map.",
+    "native_trial_gate_pass": false,
+    "runtime_promotion_authorized": false,
+    "protocol_sha256": "685719fdda1ae9afb4179e1cbc664f4b65741a56157dd9a9e7af4bb9848fdbcc",
+    "scorer_sha256": "5ee081ae65799be664d8a6fc4968bc673084cb7d4477ffd9fe209106dfcab514",
+    "legacy_fullvolume_scorer_sha256": "3b2e06718c8fad7da239646110d50de9296d3dc6a20def921e3dee0d51ee5ddb",
+    "baseline_manifest_sha256": "2a97e0edf3b41edad81494ada880646b4c793042c217b53bd58ee0086d40e541",
+    "candidate_manifest_sha256": "26f9453a7b34dfc2174596707bab252acb60589bea8dee12a0b92b1a67d40843",
+    "candidate_artifact_sha256": {
+      "room-memory.json": "063027769c7103e06657173267e261cdebdd9b4e60a20750dec7839a76cc41b9",
+      "free-grid.npz": "e947d2fa2194648d90cb27032e475e7ae485e35b845eb69e31341a0a50bf1ccb",
+      "floor-masks.npz": "72dd2164cc2e8a9d66a5862082804546a6a1f5eb0ed800290253147233833351",
+      "supplemental-learned-masks.npz": "d6bb35ffdb2df167db29c8d17e069cc7ca7f4e064faef324ee81a340939244a6"
+    },
+    "declared_candidate_semantics": {
+      "assumptions": [
+        "static original room",
+        "known planar floor and scan K/poses",
+        "known synthetic color candidates overlap obstacle colors; palette alone does not establish floor",
+        "opaque grounded scene objects with no overhangs",
+        "no scene change since scan"
+      ],
+      "free_evidence_mode": "full_prism",
+      "free_evidence_semantics": "all pixels in whole expanded body-prism projection superset observed as floor in the declared minimum separated cameras",
+      "uncertainty_status": "projection/pixel guards are explicit assumptions, not calibrated physical coverage"
+    },
+    "full_volume": {
+      "status": "fail",
+      "directory": "<BB8-RL>/work/m712-map-improvement/full-prism-extended-v1",
+      "manifest_sha256": "26f9453a7b34dfc2174596707bab252acb60589bea8dee12a0b92b1a67d40843",
+      "meaning": "Full positive-volume intersection with static boxes; no oracle correction, no physical/general guarantee.",
+      "free_voxels": 166385,
+      "occupied_voxels": 99142,
+      "retained_unknown_voxels": 334473,
+      "false_free_solid_intersection_voxels": 18,
+      "free_solid_face_contact_voxels": 0,
+      "free_voxels_outside_room_or_below_floor": 0,
+      "free_prisms": 27515,
+      "candidate_prisms": 28210,
+      "candidate_solid_intersections": 7,
+      "free_solid_intersection_prisms": 3,
+      "free_solid_face_contact_prisms": 0,
+      "retained_unknown_prisms": 2863,
+      "free_without_two_view_support": 0,
+      "support_bits_outside_view_ids": false,
+      "heldout_query_in_map": [],
+      "free_sources_rgb_only": true,
+      "input_provenance_checks": {
+        "occupied_source_hash": true,
+        "occupied_volumes_preserved": true,
+        "occupied_objects_preserved": true,
+        "scan-000:rgb": true,
+        "scan-000:calibration": true,
+        "scan-001:rgb": true,
+        "scan-001:calibration": true,
+        "scan-002:rgb": true,
+        "scan-002:calibration": true,
+        "scan-003:rgb": true,
+        "scan-003:calibration": true,
+        "scan-004:rgb": true,
+        "scan-004:calibration": true,
+        "scan-005:rgb": true,
+        "scan-005:calibration": true,
+        "scan-006:rgb": true,
+        "scan-006:calibration": true,
+        "scan-007:rgb": true,
+        "scan-007:calibration": true,
+        "scan-008:rgb": true,
+        "scan-008:calibration": true,
+        "scan-009:rgb": true,
+        "scan-009:calibration": true,
+        "scan-010:rgb": true,
+        "scan-010:calibration": true,
+        "scan-011:rgb": true,
+        "scan-011:calibration": true,
+        "scan-012:rgb": true,
+        "scan-012:calibration": true,
+        "scan-013:rgb": true,
+        "scan-013:calibration": true,
+        "scan-015:rgb": true,
+        "scan-015:calibration": true,
+        "scan-016:rgb": true,
+        "scan-016:calibration": true,
+        "scan-018:rgb": true,
+        "scan-018:calibration": true,
+        "scan-019:rgb": true,
+        "scan-019:calibration": true,
+        "scan-021:rgb": true,
+        "scan-021:calibration": true,
+        "scan-022:rgb": true,
+        "scan-022:calibration": true,
+        "scan-024:rgb": true,
+        "scan-024:calibration": true,
+        "scan-025:rgb": true,
+        "scan-025:calibration": true,
+        "scan-026:rgb": true,
+        "scan-026:calibration": true,
+        "scan-027:rgb": true,
+        "scan-027:calibration": true,
+        "scan-028:rgb": true,
+        "scan-028:calibration": true,
+        "scan-029:rgb": true,
+        "scan-029:calibration": true,
+        "scan-030:rgb": true,
+        "scan-030:calibration": true,
+        "scan-031:rgb": true,
+        "scan-031:calibration": true,
+        "scan-032:rgb": true,
+        "scan-032:calibration": true,
+        "scan-033:rgb": true,
+        "scan-033:calibration": true,
+        "scan-034:rgb": true,
+        "scan-034:calibration": true,
+        "scan-035:rgb": true,
+        "scan-035:calibration": true
+      },
+      "source_rgb_hashes_checked": true,
+      "body_height_m": 0.12,
+      "mapping_input_view_ids": [
+        "scan-000",
+        "scan-001",
+        "scan-002",
+        "scan-003",
+        "scan-004",
+        "scan-005",
+        "scan-006",
+        "scan-007",
+        "scan-008",
+        "scan-009",
+        "scan-010",
+        "scan-011",
+        "scan-012",
+        "scan-013",
+        "scan-015",
+        "scan-016",
+        "scan-018",
+        "scan-019",
+        "scan-021",
+        "scan-022",
+        "scan-024",
+        "scan-025",
+        "scan-026",
+        "scan-027",
+        "scan-028",
+        "scan-029",
+        "scan-030",
+        "scan-031",
+        "scan-032",
+        "scan-033",
+        "scan-034",
+        "scan-035"
+      ],
+      "failing_voxel_indices_first20": [
+        [
+          149,
+          138,
+          0
+        ],
+        [
+          149,
+          138,
+          1
+        ],
+        [
+          149,
+          138,
+          2
+        ],
+        [
+          149,
+          138,
+          3
+        ],
+        [
+          149,
+          138,
+          4
+        ],
+        [
+          149,
+          138,
+          5
+        ],
+        [
+          149,
+          144,
+          0
+        ],
+        [
+          149,
+          144,
+          1
+        ],
+        [
+          149,
+          144,
+          2
+        ],
+        [
+          149,
+          144,
+          3
+        ],
+        [
+          149,
+          144,
+          4
+        ],
+        [
+          149,
+          144,
+          5
+        ],
+        [
+          149,
+          145,
+          0
+        ],
+        [
+          149,
+          145,
+          1
+        ],
+        [
+          149,
+          145,
+          2
+        ],
+        [
+          149,
+          145,
+          3
+        ],
+        [
+          149,
+          145,
+          4
+        ],
+        [
+          149,
+          145,
+          5
+        ]
+      ],
+      "legacy_twenty_view_status": "fail",
+      "explicit_membership_exception": "The legacy scorer hardcodes20sourceviews. Only that count restriction is superseded by exact declared32view membership; all legacy positive-volume, occupied-source, source-hash, support, unknown and excluded-query checks remain mandatory."
+    },
+    "evidence": {
+      "checks": {
+        "all_original_input_hashes_unchanged": true,
+        "all_allowed_input_hashes_match_binding": true,
+        "input_hash_ids_exactly_allowed": true,
+        "mapping_ancestry_exactly_allowed": true,
+        "support_ids_exactly_allowed": true,
+        "source_paths_present_for_rehash": true,
+        "body_height_preserved": true,
+        "resolution_preserved": true,
+        "extent_preserved": true,
+        "declared_minimum_views_preserved": true,
+        "every_free_cell_has_declared_support_count": true,
+        "projection_xy_guard_not_shrunk": true,
+        "pairwise_baseline_gate_not_shrunk": true,
+        "pairwise_angle_gate_not_shrunk": true,
+        "all_baseline_occupied_records_retained": true,
+        "all_baseline_occupied_cells_retained": true,
+        "retains_unknown_cells": true,
+        "missing_geometry_never_declared_free": true
+      },
+      "pass": true,
+      "limit": "Support bits and declared producer assumptions are checked, not interpreted as independently calibrated confidence. Producer source and RGB causality need separate review."
+    },
+    "scan_time_robot": {
+      "scope": "Supplementary scan-time movable-object assumption check; not a static obstacle inserted into online control.",
+      "body": {
+        "center_scoring_only": [
+          -1.75,
+          -1.75,
+          0.037
+        ],
+        "radius_m": 0.037,
+        "free_voxel_solid_intersections": 0,
+        "free_voxel_face_contacts": 0,
+        "free_prism_solid_intersections": 0,
+        "free_prism_face_contacts": 0,
+        "collision_object": true
+      },
+      "head": {
+        "center_scoring_only": [
+          -1.75,
+          -1.75,
+          0.083
+        ],
+        "radius_m": 0.019,
+        "free_voxel_solid_intersections": 0,
+        "free_voxel_face_contacts": 0,
+        "free_prism_solid_intersections": 0,
+        "free_prism_face_contacts": 0,
+        "collision_object": false
+      },
+      "pass": true
+    },
+    "capture_binding": {
+      "binding_sha256": "895d7e548aafb445c9b609b2e556851b198825e7a377ae80dfa02f3506a15a20",
+      "checks": {
+        "supplemental_protocol_hash": true,
+        "capture_plan_hash": true,
+        "capture_manifest_hash": true,
+        "complete_capture": true,
+        "capture_input_hashes_match_binding": true,
+        "exact_allowed_ids": true,
+        "exact_supplemental_ids": true,
+        "task_hash": true,
+        "capture_source_snapshot": true,
+        "capture_plan_snapshot": true,
+        "no_depth_or_segmentation": true,
+        "original_robot_pose": true,
+        "full_prism_evidence": true,
+        "candidate_capture_manifest_hash": true,
+        "candidate_capture_plan_hash": true,
+        "captured:scan-000:rgb": true,
+        "captured:scan-000:calibration": true,
+        "captured:scan-001:rgb": true,
+        "captured:scan-001:calibration": true,
+        "captured:scan-002:rgb": true,
+        "captured:scan-002:calibration": true,
+        "captured:scan-003:rgb": true,
+        "captured:scan-003:calibration": true,
+        "captured:scan-004:rgb": true,
+        "captured:scan-004:calibration": true,
+        "captured:scan-005:rgb": true,
+        "captured:scan-005:calibration": true,
+        "captured:scan-006:rgb": true,
+        "captured:scan-006:calibration": true,
+        "captured:scan-007:rgb": true,
+        "captured:scan-007:calibration": true,
+        "captured:scan-008:rgb": true,
+        "captured:scan-008:calibration": true,
+        "captured:scan-009:rgb": true,
+        "captured:scan-009:calibration": true,
+        "captured:scan-010:rgb": true,
+        "captured:scan-010:calibration": true,
+        "captured:scan-011:rgb": true,
+        "captured:scan-011:calibration": true,
+        "captured:scan-012:rgb": true,
+        "captured:scan-012:calibration": true,
+        "captured:scan-013:rgb": true,
+        "captured:scan-013:calibration": true,
+        "captured:scan-015:rgb": true,
+        "captured:scan-015:calibration": true,
+        "captured:scan-016:rgb": true,
+        "captured:scan-016:calibration": true,
+        "captured:scan-018:rgb": true,
+        "captured:scan-018:calibration": true,
+        "captured:scan-019:rgb": true,
+        "captured:scan-019:calibration": true,
+        "captured:scan-021:rgb": true,
+        "captured:scan-021:calibration": true,
+        "captured:scan-022:rgb": true,
+        "captured:scan-022:calibration": true,
+        "captured:scan-024:rgb": true,
+        "captured:scan-024:calibration": true,
+        "captured:scan-025:rgb": true,
+        "captured:scan-025:calibration": true,
+        "captured:scan-026:rgb": true,
+        "captured:scan-026:calibration": true,
+        "captured:scan-027:rgb": true,
+        "captured:scan-027:calibration": true,
+        "captured:scan-028:rgb": true,
+        "captured:scan-028:calibration": true,
+        "captured:scan-029:rgb": true,
+        "captured:scan-029:calibration": true,
+        "captured:scan-030:rgb": true,
+        "captured:scan-030:calibration": true,
+        "captured:scan-031:rgb": true,
+        "captured:scan-031:calibration": true,
+        "captured:scan-032:rgb": true,
+        "captured:scan-032:calibration": true,
+        "captured:scan-033:rgb": true,
+        "captured:scan-033:calibration": true,
+        "captured:scan-034:rgb": true,
+        "captured:scan-034:calibration": true,
+        "captured:scan-035:rgb": true,
+        "captured:scan-035:calibration": true,
+        "pose_matches_plan:scan-024": true,
+        "pose_matches_plan:scan-025": true,
+        "pose_matches_plan:scan-026": true,
+        "pose_matches_plan:scan-027": true,
+        "pose_matches_plan:scan-028": true,
+        "pose_matches_plan:scan-029": true,
+        "pose_matches_plan:scan-030": true,
+        "pose_matches_plan:scan-031": true,
+        "pose_matches_plan:scan-032": true,
+        "pose_matches_plan:scan-033": true,
+        "pose_matches_plan:scan-034": true,
+        "pose_matches_plan:scan-035": true,
+        "mask_ids_exactly_allowed": true,
+        "original_mask_unchanged:scan-000": true,
+        "original_mask_unchanged:scan-001": true,
+        "original_mask_unchanged:scan-002": true,
+        "original_mask_unchanged:scan-003": true,
+        "original_mask_unchanged:scan-004": true,
+        "original_mask_unchanged:scan-005": true,
+        "original_mask_unchanged:scan-006": true,
+        "original_mask_unchanged:scan-007": true,
+        "original_mask_unchanged:scan-008": true,
+        "original_mask_unchanged:scan-009": true,
+        "original_mask_unchanged:scan-010": true,
+        "original_mask_unchanged:scan-011": true,
+        "original_mask_unchanged:scan-012": true,
+        "original_mask_unchanged:scan-013": true,
+        "original_mask_unchanged:scan-015": true,
+        "original_mask_unchanged:scan-016": true,
+        "original_mask_unchanged:scan-018": true,
+        "original_mask_unchanged:scan-019": true,
+        "original_mask_unchanged:scan-021": true,
+        "original_mask_unchanged:scan-022": true
+      },
+      "pass": true
+    },
+    "baseline_scan_time_robot": {
+      "scope": "Supplementary scan-time movable-object assumption check; not a static obstacle inserted into online control.",
+      "body": {
+        "center_scoring_only": [
+          -1.75,
+          -1.75,
+          0.037
+        ],
+        "radius_m": 0.037,
+        "free_voxel_solid_intersections": 0,
+        "free_voxel_face_contacts": 0,
+        "free_prism_solid_intersections": 0,
+        "free_prism_face_contacts": 0,
+        "collision_object": true
+      },
+      "head": {
+        "center_scoring_only": [
+          -1.75,
+          -1.75,
+          0.083
+        ],
+        "radius_m": 0.019,
+        "free_voxel_solid_intersections": 0,
+        "free_voxel_face_contacts": 0,
+        "free_prism_solid_intersections": 0,
+        "free_prism_face_contacts": 0,
+        "collision_object": false
+      },
+      "pass": true
+    },
+    "coverage_gate": {
+      "complete_case_radius_denominator": true,
+      "reported_gap_at_required_radius": true,
+      "regressions": [],
+      "pass": true
+    },
+    "baseline_coverage": [
+      {
+        "case_id": "reported-gap",
+        "family": "reported_request",
+        "radius_m": 0.1,
+        "start_free": true,
+        "goal_free": true,
+        "connected_and_certified": false,
+        "failure_reason": "Start and goal are disconnected after footprint inflation"
+      },
+      {
+        "case_id": "reported-gap",
+        "family": "reported_request",
+        "radius_m": 0.14,
+        "start_free": true,
+        "goal_free": true,
+        "connected_and_certified": false,
+        "failure_reason": "Start and goal are disconnected after footprint inflation"
+      },
+      {
+        "case_id": "reported-gap",
+        "family": "reported_request",
+        "radius_m": 0.18,
+        "start_free": true,
+        "goal_free": true,
+        "connected_and_certified": false,
+        "failure_reason": "Start and goal are disconnected after footprint inflation"
+      },
+      {
+        "case_id": "m78-natural_0",
+        "family": "original_m78_failed",
+        "radius_m": 0.1,
+        "start_free": true,
+        "goal_free": false,
+        "connected_and_certified": false,
+        "failure_reason": "Start or goal is blocked after footprint inflation"
+      },
+      {
+        "case_id": "m78-natural_0",
+        "family": "original_m78_failed",
+        "radius_m": 0.14,
+        "start_free": true,
+        "goal_free": false,
+        "connected_and_certified": false,
+        "failure_reason": "Start or goal is blocked after footprint inflation"
+      },
+      {
+        "case_id": "m78-natural_0",
+        "family": "original_m78_failed",
+        "radius_m": 0.18,
+        "start_free": true,
+        "goal_free": false,
+        "connected_and_certified": false,
+        "failure_reason": "Start or goal is blocked after footprint inflation"
+      },
+      {
+        "case_id": "m78-natural_1",
+        "family": "original_m78_failed",
+        "radius_m": 0.1,
+        "start_free": false,
+        "goal_free": false,
+        "connected_and_certified": false,
+        "failure_reason": "Start or goal is blocked after footprint inflation"
+      },
+      {
+        "case_id": "m78-natural_1",
+        "family": "original_m78_failed",
+        "radius_m": 0.14,
+        "start_free": false,
+        "goal_free": false,
+        "connected_and_certified": false,
+        "failure_reason": "Start or goal is blocked after footprint inflation"
+      },
+      {
+        "case_id": "m78-natural_1",
+        "family": "original_m78_failed",
+        "radius_m": 0.18,
+        "start_free": false,
+        "goal_free": false,
+        "connected_and_certified": false,
+        "failure_reason": "Start or goal is blocked after footprint inflation"
+      },
+      {
+        "case_id": "m78-visible_baseline",
+        "family": "original_m78_failed",
+        "radius_m": 0.1,
+        "start_free": true,
+        "goal_free": false,
+        "connected_and_certified": false,
+        "failure_reason": "Start or goal is blocked after footprint inflation"
+      },
+      {
+        "case_id": "m78-visible_baseline",
+        "family": "original_m78_failed",
+        "radius_m": 0.14,
+        "start_free": true,
+        "goal_free": false,
+        "connected_and_certified": false,
+        "failure_reason": "Start or goal is blocked after footprint inflation"
+      },
+      {
+        "case_id": "m78-visible_baseline",
+        "family": "original_m78_failed",
+        "radius_m": 0.18,
+        "start_free": false,
+        "goal_free": false,
+        "connected_and_certified": false,
+        "failure_reason": "Start or goal is blocked after footprint inflation"
+      },
+      {
+        "case_id": "m78-brief_dropout",
+        "family": "original_m78_failed",
+        "radius_m": 0.1,
+        "start_free": true,
+        "goal_free": false,
+        "connected_and_certified": false,
+        "failure_reason": "Start or goal is blocked after footprint inflation"
+      },
+      {
+        "case_id": "m78-brief_dropout",
+        "family": "original_m78_failed",
+        "radius_m": 0.14,
+        "start_free": true,
+        "goal_free": false,
+        "connected_and_certified": false,
+        "failure_reason": "Start or goal is blocked after footprint inflation"
+      },
+      {
+        "case_id": "m78-brief_dropout",
+        "family": "original_m78_failed",
+        "radius_m": 0.18,
+        "start_free": false,
+        "goal_free": false,
+        "connected_and_certified": false,
+        "failure_reason": "Start or goal is blocked after footprint inflation"
+      },
+      {
+        "case_id": "m78-long_dropout",
+        "family": "original_m78_failed",
+        "radius_m": 0.1,
+        "start_free": true,
+        "goal_free": false,
+        "connected_and_certified": false,
+        "failure_reason": "Start or goal is blocked after footprint inflation"
+      },
+      {
+        "case_id": "m78-long_dropout",
+        "family": "original_m78_failed",
+        "radius_m": 0.14,
+        "start_free": true,
+        "goal_free": false,
+        "connected_and_certified": false,
+        "failure_reason": "Start or goal is blocked after footprint inflation"
+      },
+      {
+        "case_id": "m78-long_dropout",
+        "family": "original_m78_failed",
+        "radius_m": 0.18,
+        "start_free": false,
+        "goal_free": false,
+        "connected_and_certified": false,
+        "failure_reason": "Start or goal is blocked after footprint inflation"
+      },
+      {
+        "case_id": "m78-invalid_memory",
+        "family": "original_m78_failed",
+        "radius_m": 0.1,
+        "start_free": true,
+        "goal_free": false,
+        "connected_and_certified": false,
+        "failure_reason": "Start or goal is blocked after footprint inflation"
+      },
+      {
+        "case_id": "m78-invalid_memory",
+        "family": "original_m78_failed",
+        "radius_m": 0.14,
+        "start_free": true,
+        "goal_free": false,
+        "connected_and_certified": false,
+        "failure_reason": "Start or goal is blocked after footprint inflation"
+      },
+      {
+        "case_id": "m78-invalid_memory",
+        "family": "original_m78_failed",
+        "radius_m": 0.18,
+        "start_free": false,
+        "goal_free": false,
+        "connected_and_certified": false,
+        "failure_reason": "Start or goal is blocked after footprint inflation"
+      },
+      {
+        "case_id": "m711-north-mode1",
+        "family": "previous_validated",
+        "radius_m": 0.1,
+        "start_free": true,
+        "goal_free": true,
+        "connected_and_certified": true,
+        "route": [
+          [
+            -1.4,
+            1.25
+          ],
+          [
+            0.2,
+            1.55
+          ]
+        ],
+        "exact_segment_certificates": [
+          true
+        ],
+        "route_length_m": 1.6278820596099706
+      },
+      {
+        "case_id": "m711-north-mode1",
+        "family": "previous_validated",
+        "radius_m": 0.14,
+        "start_free": true,
+        "goal_free": true,
+        "connected_and_certified": true,
+        "route": [
+          [
+            -1.4,
+            1.25
+          ],
+          [
+            0.2,
+            1.55
+          ]
+        ],
+        "exact_segment_certificates": [
+          true
+        ],
+        "route_length_m": 1.6278820596099706
+      },
+      {
+        "case_id": "m711-north-mode1",
+        "family": "previous_validated",
+        "radius_m": 0.18,
+        "start_free": true,
+        "goal_free": true,
+        "connected_and_certified": true,
+        "route": [
+          [
+            -1.4,
+            1.25
+          ],
+          [
+            0.2,
+            1.55
+          ]
+        ],
+        "exact_segment_certificates": [
+          true
+        ],
+        "route_length_m": 1.6278820596099706
+      },
+      {
+        "case_id": "m711-center-mode2",
+        "family": "previous_validated",
+        "radius_m": 0.1,
+        "start_free": true,
+        "goal_free": true,
+        "connected_and_certified": true,
+        "route": [
+          [
+            -0.3,
+            -0.75
+          ],
+          [
+            -0.35,
+            0.7
+          ]
+        ],
+        "exact_segment_certificates": [
+          true
+        ],
+        "route_length_m": 1.4508618128546908
+      },
+      {
+        "case_id": "m711-center-mode2",
+        "family": "previous_validated",
+        "radius_m": 0.14,
+        "start_free": true,
+        "goal_free": true,
+        "connected_and_certified": true,
+        "route": [
+          [
+            -0.3,
+            -0.75
+          ],
+          [
+            -0.33000000000000007,
+            0.6699999999999999
+          ],
+          [
+            -0.35,
+            0.7
+          ]
+        ],
+        "exact_segment_certificates": [
+          true,
+          true
+        ],
+        "route_length_m": 1.4563723788095353
+      },
+      {
+        "case_id": "m711-center-mode2",
+        "family": "previous_validated",
+        "radius_m": 0.18,
+        "start_free": true,
+        "goal_free": true,
+        "connected_and_certified": true,
+        "route": [
+          [
+            -0.3,
+            -0.75
+          ],
+          [
+            -0.27,
+            -0.050000000000000044
+          ],
+          [
+            -0.35,
+            0.7
+          ]
+        ],
+        "exact_segment_certificates": [
+          true,
+          true
+        ],
+        "route_length_m": 1.4548971611494574
+      },
+      {
+        "case_id": "m711-north-center-mode3",
+        "family": "previous_validated",
+        "radius_m": 0.1,
+        "start_free": true,
+        "goal_free": true,
+        "connected_and_certified": true,
+        "route": [
+          [
+            0.2,
+            1.55
+          ],
+          [
+            -0.16999999999999993,
+            0.5500000000000003
+          ],
+          [
+            -0.2,
+            -0.7
+          ]
+        ],
+        "exact_segment_certificates": [
+          true,
+          true
+        ],
+        "route_length_m": 2.3166150771192124
+      },
+      {
+        "case_id": "m711-north-center-mode3",
+        "family": "previous_validated",
+        "radius_m": 0.14,
+        "start_free": true,
+        "goal_free": true,
+        "connected_and_certified": true,
+        "route": [
+          [
+            0.2,
+            1.55
+          ],
+          [
+            -0.20999999999999996,
+            0.5699999999999998
+          ],
+          [
+            -0.2,
+            -0.7
+          ]
+        ],
+        "exact_segment_certificates": [
+          true,
+          true
+        ],
+        "route_length_m": 2.3323481757955706
+      },
+      {
+        "case_id": "m711-north-center-mode3",
+        "family": "previous_validated",
+        "radius_m": 0.18,
+        "start_free": true,
+        "goal_free": true,
+        "connected_and_certified": true,
+        "route": [
+          [
+            0.2,
+            1.55
+          ],
+          [
+            -0.16999999999999993,
+            0.79
+          ],
+          [
+            -0.25,
+            0.5699999999999998
+          ],
+          [
+            -0.2,
+            -0.7
+          ]
+        ],
+        "exact_segment_certificates": [
+          true,
+          true,
+          true
+        ],
+        "route_length_m": 2.3503588874399606
+      },
+      {
+        "case_id": "m711-demo-mode1",
+        "family": "previous_validated",
+        "radius_m": 0.1,
+        "start_free": true,
+        "goal_free": true,
+        "connected_and_certified": true,
+        "route": [
+          [
+            0.03254007833063689,
+            0.9713217108374255
+          ],
+          [
+            0.24745992166936648,
+            1.3086782891625797
+          ]
+        ],
+        "exact_segment_certificates": [
+          true
+        ],
+        "route_length_m": 0.39999999999999997
+      },
+      {
+        "case_id": "m711-demo-mode1",
+        "family": "previous_validated",
+        "radius_m": 0.14,
+        "start_free": true,
+        "goal_free": true,
+        "connected_and_certified": true,
+        "route": [
+          [
+            0.03254007833063689,
+            0.9713217108374255
+          ],
+          [
+            0.24745992166936648,
+            1.3086782891625797
+          ]
+        ],
+        "exact_segment_certificates": [
+          true
+        ],
+        "route_length_m": 0.39999999999999997
+      },
+      {
+        "case_id": "m711-demo-mode1",
+        "family": "previous_validated",
+        "radius_m": 0.18,
+        "start_free": true,
+        "goal_free": true,
+        "connected_and_certified": true,
+        "route": [
+          [
+            0.03254007833063689,
+            0.9713217108374255
+          ],
+          [
+            0.22999999999999998,
+            1.31
+          ],
+          [
+            0.24745992166936648,
+            1.3086782891625797
+          ]
+        ],
+        "exact_segment_certificates": [
+          true,
+          true
+        ],
+        "route_length_m": 0.40954738034572186
+      }
+    ],
+    "candidate_coverage": [
+      {
+        "case_id": "reported-gap",
+        "family": "reported_request",
+        "radius_m": 0.1,
+        "start_free": true,
+        "goal_free": true,
+        "connected_and_certified": true,
+        "route": [
+          [
+            -0.14399692380052198,
+            -0.062045330040032036
+          ],
+          [
+            0.6299999999999999,
+            -0.6699999999999999
+          ],
+          [
+            0.77,
+            -0.71
+          ],
+          [
+            1.3554502369668247,
+            -0.8446386255924172
+          ]
+        ],
+        "exact_segment_certificates": [
+          true,
+          true,
+          true
+        ],
+        "route_length_m": 1.7305501841227735
+      },
+      {
+        "case_id": "reported-gap",
+        "family": "reported_request",
+        "radius_m": 0.14,
+        "start_free": true,
+        "goal_free": true,
+        "connected_and_certified": true,
+        "route": [
+          [
+            -0.14399692380052198,
+            -0.062045330040032036
+          ],
+          [
+            0.010000000000000231,
+            -1.35
+          ],
+          [
+            0.08999999999999986,
+            -1.55
+          ],
+          [
+            0.18999999999999995,
+            -1.63
+          ],
+          [
+            0.5699999999999998,
+            -1.71
+          ],
+          [
+            0.8700000000000001,
+            -1.71
+          ],
+          [
+            1.1099999999999999,
+            -1.65
+          ],
+          [
+            1.21,
+            -1.53
+          ],
+          [
+            1.3554502369668247,
+            -0.8446386255924172
+          ]
+        ],
+        "exact_segment_certificates": [
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "route_length_m": 3.4331440654646594
+      },
+      {
+        "case_id": "reported-gap",
+        "family": "reported_request",
+        "radius_m": 0.18,
+        "start_free": true,
+        "goal_free": true,
+        "connected_and_certified": false,
+        "failure_reason": "Start and goal are disconnected after footprint inflation"
+      },
+      {
+        "case_id": "m78-natural_0",
+        "family": "original_m78_failed",
+        "radius_m": 0.1,
+        "start_free": true,
+        "goal_free": true,
+        "connected_and_certified": true,
+        "route": [
+          [
+            -0.3643,
+            0.3957
+          ],
+          [
+            0.4843,
+            1.2443
+          ]
+        ],
+        "exact_segment_certificates": [
+          true
+        ],
+        "route_length_m": 1.2001016290298085
+      },
+      {
+        "case_id": "m78-natural_0",
+        "family": "original_m78_failed",
+        "radius_m": 0.14,
+        "start_free": true,
+        "goal_free": true,
+        "connected_and_certified": true,
+        "route": [
+          [
+            -0.3643,
+            0.3957
+          ],
+          [
+            0.43000000000000016,
+            1.23
+          ],
+          [
+            0.4843,
+            1.2443
+          ]
+        ],
+        "exact_segment_certificates": [
+          true,
+          true
+        ],
+        "route_length_m": 1.2080927985546175
+      },
+      {
+        "case_id": "m78-natural_0",
+        "family": "original_m78_failed",
+        "radius_m": 0.18,
+        "start_free": true,
+        "goal_free": true,
+        "connected_and_certified": true,
+        "route": [
+          [
+            -0.3643,
+            0.3957
+          ],
+          [
+            0.1299999999999999,
+            0.9900000000000002
+          ],
+          [
+            0.4843,
+            1.2443
+          ]
+        ],
+        "exact_segment_certificates": [
+          true,
+          true
+        ],
+        "route_length_m": 1.2091131871145127
+      },
+      {
+        "case_id": "m78-natural_1",
+        "family": "original_m78_failed",
+        "radius_m": 0.1,
+        "start_free": false,
+        "goal_free": true,
+        "connected_and_certified": false,
+        "failure_reason": "Start or goal is blocked after footprint inflation"
+      },
+      {
+        "case_id": "m78-natural_1",
+        "family": "original_m78_failed",
+        "radius_m": 0.14,
+        "start_free": false,
+        "goal_free": true,
+        "connected_and_certified": false,
+        "failure_reason": "Start or goal is blocked after footprint inflation"
+      },
+      {
+        "case_id": "m78-natural_1",
+        "family": "original_m78_failed",
+        "radius_m": 0.18,
+        "start_free": false,
+        "goal_free": true,
+        "connected_and_certified": false,
+        "failure_reason": "Start or goal is blocked after footprint inflation"
+      },
+      {
+        "case_id": "m78-visible_baseline",
+        "family": "original_m78_failed",
+        "radius_m": 0.1,
+        "start_free": true,
+        "goal_free": true,
+        "connected_and_certified": true,
+        "route": [
+          [
+            -0.3,
+            -1.72
+          ],
+          [
+            0.6,
+            -1.72
+          ]
+        ],
+        "exact_segment_certificates": [
+          true
+        ],
+        "route_length_m": 0.8999999999999999
+      },
+      {
+        "case_id": "m78-visible_baseline",
+        "family": "original_m78_failed",
+        "radius_m": 0.14,
+        "start_free": true,
+        "goal_free": true,
+        "connected_and_certified": false,
+        "failure_reason": "Route endpoints cannot connect safely to the grid"
+      },
+      {
+        "case_id": "m78-visible_baseline",
+        "family": "original_m78_failed",
+        "radius_m": 0.18,
+        "start_free": false,
+        "goal_free": false,
+        "connected_and_certified": false,
+        "failure_reason": "Start or goal is blocked after footprint inflation"
+      },
+      {
+        "case_id": "m78-brief_dropout",
+        "family": "original_m78_failed",
+        "radius_m": 0.1,
+        "start_free": true,
+        "goal_free": true,
+        "connected_and_certified": true,
+        "route": [
+          [
+            -0.3,
+            -1.72
+          ],
+          [
+            0.6,
+            -1.72
+          ]
+        ],
+        "exact_segment_certificates": [
+          true
+        ],
+        "route_length_m": 0.8999999999999999
+      },
+      {
+        "case_id": "m78-brief_dropout",
+        "family": "original_m78_failed",
+        "radius_m": 0.14,
+        "start_free": true,
+        "goal_free": true,
+        "connected_and_certified": false,
+        "failure_reason": "Route endpoints cannot connect safely to the grid"
+      },
+      {
+        "case_id": "m78-brief_dropout",
+        "family": "original_m78_failed",
+        "radius_m": 0.18,
+        "start_free": false,
+        "goal_free": false,
+        "connected_and_certified": false,
+        "failure_reason": "Start or goal is blocked after footprint inflation"
+      },
+      {
+        "case_id": "m78-long_dropout",
+        "family": "original_m78_failed",
+        "radius_m": 0.1,
+        "start_free": true,
+        "goal_free": true,
+        "connected_and_certified": true,
+        "route": [
+          [
+            -0.3,
+            -1.72
+          ],
+          [
+            0.6,
+            -1.72
+          ]
+        ],
+        "exact_segment_certificates": [
+          true
+        ],
+        "route_length_m": 0.8999999999999999
+      },
+      {
+        "case_id": "m78-long_dropout",
+        "family": "original_m78_failed",
+        "radius_m": 0.14,
+        "start_free": true,
+        "goal_free": true,
+        "connected_and_certified": false,
+        "failure_reason": "Route endpoints cannot connect safely to the grid"
+      },
+      {
+        "case_id": "m78-long_dropout",
+        "family": "original_m78_failed",
+        "radius_m": 0.18,
+        "start_free": false,
+        "goal_free": false,
+        "connected_and_certified": false,
+        "failure_reason": "Start or goal is blocked after footprint inflation"
+      },
+      {
+        "case_id": "m78-invalid_memory",
+        "family": "original_m78_failed",
+        "radius_m": 0.1,
+        "start_free": true,
+        "goal_free": true,
+        "connected_and_certified": true,
+        "route": [
+          [
+            -0.3,
+            -1.72
+          ],
+          [
+            0.6,
+            -1.72
+          ]
+        ],
+        "exact_segment_certificates": [
+          true
+        ],
+        "route_length_m": 0.8999999999999999
+      },
+      {
+        "case_id": "m78-invalid_memory",
+        "family": "original_m78_failed",
+        "radius_m": 0.14,
+        "start_free": true,
+        "goal_free": true,
+        "connected_and_certified": false,
+        "failure_reason": "Route endpoints cannot connect safely to the grid"
+      },
+      {
+        "case_id": "m78-invalid_memory",
+        "family": "original_m78_failed",
+        "radius_m": 0.18,
+        "start_free": false,
+        "goal_free": false,
+        "connected_and_certified": false,
+        "failure_reason": "Start or goal is blocked after footprint inflation"
+      },
+      {
+        "case_id": "m711-north-mode1",
+        "family": "previous_validated",
+        "radius_m": 0.1,
+        "start_free": true,
+        "goal_free": true,
+        "connected_and_certified": true,
+        "route": [
+          [
+            -1.4,
+            1.25
+          ],
+          [
+            0.2,
+            1.55
+          ]
+        ],
+        "exact_segment_certificates": [
+          true
+        ],
+        "route_length_m": 1.6278820596099706
+      },
+      {
+        "case_id": "m711-north-mode1",
+        "family": "previous_validated",
+        "radius_m": 0.14,
+        "start_free": true,
+        "goal_free": true,
+        "connected_and_certified": true,
+        "route": [
+          [
+            -1.4,
+            1.25
+          ],
+          [
+            0.2,
+            1.55
+          ]
+        ],
+        "exact_segment_certificates": [
+          true
+        ],
+        "route_length_m": 1.6278820596099706
+      },
+      {
+        "case_id": "m711-north-mode1",
+        "family": "previous_validated",
+        "radius_m": 0.18,
+        "start_free": true,
+        "goal_free": true,
+        "connected_and_certified": true,
+        "route": [
+          [
+            -1.4,
+            1.25
+          ],
+          [
+            0.2,
+            1.55
+          ]
+        ],
+        "exact_segment_certificates": [
+          true
+        ],
+        "route_length_m": 1.6278820596099706
+      },
+      {
+        "case_id": "m711-center-mode2",
+        "family": "previous_validated",
+        "radius_m": 0.1,
+        "start_free": true,
+        "goal_free": true,
+        "connected_and_certified": true,
+        "route": [
+          [
+            -0.3,
+            -0.75
+          ],
+          [
+            -0.35,
+            0.7
+          ]
+        ],
+        "exact_segment_certificates": [
+          true
+        ],
+        "route_length_m": 1.4508618128546908
+      },
+      {
+        "case_id": "m711-center-mode2",
+        "family": "previous_validated",
+        "radius_m": 0.14,
+        "start_free": true,
+        "goal_free": true,
+        "connected_and_certified": true,
+        "route": [
+          [
+            -0.3,
+            -0.75
+          ],
+          [
+            -0.35,
+            0.7
+          ]
+        ],
+        "exact_segment_certificates": [
+          true
+        ],
+        "route_length_m": 1.4508618128546908
+      },
+      {
+        "case_id": "m711-center-mode2",
+        "family": "previous_validated",
+        "radius_m": 0.18,
+        "start_free": true,
+        "goal_free": true,
+        "connected_and_certified": true,
+        "route": [
+          [
+            -0.3,
+            -0.75
+          ],
+          [
+            -0.35,
+            0.7
+          ]
+        ],
+        "exact_segment_certificates": [
+          true
+        ],
+        "route_length_m": 1.4508618128546908
+      },
+      {
+        "case_id": "m711-north-center-mode3",
+        "family": "previous_validated",
+        "radius_m": 0.1,
+        "start_free": true,
+        "goal_free": true,
+        "connected_and_certified": true,
+        "route": [
+          [
+            0.2,
+            1.55
+          ],
+          [
+            -0.2,
+            -0.7
+          ]
+        ],
+        "exact_segment_certificates": [
+          true
+        ],
+        "route_length_m": 2.2852789764052877
+      },
+      {
+        "case_id": "m711-north-center-mode3",
+        "family": "previous_validated",
+        "radius_m": 0.14,
+        "start_free": true,
+        "goal_free": true,
+        "connected_and_certified": true,
+        "route": [
+          [
+            0.2,
+            1.55
+          ],
+          [
+            0.04999999999999982,
+            0.75
+          ],
+          [
+            -0.2,
+            -0.7
+          ]
+        ],
+        "exact_segment_certificates": [
+          true,
+          true
+        ],
+        "route_length_m": 2.2853349267612018
+      },
+      {
+        "case_id": "m711-north-center-mode3",
+        "family": "previous_validated",
+        "radius_m": 0.18,
+        "start_free": true,
+        "goal_free": true,
+        "connected_and_certified": true,
+        "route": [
+          [
+            0.2,
+            1.55
+          ],
+          [
+            0.010000000000000231,
+            0.77
+          ],
+          [
+            -0.2,
+            -0.7
+          ]
+        ],
+        "exact_segment_certificates": [
+          true,
+          true
+        ],
+        "route_length_m": 2.2877318139488017
+      },
+      {
+        "case_id": "m711-demo-mode1",
+        "family": "previous_validated",
+        "radius_m": 0.1,
+        "start_free": true,
+        "goal_free": true,
+        "connected_and_certified": true,
+        "route": [
+          [
+            0.03254007833063689,
+            0.9713217108374255
+          ],
+          [
+            0.24745992166936648,
+            1.3086782891625797
+          ]
+        ],
+        "exact_segment_certificates": [
+          true
+        ],
+        "route_length_m": 0.39999999999999997
+      },
+      {
+        "case_id": "m711-demo-mode1",
+        "family": "previous_validated",
+        "radius_m": 0.14,
+        "start_free": true,
+        "goal_free": true,
+        "connected_and_certified": true,
+        "route": [
+          [
+            0.03254007833063689,
+            0.9713217108374255
+          ],
+          [
+            0.24745992166936648,
+            1.3086782891625797
+          ]
+        ],
+        "exact_segment_certificates": [
+          true
+        ],
+        "route_length_m": 0.39999999999999997
+      },
+      {
+        "case_id": "m711-demo-mode1",
+        "family": "previous_validated",
+        "radius_m": 0.18,
+        "start_free": true,
+        "goal_free": true,
+        "connected_and_certified": true,
+        "route": [
+          [
+            0.03254007833063689,
+            0.9713217108374255
+          ],
+          [
+            0.24745992166936648,
+            1.3086782891625797
+          ]
+        ],
+        "exact_segment_certificates": [
+          true
+        ],
+        "route_length_m": 0.39999999999999997
+      }
+    ],
+    "coverage_counts": {
+      "0.1": {
+        "case_denominator": 11,
+        "unique_endpoint_denominator": 8,
+        "baseline_connected": 4,
+        "candidate_connected": 10
+      },
+      "0.14": {
+        "case_denominator": 11,
+        "unique_endpoint_denominator": 8,
+        "baseline_connected": 4,
+        "candidate_connected": 6
+      },
+      "0.18": {
+        "case_denominator": 11,
+        "unique_endpoint_denominator": 8,
+        "baseline_connected": 4,
+        "candidate_connected": 5
+      }
+    },
+    "limitations": [
+      "All geometry is authored synthetic scorer data; no unseen-room or physical safety claim.",
+      "Six original failed case IDs include four identical endpoint pairs. Map connectivity cannot establish their original occlusion/control intent.",
+      "The reported route and regression endpoints are development cases; all candidate attempts and failed gates must remain visible.",
+      "A passing static gate permits fresh bounded native trials only; original arrival, visibility, actuation and failure-control gates remain mandatory."
+    ]
+  },
+  "full-prism-extended-v2": {
+    "schema": "bb8.map-improvement-audit.v1",
+    "scope": "Offline whole-volume safety and static connectivity; truth never repairs or enters a candidate map.",
+    "native_trial_gate_pass": false,
+    "runtime_promotion_authorized": false,
+    "protocol_sha256": "685719fdda1ae9afb4179e1cbc664f4b65741a56157dd9a9e7af4bb9848fdbcc",
+    "scorer_sha256": "6f92a2c9fa8f71585978b09c549bd8b54111904514357fbc807e3c6bd16d026d",
+    "legacy_fullvolume_scorer_sha256": "3b2e06718c8fad7da239646110d50de9296d3dc6a20def921e3dee0d51ee5ddb",
+    "baseline_manifest_sha256": "2a97e0edf3b41edad81494ada880646b4c793042c217b53bd58ee0086d40e541",
+    "candidate_manifest_sha256": "4d1f01b8a797061a43f75d0102d5dbfbcb418777546d9d7f98daba0cdd65e08f",
+    "candidate_artifact_sha256": {
+      "room-memory.json": "8070677bcf98c5ad09501839a39479c80464af735c2b3a7af8aa4f8ff5fa58d6",
+      "free-grid.npz": "b29018d45983fa7867502cdbb4d26de5bb7473bef9c55f847f95a563667250b7",
+      "supplemental-additions.npz": "8b7d9768171050a299d9abb0cdcbb6977d6ecbd4071a17f775a64a3583acaa10",
+      "floor-masks.npz": "72dd2164cc2e8a9d66a5862082804546a6a1f5eb0ed800290253147233833351",
+      "supplemental-learned-masks.npz": "d6bb35ffdb2df167db29c8d17e069cc7ca7f4e064faef324ee81a340939244a6"
+    },
+    "declared_candidate_semantics": {
+      "assumptions": [
+        "static original room",
+        "known planar floor and scan K/poses",
+        "known synthetic color candidates overlap obstacle colors; palette alone does not establish floor",
+        "opaque grounded scene objects with no overhangs",
+        "no scene change since scan"
+      ],
+      "free_evidence_mode": "full_prism",
+      "free_evidence_semantics": "Retained accepted baseline full-prism FREE evidence, plus new full-prism evidence requiring four mutually separated cameras and a two-pixel projection guard. Whole-map minimum fields describe retained evidence; supplemental_addition fields describe every newly FREE cell.",
+      "uncertainty_status": "projection/pixel guards are explicit assumptions, not calibrated physical coverage"
+    },
+    "full_volume": {
+      "status": "pass",
+      "directory": "<BB8-RL>/work/m712-map-improvement/full-prism-extended-v2",
+      "manifest_sha256": "4d1f01b8a797061a43f75d0102d5dbfbcb418777546d9d7f98daba0cdd65e08f",
+      "meaning": "Full positive-volume intersection with static boxes; no oracle correction, no physical/general guarantee.",
+      "free_voxels": 159200,
+      "occupied_voxels": 99142,
+      "retained_unknown_voxels": 341658,
+      "false_free_solid_intersection_voxels": 0,
+      "free_solid_face_contact_voxels": 0,
+      "free_voxels_outside_room_or_below_floor": 0,
+      "free_prisms": 26458,
+      "candidate_prisms": 26668,
+      "candidate_solid_intersections": 0,
+      "free_solid_intersection_prisms": 0,
+      "free_solid_face_contact_prisms": 0,
+      "retained_unknown_prisms": 3920,
+      "free_without_two_view_support": 0,
+      "support_bits_outside_view_ids": false,
+      "heldout_query_in_map": [],
+      "free_sources_rgb_only": true,
+      "input_provenance_checks": {
+        "occupied_source_hash": true,
+        "occupied_volumes_preserved": true,
+        "occupied_objects_preserved": true,
+        "scan-000:rgb": true,
+        "scan-000:calibration": true,
+        "scan-001:rgb": true,
+        "scan-001:calibration": true,
+        "scan-002:rgb": true,
+        "scan-002:calibration": true,
+        "scan-003:rgb": true,
+        "scan-003:calibration": true,
+        "scan-004:rgb": true,
+        "scan-004:calibration": true,
+        "scan-005:rgb": true,
+        "scan-005:calibration": true,
+        "scan-006:rgb": true,
+        "scan-006:calibration": true,
+        "scan-007:rgb": true,
+        "scan-007:calibration": true,
+        "scan-008:rgb": true,
+        "scan-008:calibration": true,
+        "scan-009:rgb": true,
+        "scan-009:calibration": true,
+        "scan-010:rgb": true,
+        "scan-010:calibration": true,
+        "scan-011:rgb": true,
+        "scan-011:calibration": true,
+        "scan-012:rgb": true,
+        "scan-012:calibration": true,
+        "scan-013:rgb": true,
+        "scan-013:calibration": true,
+        "scan-015:rgb": true,
+        "scan-015:calibration": true,
+        "scan-016:rgb": true,
+        "scan-016:calibration": true,
+        "scan-018:rgb": true,
+        "scan-018:calibration": true,
+        "scan-019:rgb": true,
+        "scan-019:calibration": true,
+        "scan-021:rgb": true,
+        "scan-021:calibration": true,
+        "scan-022:rgb": true,
+        "scan-022:calibration": true,
+        "scan-024:rgb": true,
+        "scan-024:calibration": true,
+        "scan-025:rgb": true,
+        "scan-025:calibration": true,
+        "scan-026:rgb": true,
+        "scan-026:calibration": true,
+        "scan-027:rgb": true,
+        "scan-027:calibration": true,
+        "scan-028:rgb": true,
+        "scan-028:calibration": true,
+        "scan-029:rgb": true,
+        "scan-029:calibration": true,
+        "scan-030:rgb": true,
+        "scan-030:calibration": true,
+        "scan-031:rgb": true,
+        "scan-031:calibration": true,
+        "scan-032:rgb": true,
+        "scan-032:calibration": true,
+        "scan-033:rgb": true,
+        "scan-033:calibration": true,
+        "scan-034:rgb": true,
+        "scan-034:calibration": true,
+        "scan-035:rgb": true,
+        "scan-035:calibration": true
+      },
+      "source_rgb_hashes_checked": true,
+      "body_height_m": 0.12,
+      "mapping_input_view_ids": [
+        "scan-000",
+        "scan-001",
+        "scan-002",
+        "scan-003",
+        "scan-004",
+        "scan-005",
+        "scan-006",
+        "scan-007",
+        "scan-008",
+        "scan-009",
+        "scan-010",
+        "scan-011",
+        "scan-012",
+        "scan-013",
+        "scan-015",
+        "scan-016",
+        "scan-018",
+        "scan-019",
+        "scan-021",
+        "scan-022",
+        "scan-024",
+        "scan-025",
+        "scan-026",
+        "scan-027",
+        "scan-028",
+        "scan-029",
+        "scan-030",
+        "scan-031",
+        "scan-032",
+        "scan-033",
+        "scan-034",
+        "scan-035"
+      ],
+      "failing_voxel_indices_first20": [],
+      "legacy_twenty_view_status": "fail",
+      "explicit_membership_exception": "The legacy scorer hardcodes20sourceviews. Only that count restriction is superseded by exact declared32view membership; all legacy positive-volume, occupied-source, source-hash, support, unknown and excluded-query checks remain mandatory."
+    },
+    "evidence": {
+      "checks": {
+        "all_original_input_hashes_unchanged": true,
+        "all_allowed_input_hashes_match_binding": true,
+        "input_hash_ids_exactly_allowed": true,
+        "mapping_ancestry_exactly_allowed": true,
+        "support_ids_exactly_allowed": true,
+        "source_paths_present_for_rehash": true,
+        "body_height_preserved": true,
+        "resolution_preserved": true,
+        "extent_preserved": true,
+        "declared_minimum_views_preserved": true,
+        "every_free_cell_has_declared_support_count": true,
+        "projection_xy_guard_not_shrunk": true,
+        "pairwise_baseline_gate_not_shrunk": true,
+        "pairwise_angle_gate_not_shrunk": true,
+        "all_baseline_occupied_records_retained": true,
+        "all_baseline_occupied_cells_retained": true,
+        "retains_unknown_cells": true,
+        "missing_geometry_never_declared_free": true
+      },
+      "pass": true,
+      "limit": "Support bits and declared producer assumptions are checked, not interpreted as independently calibrated confidence. Producer source and RGB causality need separate review."
+    },
+    "scan_time_robot": {
+      "scope": "Supplementary scan-time movable-object assumption check; not a static obstacle inserted into online control.",
+      "body": {
+        "center_scoring_only": [
+          -1.75,
+          -1.75,
+          0.037
+        ],
+        "radius_m": 0.037,
+        "free_voxel_solid_intersections": 0,
+        "free_voxel_face_contacts": 0,
+        "free_prism_solid_intersections": 0,
+        "free_prism_face_contacts": 0,
+        "collision_object": true
+      },
+      "head": {
+        "center_scoring_only": [
+          -1.75,
+          -1.75,
+          0.083
+        ],
+        "radius_m": 0.019,
+        "free_voxel_solid_intersections": 0,
+        "free_voxel_face_contacts": 0,
+        "free_prism_solid_intersections": 0,
+        "free_prism_face_contacts": 0,
+        "collision_object": false
+      },
+      "pass": true
+    },
+    "capture_binding": {
+      "binding_sha256": "895d7e548aafb445c9b609b2e556851b198825e7a377ae80dfa02f3506a15a20",
+      "checks": {
+        "supplemental_protocol_hash": true,
+        "capture_plan_hash": true,
+        "capture_manifest_hash": true,
+        "complete_capture": true,
+        "capture_input_hashes_match_binding": true,
+        "exact_allowed_ids": true,
+        "exact_supplemental_ids": true,
+        "task_hash": true,
+        "capture_source_snapshot": true,
+        "capture_plan_snapshot": true,
+        "no_depth_or_segmentation": true,
+        "original_robot_pose": true,
+        "full_prism_evidence": true,
+        "candidate_capture_manifest_hash": true,
+        "candidate_capture_plan_hash": true,
+        "frozen_vision_checkpoint": true,
+        "frozen_floor_threshold": true,
+        "frozen_floor_refinement": true,
+        "no_new_training_or_threshold_selection": true,
+        "captured:scan-000:rgb": true,
+        "captured:scan-000:calibration": true,
+        "captured:scan-001:rgb": true,
+        "captured:scan-001:calibration": true,
+        "captured:scan-002:rgb": true,
+        "captured:scan-002:calibration": true,
+        "captured:scan-003:rgb": true,
+        "captured:scan-003:calibration": true,
+        "captured:scan-004:rgb": true,
+        "captured:scan-004:calibration": true,
+        "captured:scan-005:rgb": true,
+        "captured:scan-005:calibration": true,
+        "captured:scan-006:rgb": true,
+        "captured:scan-006:calibration": true,
+        "captured:scan-007:rgb": true,
+        "captured:scan-007:calibration": true,
+        "captured:scan-008:rgb": true,
+        "captured:scan-008:calibration": true,
+        "captured:scan-009:rgb": true,
+        "captured:scan-009:calibration": true,
+        "captured:scan-010:rgb": true,
+        "captured:scan-010:calibration": true,
+        "captured:scan-011:rgb": true,
+        "captured:scan-011:calibration": true,
+        "captured:scan-012:rgb": true,
+        "captured:scan-012:calibration": true,
+        "captured:scan-013:rgb": true,
+        "captured:scan-013:calibration": true,
+        "captured:scan-015:rgb": true,
+        "captured:scan-015:calibration": true,
+        "captured:scan-016:rgb": true,
+        "captured:scan-016:calibration": true,
+        "captured:scan-018:rgb": true,
+        "captured:scan-018:calibration": true,
+        "captured:scan-019:rgb": true,
+        "captured:scan-019:calibration": true,
+        "captured:scan-021:rgb": true,
+        "captured:scan-021:calibration": true,
+        "captured:scan-022:rgb": true,
+        "captured:scan-022:calibration": true,
+        "captured:scan-024:rgb": true,
+        "captured:scan-024:calibration": true,
+        "captured:scan-025:rgb": true,
+        "captured:scan-025:calibration": true,
+        "captured:scan-026:rgb": true,
+        "captured:scan-026:calibration": true,
+        "captured:scan-027:rgb": true,
+        "captured:scan-027:calibration": true,
+        "captured:scan-028:rgb": true,
+        "captured:scan-028:calibration": true,
+        "captured:scan-029:rgb": true,
+        "captured:scan-029:calibration": true,
+        "captured:scan-030:rgb": true,
+        "captured:scan-030:calibration": true,
+        "captured:scan-031:rgb": true,
+        "captured:scan-031:calibration": true,
+        "captured:scan-032:rgb": true,
+        "captured:scan-032:calibration": true,
+        "captured:scan-033:rgb": true,
+        "captured:scan-033:calibration": true,
+        "captured:scan-034:rgb": true,
+        "captured:scan-034:calibration": true,
+        "captured:scan-035:rgb": true,
+        "captured:scan-035:calibration": true,
+        "pose_matches_plan:scan-024": true,
+        "pose_matches_plan:scan-025": true,
+        "pose_matches_plan:scan-026": true,
+        "pose_matches_plan:scan-027": true,
+        "pose_matches_plan:scan-028": true,
+        "pose_matches_plan:scan-029": true,
+        "pose_matches_plan:scan-030": true,
+        "pose_matches_plan:scan-031": true,
+        "pose_matches_plan:scan-032": true,
+        "pose_matches_plan:scan-033": true,
+        "pose_matches_plan:scan-034": true,
+        "pose_matches_plan:scan-035": true,
+        "mask_ids_exactly_allowed": true,
+        "original_mask_unchanged:scan-000": true,
+        "original_mask_unchanged:scan-001": true,
+        "original_mask_unchanged:scan-002": true,
+        "original_mask_unchanged:scan-003": true,
+        "original_mask_unchanged:scan-004": true,
+        "original_mask_unchanged:scan-005": true,
+        "original_mask_unchanged:scan-006": true,
+        "original_mask_unchanged:scan-007": true,
+        "original_mask_unchanged:scan-008": true,
+        "original_mask_unchanged:scan-009": true,
+        "original_mask_unchanged:scan-010": true,
+        "original_mask_unchanged:scan-011": true,
+        "original_mask_unchanged:scan-012": true,
+        "original_mask_unchanged:scan-013": true,
+        "original_mask_unchanged:scan-015": true,
+        "original_mask_unchanged:scan-016": true,
+        "original_mask_unchanged:scan-018": true,
+        "original_mask_unchanged:scan-019": true,
+        "original_mask_unchanged:scan-021": true,
+        "original_mask_unchanged:scan-022": true
+      },
+      "pass": true
+    },
+    "strict_revision": {
+      "required": true,
+      "revision_plan_sha256": "c1da57e5b81087f7539dd19f30e5d7c1e48089f3e60407a19f6cd7b9144b0338",
+      "checks": {
+        "retained_baseline_mask_exact": true,
+        "added_mask_exact": true,
+        "final_free_exact_evidence_union": true,
+        "every_addition_has_strict_support": true,
+        "all_strict_candidates_have_strict_support": true,
+        "strict_bits_within_allowed_views": true,
+        "addition_support_matches_final": true,
+        "revision_plan_hash": true,
+        "declared_strict_view_count": true,
+        "declared_strict_pixel_guard": true,
+        "declared_metric_guard": true,
+        "no_truth_locations": true,
+        "complete_mask_file_reused": true,
+        "reused_prior_manifest": true,
+        "retained_baseline_manifest": true,
+        "addition_artifact_hash": true
+      },
+      "new_free_cells": 4567,
+      "pass": true
+    },
+    "baseline_scan_time_robot": {
+      "scope": "Supplementary scan-time movable-object assumption check; not a static obstacle inserted into online control.",
+      "body": {
+        "center_scoring_only": [
+          -1.75,
+          -1.75,
+          0.037
+        ],
+        "radius_m": 0.037,
+        "free_voxel_solid_intersections": 0,
+        "free_voxel_face_contacts": 0,
+        "free_prism_solid_intersections": 0,
+        "free_prism_face_contacts": 0,
+        "collision_object": true
+      },
+      "head": {
+        "center_scoring_only": [
+          -1.75,
+          -1.75,
+          0.083
+        ],
+        "radius_m": 0.019,
+        "free_voxel_solid_intersections": 0,
+        "free_voxel_face_contacts": 0,
+        "free_prism_solid_intersections": 0,
+        "free_prism_face_contacts": 0,
+        "collision_object": false
+      },
+      "pass": true
+    },
+    "coverage_gate": {
+      "complete_case_radius_denominator": true,
+      "reported_gap_at_required_radius": false,
+      "regressions": [],
+      "pass": false
+    },
+    "baseline_coverage": [
+      {
+        "case_id": "reported-gap",
+        "family": "reported_request",
+        "radius_m": 0.1,
+        "start_free": true,
+        "goal_free": true,
+        "connected_and_certified": false,
+        "failure_reason": "Start and goal are disconnected after footprint inflation"
+      },
+      {
+        "case_id": "reported-gap",
+        "family": "reported_request",
+        "radius_m": 0.14,
+        "start_free": true,
+        "goal_free": true,
+        "connected_and_certified": false,
+        "failure_reason": "Start and goal are disconnected after footprint inflation"
+      },
+      {
+        "case_id": "reported-gap",
+        "family": "reported_request",
+        "radius_m": 0.18,
+        "start_free": true,
+        "goal_free": true,
+        "connected_and_certified": false,
+        "failure_reason": "Start and goal are disconnected after footprint inflation"
+      },
+      {
+        "case_id": "m78-natural_0",
+        "family": "original_m78_failed",
+        "radius_m": 0.1,
+        "start_free": true,
+        "goal_free": false,
+        "connected_and_certified": false,
+        "failure_reason": "Start or goal is blocked after footprint inflation"
+      },
+      {
+        "case_id": "m78-natural_0",
+        "family": "original_m78_failed",
+        "radius_m": 0.14,
+        "start_free": true,
+        "goal_free": false,
+        "connected_and_certified": false,
+        "failure_reason": "Start or goal is blocked after footprint inflation"
+      },
+      {
+        "case_id": "m78-natural_0",
+        "family": "original_m78_failed",
+        "radius_m": 0.18,
+        "start_free": true,
+        "goal_free": false,
+        "connected_and_certified": false,
+        "failure_reason": "Start or goal is blocked after footprint inflation"
+      },
+      {
+        "case_id": "m78-natural_1",
+        "family": "original_m78_failed",
+        "radius_m": 0.1,
+        "start_free": false,
+        "goal_free": false,
+        "connected_and_certified": false,
+        "failure_reason": "Start or goal is blocked after footprint inflation"
+      },
+      {
+        "case_id": "m78-natural_1",
+        "family": "original_m78_failed",
+        "radius_m": 0.14,
+        "start_free": false,
+        "goal_free": false,
+        "connected_and_certified": false,
+        "failure_reason": "Start or goal is blocked after footprint inflation"
+      },
+      {
+        "case_id": "m78-natural_1",
+        "family": "original_m78_failed",
+        "radius_m": 0.18,
+        "start_free": false,
+        "goal_free": false,
+        "connected_and_certified": false,
+        "failure_reason": "Start or goal is blocked after footprint inflation"
+      },
+      {
+        "case_id": "m78-visible_baseline",
+        "family": "original_m78_failed",
+        "radius_m": 0.1,
+        "start_free": true,
+        "goal_free": false,
+        "connected_and_certified": false,
+        "failure_reason": "Start or goal is blocked after footprint inflation"
+      },
+      {
+        "case_id": "m78-visible_baseline",
+        "family": "original_m78_failed",
+        "radius_m": 0.14,
+        "start_free": true,
+        "goal_free": false,
+        "connected_and_certified": false,
+        "failure_reason": "Start or goal is blocked after footprint inflation"
+      },
+      {
+        "case_id": "m78-visible_baseline",
+        "family": "original_m78_failed",
+        "radius_m": 0.18,
+        "start_free": false,
+        "goal_free": false,
+        "connected_and_certified": false,
+        "failure_reason": "Start or goal is blocked after footprint inflation"
+      },
+      {
+        "case_id": "m78-brief_dropout",
+        "family": "original_m78_failed",
+        "radius_m": 0.1,
+        "start_free": true,
+        "goal_free": false,
+        "connected_and_certified": false,
+        "failure_reason": "Start or goal is blocked after footprint inflation"
+      },
+      {
+        "case_id": "m78-brief_dropout",
+        "family": "original_m78_failed",
+        "radius_m": 0.14,
+        "start_free": true,
+        "goal_free": false,
+        "connected_and_certified": false,
+        "failure_reason": "Start or goal is blocked after footprint inflation"
+      },
+      {
+        "case_id": "m78-brief_dropout",
+        "family": "original_m78_failed",
+        "radius_m": 0.18,
+        "start_free": false,
+        "goal_free": false,
+        "connected_and_certified": false,
+        "failure_reason": "Start or goal is blocked after footprint inflation"
+      },
+      {
+        "case_id": "m78-long_dropout",
+        "family": "original_m78_failed",
+        "radius_m": 0.1,
+        "start_free": true,
+        "goal_free": false,
+        "connected_and_certified": false,
+        "failure_reason": "Start or goal is blocked after footprint inflation"
+      },
+      {
+        "case_id": "m78-long_dropout",
+        "family": "original_m78_failed",
+        "radius_m": 0.14,
+        "start_free": true,
+        "goal_free": false,
+        "connected_and_certified": false,
+        "failure_reason": "Start or goal is blocked after footprint inflation"
+      },
+      {
+        "case_id": "m78-long_dropout",
+        "family": "original_m78_failed",
+        "radius_m": 0.18,
+        "start_free": false,
+        "goal_free": false,
+        "connected_and_certified": false,
+        "failure_reason": "Start or goal is blocked after footprint inflation"
+      },
+      {
+        "case_id": "m78-invalid_memory",
+        "family": "original_m78_failed",
+        "radius_m": 0.1,
+        "start_free": true,
+        "goal_free": false,
+        "connected_and_certified": false,
+        "failure_reason": "Start or goal is blocked after footprint inflation"
+      },
+      {
+        "case_id": "m78-invalid_memory",
+        "family": "original_m78_failed",
+        "radius_m": 0.14,
+        "start_free": true,
+        "goal_free": false,
+        "connected_and_certified": false,
+        "failure_reason": "Start or goal is blocked after footprint inflation"
+      },
+      {
+        "case_id": "m78-invalid_memory",
+        "family": "original_m78_failed",
+        "radius_m": 0.18,
+        "start_free": false,
+        "goal_free": false,
+        "connected_and_certified": false,
+        "failure_reason": "Start or goal is blocked after footprint inflation"
+      },
+      {
+        "case_id": "m711-north-mode1",
+        "family": "previous_validated",
+        "radius_m": 0.1,
+        "start_free": true,
+        "goal_free": true,
+        "connected_and_certified": true,
+        "route": [
+          [
+            -1.4,
+            1.25
+          ],
+          [
+            0.2,
+            1.55
+          ]
+        ],
+        "exact_segment_certificates": [
+          true
+        ],
+        "route_length_m": 1.6278820596099706
+      },
+      {
+        "case_id": "m711-north-mode1",
+        "family": "previous_validated",
+        "radius_m": 0.14,
+        "start_free": true,
+        "goal_free": true,
+        "connected_and_certified": true,
+        "route": [
+          [
+            -1.4,
+            1.25
+          ],
+          [
+            0.2,
+            1.55
+          ]
+        ],
+        "exact_segment_certificates": [
+          true
+        ],
+        "route_length_m": 1.6278820596099706
+      },
+      {
+        "case_id": "m711-north-mode1",
+        "family": "previous_validated",
+        "radius_m": 0.18,
+        "start_free": true,
+        "goal_free": true,
+        "connected_and_certified": true,
+        "route": [
+          [
+            -1.4,
+            1.25
+          ],
+          [
+            0.2,
+            1.55
+          ]
+        ],
+        "exact_segment_certificates": [
+          true
+        ],
+        "route_length_m": 1.6278820596099706
+      },
+      {
+        "case_id": "m711-center-mode2",
+        "family": "previous_validated",
+        "radius_m": 0.1,
+        "start_free": true,
+        "goal_free": true,
+        "connected_and_certified": true,
+        "route": [
+          [
+            -0.3,
+            -0.75
+          ],
+          [
+            -0.35,
+            0.7
+          ]
+        ],
+        "exact_segment_certificates": [
+          true
+        ],
+        "route_length_m": 1.4508618128546908
+      },
+      {
+        "case_id": "m711-center-mode2",
+        "family": "previous_validated",
+        "radius_m": 0.14,
+        "start_free": true,
+        "goal_free": true,
+        "connected_and_certified": true,
+        "route": [
+          [
+            -0.3,
+            -0.75
+          ],
+          [
+            -0.33000000000000007,
+            0.6699999999999999
+          ],
+          [
+            -0.35,
+            0.7
+          ]
+        ],
+        "exact_segment_certificates": [
+          true,
+          true
+        ],
+        "route_length_m": 1.4563723788095353
+      },
+      {
+        "case_id": "m711-center-mode2",
+        "family": "previous_validated",
+        "radius_m": 0.18,
+        "start_free": true,
+        "goal_free": true,
+        "connected_and_certified": true,
+        "route": [
+          [
+            -0.3,
+            -0.75
+          ],
+          [
+            -0.27,
+            -0.050000000000000044
+          ],
+          [
+            -0.35,
+            0.7
+          ]
+        ],
+        "exact_segment_certificates": [
+          true,
+          true
+        ],
+        "route_length_m": 1.4548971611494574
+      },
+      {
+        "case_id": "m711-north-center-mode3",
+        "family": "previous_validated",
+        "radius_m": 0.1,
+        "start_free": true,
+        "goal_free": true,
+        "connected_and_certified": true,
+        "route": [
+          [
+            0.2,
+            1.55
+          ],
+          [
+            -0.16999999999999993,
+            0.5500000000000003
+          ],
+          [
+            -0.2,
+            -0.7
+          ]
+        ],
+        "exact_segment_certificates": [
+          true,
+          true
+        ],
+        "route_length_m": 2.3166150771192124
+      },
+      {
+        "case_id": "m711-north-center-mode3",
+        "family": "previous_validated",
+        "radius_m": 0.14,
+        "start_free": true,
+        "goal_free": true,
+        "connected_and_certified": true,
+        "route": [
+          [
+            0.2,
+            1.55
+          ],
+          [
+            -0.20999999999999996,
+            0.5699999999999998
+          ],
+          [
+            -0.2,
+            -0.7
+          ]
+        ],
+        "exact_segment_certificates": [
+          true,
+          true
+        ],
+        "route_length_m": 2.3323481757955706
+      },
+      {
+        "case_id": "m711-north-center-mode3",
+        "family": "previous_validated",
+        "radius_m": 0.18,
+        "start_free": true,
+        "goal_free": true,
+        "connected_and_certified": true,
+        "route": [
+          [
+            0.2,
+            1.55
+          ],
+          [
+            -0.16999999999999993,
+            0.79
+          ],
+          [
+            -0.25,
+            0.5699999999999998
+          ],
+          [
+            -0.2,
+            -0.7
+          ]
+        ],
+        "exact_segment_certificates": [
+          true,
+          true,
+          true
+        ],
+        "route_length_m": 2.3503588874399606
+      },
+      {
+        "case_id": "m711-demo-mode1",
+        "family": "previous_validated",
+        "radius_m": 0.1,
+        "start_free": true,
+        "goal_free": true,
+        "connected_and_certified": true,
+        "route": [
+          [
+            0.03254007833063689,
+            0.9713217108374255
+          ],
+          [
+            0.24745992166936648,
+            1.3086782891625797
+          ]
+        ],
+        "exact_segment_certificates": [
+          true
+        ],
+        "route_length_m": 0.39999999999999997
+      },
+      {
+        "case_id": "m711-demo-mode1",
+        "family": "previous_validated",
+        "radius_m": 0.14,
+        "start_free": true,
+        "goal_free": true,
+        "connected_and_certified": true,
+        "route": [
+          [
+            0.03254007833063689,
+            0.9713217108374255
+          ],
+          [
+            0.24745992166936648,
+            1.3086782891625797
+          ]
+        ],
+        "exact_segment_certificates": [
+          true
+        ],
+        "route_length_m": 0.39999999999999997
+      },
+      {
+        "case_id": "m711-demo-mode1",
+        "family": "previous_validated",
+        "radius_m": 0.18,
+        "start_free": true,
+        "goal_free": true,
+        "connected_and_certified": true,
+        "route": [
+          [
+            0.03254007833063689,
+            0.9713217108374255
+          ],
+          [
+            0.22999999999999998,
+            1.31
+          ],
+          [
+            0.24745992166936648,
+            1.3086782891625797
+          ]
+        ],
+        "exact_segment_certificates": [
+          true,
+          true
+        ],
+        "route_length_m": 0.40954738034572186
+      }
+    ],
+    "candidate_coverage": [
+      {
+        "case_id": "reported-gap",
+        "family": "reported_request",
+        "radius_m": 0.1,
+        "start_free": true,
+        "goal_free": true,
+        "connected_and_certified": true,
+        "route": [
+          [
+            -0.14399692380052198,
+            -0.062045330040032036
+          ],
+          [
+            0.5699999999999998,
+            -0.6499999999999999
+          ],
+          [
+            0.73,
+            -0.71
+          ],
+          [
+            1.0899999999999999,
+            -0.73
+          ],
+          [
+            1.3554502369668247,
+            -0.8446386255924172
+          ]
+        ],
+        "exact_segment_certificates": [
+          true,
+          true,
+          true,
+          true
+        ],
+        "route_length_m": 1.7455048142730871
+      },
+      {
+        "case_id": "reported-gap",
+        "family": "reported_request",
+        "radius_m": 0.14,
+        "start_free": true,
+        "goal_free": true,
+        "connected_and_certified": false,
+        "failure_reason": "Start and goal are disconnected after footprint inflation"
+      },
+      {
+        "case_id": "reported-gap",
+        "family": "reported_request",
+        "radius_m": 0.18,
+        "start_free": true,
+        "goal_free": true,
+        "connected_and_certified": false,
+        "failure_reason": "Start and goal are disconnected after footprint inflation"
+      },
+      {
+        "case_id": "m78-natural_0",
+        "family": "original_m78_failed",
+        "radius_m": 0.1,
+        "start_free": true,
+        "goal_free": true,
+        "connected_and_certified": true,
+        "route": [
+          [
+            -0.3643,
+            0.3957
+          ],
+          [
+            0.4843,
+            1.2443
+          ]
+        ],
+        "exact_segment_certificates": [
+          true
+        ],
+        "route_length_m": 1.2001016290298085
+      },
+      {
+        "case_id": "m78-natural_0",
+        "family": "original_m78_failed",
+        "radius_m": 0.14,
+        "start_free": true,
+        "goal_free": true,
+        "connected_and_certified": true,
+        "route": [
+          [
+            -0.3643,
+            0.3957
+          ],
+          [
+            0.43000000000000016,
+            1.23
+          ],
+          [
+            0.4843,
+            1.2443
+          ]
+        ],
+        "exact_segment_certificates": [
+          true,
+          true
+        ],
+        "route_length_m": 1.2080927985546175
+      },
+      {
+        "case_id": "m78-natural_0",
+        "family": "original_m78_failed",
+        "radius_m": 0.18,
+        "start_free": true,
+        "goal_free": true,
+        "connected_and_certified": true,
+        "route": [
+          [
+            -0.3643,
+            0.3957
+          ],
+          [
+            0.1299999999999999,
+            0.9900000000000002
+          ],
+          [
+            0.4843,
+            1.2443
+          ]
+        ],
+        "exact_segment_certificates": [
+          true,
+          true
+        ],
+        "route_length_m": 1.2091131871145127
+      },
+      {
+        "case_id": "m78-natural_1",
+        "family": "original_m78_failed",
+        "radius_m": 0.1,
+        "start_free": false,
+        "goal_free": true,
+        "connected_and_certified": false,
+        "failure_reason": "Start or goal is blocked after footprint inflation"
+      },
+      {
+        "case_id": "m78-natural_1",
+        "family": "original_m78_failed",
+        "radius_m": 0.14,
+        "start_free": false,
+        "goal_free": true,
+        "connected_and_certified": false,
+        "failure_reason": "Start or goal is blocked after footprint inflation"
+      },
+      {
+        "case_id": "m78-natural_1",
+        "family": "original_m78_failed",
+        "radius_m": 0.18,
+        "start_free": false,
+        "goal_free": false,
+        "connected_and_certified": false,
+        "failure_reason": "Start or goal is blocked after footprint inflation"
+      },
+      {
+        "case_id": "m78-visible_baseline",
+        "family": "original_m78_failed",
+        "radius_m": 0.1,
+        "start_free": true,
+        "goal_free": true,
+        "connected_and_certified": true,
+        "route": [
+          [
+            -0.3,
+            -1.72
+          ],
+          [
+            0.6,
+            -1.72
+          ]
+        ],
+        "exact_segment_certificates": [
+          true
+        ],
+        "route_length_m": 0.8999999999999999
+      },
+      {
+        "case_id": "m78-visible_baseline",
+        "family": "original_m78_failed",
+        "radius_m": 0.14,
+        "start_free": true,
+        "goal_free": false,
+        "connected_and_certified": false,
+        "failure_reason": "Start or goal is blocked after footprint inflation"
+      },
+      {
+        "case_id": "m78-visible_baseline",
+        "family": "original_m78_failed",
+        "radius_m": 0.18,
+        "start_free": false,
+        "goal_free": false,
+        "connected_and_certified": false,
+        "failure_reason": "Start or goal is blocked after footprint inflation"
+      },
+      {
+        "case_id": "m78-brief_dropout",
+        "family": "original_m78_failed",
+        "radius_m": 0.1,
+        "start_free": true,
+        "goal_free": true,
+        "connected_and_certified": true,
+        "route": [
+          [
+            -0.3,
+            -1.72
+          ],
+          [
+            0.6,
+            -1.72
+          ]
+        ],
+        "exact_segment_certificates": [
+          true
+        ],
+        "route_length_m": 0.8999999999999999
+      },
+      {
+        "case_id": "m78-brief_dropout",
+        "family": "original_m78_failed",
+        "radius_m": 0.14,
+        "start_free": true,
+        "goal_free": false,
+        "connected_and_certified": false,
+        "failure_reason": "Start or goal is blocked after footprint inflation"
+      },
+      {
+        "case_id": "m78-brief_dropout",
+        "family": "original_m78_failed",
+        "radius_m": 0.18,
+        "start_free": false,
+        "goal_free": false,
+        "connected_and_certified": false,
+        "failure_reason": "Start or goal is blocked after footprint inflation"
+      },
+      {
+        "case_id": "m78-long_dropout",
+        "family": "original_m78_failed",
+        "radius_m": 0.1,
+        "start_free": true,
+        "goal_free": true,
+        "connected_and_certified": true,
+        "route": [
+          [
+            -0.3,
+            -1.72
+          ],
+          [
+            0.6,
+            -1.72
+          ]
+        ],
+        "exact_segment_certificates": [
+          true
+        ],
+        "route_length_m": 0.8999999999999999
+      },
+      {
+        "case_id": "m78-long_dropout",
+        "family": "original_m78_failed",
+        "radius_m": 0.14,
+        "start_free": true,
+        "goal_free": false,
+        "connected_and_certified": false,
+        "failure_reason": "Start or goal is blocked after footprint inflation"
+      },
+      {
+        "case_id": "m78-long_dropout",
+        "family": "original_m78_failed",
+        "radius_m": 0.18,
+        "start_free": false,
+        "goal_free": false,
+        "connected_and_certified": false,
+        "failure_reason": "Start or goal is blocked after footprint inflation"
+      },
+      {
+        "case_id": "m78-invalid_memory",
+        "family": "original_m78_failed",
+        "radius_m": 0.1,
+        "start_free": true,
+        "goal_free": true,
+        "connected_and_certified": true,
+        "route": [
+          [
+            -0.3,
+            -1.72
+          ],
+          [
+            0.6,
+            -1.72
+          ]
+        ],
+        "exact_segment_certificates": [
+          true
+        ],
+        "route_length_m": 0.8999999999999999
+      },
+      {
+        "case_id": "m78-invalid_memory",
+        "family": "original_m78_failed",
+        "radius_m": 0.14,
+        "start_free": true,
+        "goal_free": false,
+        "connected_and_certified": false,
+        "failure_reason": "Start or goal is blocked after footprint inflation"
+      },
+      {
+        "case_id": "m78-invalid_memory",
+        "family": "original_m78_failed",
+        "radius_m": 0.18,
+        "start_free": false,
+        "goal_free": false,
+        "connected_and_certified": false,
+        "failure_reason": "Start or goal is blocked after footprint inflation"
+      },
+      {
+        "case_id": "m711-north-mode1",
+        "family": "previous_validated",
+        "radius_m": 0.1,
+        "start_free": true,
+        "goal_free": true,
+        "connected_and_certified": true,
+        "route": [
+          [
+            -1.4,
+            1.25
+          ],
+          [
+            0.2,
+            1.55
+          ]
+        ],
+        "exact_segment_certificates": [
+          true
+        ],
+        "route_length_m": 1.6278820596099706
+      },
+      {
+        "case_id": "m711-north-mode1",
+        "family": "previous_validated",
+        "radius_m": 0.14,
+        "start_free": true,
+        "goal_free": true,
+        "connected_and_certified": true,
+        "route": [
+          [
+            -1.4,
+            1.25
+          ],
+          [
+            0.2,
+            1.55
+          ]
+        ],
+        "exact_segment_certificates": [
+          true
+        ],
+        "route_length_m": 1.6278820596099706
+      },
+      {
+        "case_id": "m711-north-mode1",
+        "family": "previous_validated",
+        "radius_m": 0.18,
+        "start_free": true,
+        "goal_free": true,
+        "connected_and_certified": true,
+        "route": [
+          [
+            -1.4,
+            1.25
+          ],
+          [
+            0.2,
+            1.55
+          ]
+        ],
+        "exact_segment_certificates": [
+          true
+        ],
+        "route_length_m": 1.6278820596099706
+      },
+      {
+        "case_id": "m711-center-mode2",
+        "family": "previous_validated",
+        "radius_m": 0.1,
+        "start_free": true,
+        "goal_free": true,
+        "connected_and_certified": true,
+        "route": [
+          [
+            -0.3,
+            -0.75
+          ],
+          [
+            -0.35,
+            0.7
+          ]
+        ],
+        "exact_segment_certificates": [
+          true
+        ],
+        "route_length_m": 1.4508618128546908
+      },
+      {
+        "case_id": "m711-center-mode2",
+        "family": "previous_validated",
+        "radius_m": 0.14,
+        "start_free": true,
+        "goal_free": true,
+        "connected_and_certified": true,
+        "route": [
+          [
+            -0.3,
+            -0.75
+          ],
+          [
+            -0.35,
+            0.7
+          ]
+        ],
+        "exact_segment_certificates": [
+          true
+        ],
+        "route_length_m": 1.4508618128546908
+      },
+      {
+        "case_id": "m711-center-mode2",
+        "family": "previous_validated",
+        "radius_m": 0.18,
+        "start_free": true,
+        "goal_free": true,
+        "connected_and_certified": true,
+        "route": [
+          [
+            -0.3,
+            -0.75
+          ],
+          [
+            -0.35,
+            0.7
+          ]
+        ],
+        "exact_segment_certificates": [
+          true
+        ],
+        "route_length_m": 1.4508618128546908
+      },
+      {
+        "case_id": "m711-north-center-mode3",
+        "family": "previous_validated",
+        "radius_m": 0.1,
+        "start_free": true,
+        "goal_free": true,
+        "connected_and_certified": true,
+        "route": [
+          [
+            0.2,
+            1.55
+          ],
+          [
+            -0.2,
+            -0.7
+          ]
+        ],
+        "exact_segment_certificates": [
+          true
+        ],
+        "route_length_m": 2.2852789764052877
+      },
+      {
+        "case_id": "m711-north-center-mode3",
+        "family": "previous_validated",
+        "radius_m": 0.14,
+        "start_free": true,
+        "goal_free": true,
+        "connected_and_certified": true,
+        "route": [
+          [
+            0.2,
+            1.55
+          ],
+          [
+            0.04999999999999982,
+            0.75
+          ],
+          [
+            -0.2,
+            -0.7
+          ]
+        ],
+        "exact_segment_certificates": [
+          true,
+          true
+        ],
+        "route_length_m": 2.2853349267612018
+      },
+      {
+        "case_id": "m711-north-center-mode3",
+        "family": "previous_validated",
+        "radius_m": 0.18,
+        "start_free": true,
+        "goal_free": true,
+        "connected_and_certified": true,
+        "route": [
+          [
+            0.2,
+            1.55
+          ],
+          [
+            0.010000000000000231,
+            0.77
+          ],
+          [
+            -0.2,
+            -0.7
+          ]
+        ],
+        "exact_segment_certificates": [
+          true,
+          true
+        ],
+        "route_length_m": 2.2877318139488017
+      },
+      {
+        "case_id": "m711-demo-mode1",
+        "family": "previous_validated",
+        "radius_m": 0.1,
+        "start_free": true,
+        "goal_free": true,
+        "connected_and_certified": true,
+        "route": [
+          [
+            0.03254007833063689,
+            0.9713217108374255
+          ],
+          [
+            0.24745992166936648,
+            1.3086782891625797
+          ]
+        ],
+        "exact_segment_certificates": [
+          true
+        ],
+        "route_length_m": 0.39999999999999997
+      },
+      {
+        "case_id": "m711-demo-mode1",
+        "family": "previous_validated",
+        "radius_m": 0.14,
+        "start_free": true,
+        "goal_free": true,
+        "connected_and_certified": true,
+        "route": [
+          [
+            0.03254007833063689,
+            0.9713217108374255
+          ],
+          [
+            0.24745992166936648,
+            1.3086782891625797
+          ]
+        ],
+        "exact_segment_certificates": [
+          true
+        ],
+        "route_length_m": 0.39999999999999997
+      },
+      {
+        "case_id": "m711-demo-mode1",
+        "family": "previous_validated",
+        "radius_m": 0.18,
+        "start_free": true,
+        "goal_free": true,
+        "connected_and_certified": true,
+        "route": [
+          [
+            0.03254007833063689,
+            0.9713217108374255
+          ],
+          [
+            0.24745992166936648,
+            1.3086782891625797
+          ]
+        ],
+        "exact_segment_certificates": [
+          true
+        ],
+        "route_length_m": 0.39999999999999997
+      }
+    ],
+    "coverage_counts": {
+      "0.1": {
+        "case_denominator": 11,
+        "unique_endpoint_denominator": 8,
+        "baseline_connected": 4,
+        "candidate_connected": 10
+      },
+      "0.14": {
+        "case_denominator": 11,
+        "unique_endpoint_denominator": 8,
+        "baseline_connected": 4,
+        "candidate_connected": 5
+      },
+      "0.18": {
+        "case_denominator": 11,
+        "unique_endpoint_denominator": 8,
+        "baseline_connected": 4,
+        "candidate_connected": 5
+      }
+    },
+    "limitations": [
+      "All geometry is authored synthetic scorer data; no unseen-room or physical safety claim.",
+      "Six original failed case IDs include four identical endpoint pairs. Map connectivity cannot establish their original occlusion/control intent.",
+      "The reported route and regression endpoints are development cases; all candidate attempts and failed gates must remain visible.",
+      "A passing static gate permits fresh bounded native trials only; original arrival, visibility, actuation and failure-control gates remain mandatory."
+    ]
+  },
+  "full-prism-extended-v3": {
+    "schema": "bb8.map-improvement-audit.v1",
+    "scope": "Offline whole-volume safety and static connectivity; truth never repairs or enters a candidate map.",
+    "native_trial_gate_pass": true,
+    "runtime_promotion_authorized": false,
+    "protocol_sha256": "8ea49b7e6d042760e0983cf604c6cac60c17d67f4a44483933c35c1f4868b4f2",
+    "scorer_sha256": "418538aa98bb4018362e294cfc9b39dc07c7050dde16dbc3cd38932a482aea11",
+    "legacy_fullvolume_scorer_sha256": "3b2e06718c8fad7da239646110d50de9296d3dc6a20def921e3dee0d51ee5ddb",
+    "baseline_manifest_sha256": "2a97e0edf3b41edad81494ada880646b4c793042c217b53bd58ee0086d40e541",
+    "candidate_manifest_sha256": "dd150e3f361e6fc07da8893506491f279bbea61ef957282ecfc728bb94b72437",
+    "candidate_artifact_sha256": {
+      "room-memory.json": "db176e00eb4edfc3f0ff9e327e75cb4a78d75b0025ff2fdd40c7cba95d528ea2",
+      "free-grid.npz": "01d978a86f9c2800c7f46977a2622c5a0cf102afdb9cae22ee11c7f48c2b934d",
+      "floor-masks.npz": "71a545a85be28c8f8c0140a4b5870b9d07023bee30c24ba31ffadaf56d766958",
+      "supplemental-learned-masks.npz": "62032f92bac9623b71054ad8c6f1acfaea54ed7802cb1cf5269667b95173c23c",
+      "supplemental-additions.npz": "d4fe74a23d70fe3b20606bb1f3836388aeeda08ea74de8aa65c7071dfdce1c6b"
+    },
+    "declared_candidate_semantics": {
+      "assumptions": [
+        "static original room",
+        "known planar floor and scan K/poses",
+        "known synthetic color candidates overlap obstacle colors; palette alone does not establish floor",
+        "opaque grounded scene objects with no overhangs",
+        "no scene change since scan"
+      ],
+      "free_evidence_mode": "full_prism",
+      "free_evidence_semantics": "Retained accepted baseline full-prism FREE evidence, plus new full-prism evidence requiring four mutually separated cameras and a two-pixel projection guard. Whole-map minimum fields describe retained evidence; supplemental_addition fields describe every newly FREE cell.",
+      "uncertainty_status": "projection/pixel guards are explicit assumptions, not calibrated physical coverage"
+    },
+    "full_volume": {
+      "status": "pass",
+      "directory": "<BB8-RL>/work/m712-map-improvement/full-prism-extended-v3",
+      "manifest_sha256": "dd150e3f361e6fc07da8893506491f279bbea61ef957282ecfc728bb94b72437",
+      "meaning": "Full positive-volume intersection with static boxes; no oracle correction, no physical/general guarantee.",
+      "free_voxels": 166304,
+      "occupied_voxels": 99142,
+      "retained_unknown_voxels": 334554,
+      "false_free_solid_intersection_voxels": 0,
+      "free_solid_face_contact_voxels": 0,
+      "free_voxels_outside_room_or_below_floor": 0,
+      "free_prisms": 27413,
+      "candidate_prisms": 28201,
+      "candidate_solid_intersections": 0,
+      "free_solid_intersection_prisms": 0,
+      "free_solid_face_contact_prisms": 0,
+      "retained_unknown_prisms": 2965,
+      "free_without_two_view_support": 0,
+      "support_bits_outside_view_ids": false,
+      "heldout_query_in_map": [],
+      "free_sources_rgb_only": true,
+      "input_provenance_checks": {
+        "occupied_source_hash": true,
+        "occupied_volumes_preserved": true,
+        "occupied_objects_preserved": true,
+        "scan-000:rgb": true,
+        "scan-000:calibration": true,
+        "scan-001:rgb": true,
+        "scan-001:calibration": true,
+        "scan-002:rgb": true,
+        "scan-002:calibration": true,
+        "scan-003:rgb": true,
+        "scan-003:calibration": true,
+        "scan-004:rgb": true,
+        "scan-004:calibration": true,
+        "scan-005:rgb": true,
+        "scan-005:calibration": true,
+        "scan-006:rgb": true,
+        "scan-006:calibration": true,
+        "scan-007:rgb": true,
+        "scan-007:calibration": true,
+        "scan-008:rgb": true,
+        "scan-008:calibration": true,
+        "scan-009:rgb": true,
+        "scan-009:calibration": true,
+        "scan-010:rgb": true,
+        "scan-010:calibration": true,
+        "scan-011:rgb": true,
+        "scan-011:calibration": true,
+        "scan-012:rgb": true,
+        "scan-012:calibration": true,
+        "scan-013:rgb": true,
+        "scan-013:calibration": true,
+        "scan-015:rgb": true,
+        "scan-015:calibration": true,
+        "scan-016:rgb": true,
+        "scan-016:calibration": true,
+        "scan-018:rgb": true,
+        "scan-018:calibration": true,
+        "scan-019:rgb": true,
+        "scan-019:calibration": true,
+        "scan-021:rgb": true,
+        "scan-021:calibration": true,
+        "scan-022:rgb": true,
+        "scan-022:calibration": true,
+        "scan-024:rgb": true,
+        "scan-024:calibration": true,
+        "scan-025:rgb": true,
+        "scan-025:calibration": true,
+        "scan-026:rgb": true,
+        "scan-026:calibration": true,
+        "scan-027:rgb": true,
+        "scan-027:calibration": true,
+        "scan-028:rgb": true,
+        "scan-028:calibration": true,
+        "scan-029:rgb": true,
+        "scan-029:calibration": true,
+        "scan-030:rgb": true,
+        "scan-030:calibration": true,
+        "scan-031:rgb": true,
+        "scan-031:calibration": true,
+        "scan-032:rgb": true,
+        "scan-032:calibration": true,
+        "scan-033:rgb": true,
+        "scan-033:calibration": true,
+        "scan-034:rgb": true,
+        "scan-034:calibration": true,
+        "scan-035:rgb": true,
+        "scan-035:calibration": true,
+        "scan-036:rgb": true,
+        "scan-036:calibration": true,
+        "scan-037:rgb": true,
+        "scan-037:calibration": true,
+        "scan-038:rgb": true,
+        "scan-038:calibration": true,
+        "scan-039:rgb": true,
+        "scan-039:calibration": true,
+        "scan-040:rgb": true,
+        "scan-040:calibration": true,
+        "scan-041:rgb": true,
+        "scan-041:calibration": true,
+        "scan-042:rgb": true,
+        "scan-042:calibration": true,
+        "scan-043:rgb": true,
+        "scan-043:calibration": true,
+        "scan-044:rgb": true,
+        "scan-044:calibration": true,
+        "scan-045:rgb": true,
+        "scan-045:calibration": true,
+        "scan-046:rgb": true,
+        "scan-046:calibration": true,
+        "scan-047:rgb": true,
+        "scan-047:calibration": true,
+        "scan-048:rgb": true,
+        "scan-048:calibration": true,
+        "scan-049:rgb": true,
+        "scan-049:calibration": true,
+        "scan-050:rgb": true,
+        "scan-050:calibration": true,
+        "scan-051:rgb": true,
+        "scan-051:calibration": true
+      },
+      "source_rgb_hashes_checked": true,
+      "body_height_m": 0.12,
+      "mapping_input_view_ids": [
+        "scan-000",
+        "scan-001",
+        "scan-002",
+        "scan-003",
+        "scan-004",
+        "scan-005",
+        "scan-006",
+        "scan-007",
+        "scan-008",
+        "scan-009",
+        "scan-010",
+        "scan-011",
+        "scan-012",
+        "scan-013",
+        "scan-015",
+        "scan-016",
+        "scan-018",
+        "scan-019",
+        "scan-021",
+        "scan-022",
+        "scan-024",
+        "scan-025",
+        "scan-026",
+        "scan-027",
+        "scan-028",
+        "scan-029",
+        "scan-030",
+        "scan-031",
+        "scan-032",
+        "scan-033",
+        "scan-034",
+        "scan-035",
+        "scan-036",
+        "scan-037",
+        "scan-038",
+        "scan-039",
+        "scan-040",
+        "scan-041",
+        "scan-042",
+        "scan-043",
+        "scan-044",
+        "scan-045",
+        "scan-046",
+        "scan-047",
+        "scan-048",
+        "scan-049",
+        "scan-050",
+        "scan-051"
+      ],
+      "failing_voxel_indices_first20": [],
+      "legacy_twenty_view_status": "fail",
+      "explicit_membership_exception": "Only the legacy twenty-view count restriction is superseded by exact declared forty-eight-view membership. All full-volume, occupied-source, source-hash, support, unknown-space and excluded-query gates remain unchanged."
+    },
+    "evidence": {
+      "checks": {
+        "all_original_input_hashes_unchanged": true,
+        "all_allowed_input_hashes_match_binding": true,
+        "input_hash_ids_exactly_allowed": true,
+        "mapping_ancestry_exactly_allowed": true,
+        "support_ids_exactly_allowed": true,
+        "source_paths_present_for_rehash": true,
+        "body_height_preserved": true,
+        "resolution_preserved": true,
+        "extent_preserved": true,
+        "declared_minimum_views_preserved": true,
+        "every_free_cell_has_declared_support_count": true,
+        "projection_xy_guard_not_shrunk": true,
+        "pairwise_baseline_gate_not_shrunk": true,
+        "pairwise_angle_gate_not_shrunk": true,
+        "all_baseline_occupied_records_retained": true,
+        "all_baseline_occupied_cells_retained": true,
+        "retains_unknown_cells": true,
+        "missing_geometry_never_declared_free": true
+      },
+      "pass": true,
+      "limit": "Support bits and declared producer assumptions are checked, not interpreted as independently calibrated confidence. Producer source and RGB causality need separate review."
+    },
+    "scan_time_robot": {
+      "scope": "Supplementary scan-time movable-object assumption check; not a static obstacle inserted into online control.",
+      "body": {
+        "center_scoring_only": [
+          -1.75,
+          -1.75,
+          0.037
+        ],
+        "radius_m": 0.037,
+        "free_voxel_solid_intersections": 0,
+        "free_voxel_face_contacts": 0,
+        "free_prism_solid_intersections": 0,
+        "free_prism_face_contacts": 0,
+        "collision_object": true
+      },
+      "head": {
+        "center_scoring_only": [
+          -1.75,
+          -1.75,
+          0.083
+        ],
+        "radius_m": 0.019,
+        "free_voxel_solid_intersections": 0,
+        "free_voxel_face_contacts": 0,
+        "free_prism_solid_intersections": 0,
+        "free_prism_face_contacts": 0,
+        "collision_object": false
+      },
+      "pass": true
+    },
+    "capture_binding": {
+      "binding_sha256": "63d7e3e6c0e3ac9a59645e33adf976eebccc31b8888556fe86fc73729fd6fc22",
+      "checks": {
+        "supplemental_protocol_hash": true,
+        "capture_plan_hash": true,
+        "capture_manifest_hash": true,
+        "complete_capture": true,
+        "capture_input_hashes_match_binding": true,
+        "exact_allowed_ids": true,
+        "exact_supplemental_ids": true,
+        "task_hash": true,
+        "capture_source_snapshot": true,
+        "capture_plan_snapshot": true,
+        "no_depth_or_segmentation": true,
+        "original_robot_pose": true,
+        "full_prism_evidence": true,
+        "candidate_capture_manifest_hash": true,
+        "candidate_capture_plan_hash": true,
+        "frozen_vision_checkpoint": true,
+        "frozen_floor_threshold": true,
+        "frozen_floor_refinement": true,
+        "no_new_training_or_threshold_selection": true,
+        "captured:scan-000:rgb": true,
+        "captured:scan-000:calibration": true,
+        "captured:scan-001:rgb": true,
+        "captured:scan-001:calibration": true,
+        "captured:scan-002:rgb": true,
+        "captured:scan-002:calibration": true,
+        "captured:scan-003:rgb": true,
+        "captured:scan-003:calibration": true,
+        "captured:scan-004:rgb": true,
+        "captured:scan-004:calibration": true,
+        "captured:scan-005:rgb": true,
+        "captured:scan-005:calibration": true,
+        "captured:scan-006:rgb": true,
+        "captured:scan-006:calibration": true,
+        "captured:scan-007:rgb": true,
+        "captured:scan-007:calibration": true,
+        "captured:scan-008:rgb": true,
+        "captured:scan-008:calibration": true,
+        "captured:scan-009:rgb": true,
+        "captured:scan-009:calibration": true,
+        "captured:scan-010:rgb": true,
+        "captured:scan-010:calibration": true,
+        "captured:scan-011:rgb": true,
+        "captured:scan-011:calibration": true,
+        "captured:scan-012:rgb": true,
+        "captured:scan-012:calibration": true,
+        "captured:scan-013:rgb": true,
+        "captured:scan-013:calibration": true,
+        "captured:scan-015:rgb": true,
+        "captured:scan-015:calibration": true,
+        "captured:scan-016:rgb": true,
+        "captured:scan-016:calibration": true,
+        "captured:scan-018:rgb": true,
+        "captured:scan-018:calibration": true,
+        "captured:scan-019:rgb": true,
+        "captured:scan-019:calibration": true,
+        "captured:scan-021:rgb": true,
+        "captured:scan-021:calibration": true,
+        "captured:scan-022:rgb": true,
+        "captured:scan-022:calibration": true,
+        "captured:scan-024:rgb": true,
+        "captured:scan-024:calibration": true,
+        "captured:scan-025:rgb": true,
+        "captured:scan-025:calibration": true,
+        "captured:scan-026:rgb": true,
+        "captured:scan-026:calibration": true,
+        "captured:scan-027:rgb": true,
+        "captured:scan-027:calibration": true,
+        "captured:scan-028:rgb": true,
+        "captured:scan-028:calibration": true,
+        "captured:scan-029:rgb": true,
+        "captured:scan-029:calibration": true,
+        "captured:scan-030:rgb": true,
+        "captured:scan-030:calibration": true,
+        "captured:scan-031:rgb": true,
+        "captured:scan-031:calibration": true,
+        "captured:scan-032:rgb": true,
+        "captured:scan-032:calibration": true,
+        "captured:scan-033:rgb": true,
+        "captured:scan-033:calibration": true,
+        "captured:scan-034:rgb": true,
+        "captured:scan-034:calibration": true,
+        "captured:scan-035:rgb": true,
+        "captured:scan-035:calibration": true,
+        "captured:scan-036:rgb": true,
+        "captured:scan-036:calibration": true,
+        "captured:scan-037:rgb": true,
+        "captured:scan-037:calibration": true,
+        "captured:scan-038:rgb": true,
+        "captured:scan-038:calibration": true,
+        "captured:scan-039:rgb": true,
+        "captured:scan-039:calibration": true,
+        "captured:scan-040:rgb": true,
+        "captured:scan-040:calibration": true,
+        "captured:scan-041:rgb": true,
+        "captured:scan-041:calibration": true,
+        "captured:scan-042:rgb": true,
+        "captured:scan-042:calibration": true,
+        "captured:scan-043:rgb": true,
+        "captured:scan-043:calibration": true,
+        "captured:scan-044:rgb": true,
+        "captured:scan-044:calibration": true,
+        "captured:scan-045:rgb": true,
+        "captured:scan-045:calibration": true,
+        "captured:scan-046:rgb": true,
+        "captured:scan-046:calibration": true,
+        "captured:scan-047:rgb": true,
+        "captured:scan-047:calibration": true,
+        "captured:scan-048:rgb": true,
+        "captured:scan-048:calibration": true,
+        "captured:scan-049:rgb": true,
+        "captured:scan-049:calibration": true,
+        "captured:scan-050:rgb": true,
+        "captured:scan-050:calibration": true,
+        "captured:scan-051:rgb": true,
+        "captured:scan-051:calibration": true,
+        "pose_matches_plan:scan-036": true,
+        "pose_matches_plan:scan-037": true,
+        "pose_matches_plan:scan-038": true,
+        "pose_matches_plan:scan-039": true,
+        "pose_matches_plan:scan-040": true,
+        "pose_matches_plan:scan-041": true,
+        "pose_matches_plan:scan-042": true,
+        "pose_matches_plan:scan-043": true,
+        "pose_matches_plan:scan-044": true,
+        "pose_matches_plan:scan-045": true,
+        "pose_matches_plan:scan-046": true,
+        "pose_matches_plan:scan-047": true,
+        "pose_matches_plan:scan-048": true,
+        "pose_matches_plan:scan-049": true,
+        "pose_matches_plan:scan-050": true,
+        "pose_matches_plan:scan-051": true,
+        "mask_ids_exactly_allowed": true,
+        "original_mask_unchanged:scan-000": true,
+        "original_mask_unchanged:scan-001": true,
+        "original_mask_unchanged:scan-002": true,
+        "original_mask_unchanged:scan-003": true,
+        "original_mask_unchanged:scan-004": true,
+        "original_mask_unchanged:scan-005": true,
+        "original_mask_unchanged:scan-006": true,
+        "original_mask_unchanged:scan-007": true,
+        "original_mask_unchanged:scan-008": true,
+        "original_mask_unchanged:scan-009": true,
+        "original_mask_unchanged:scan-010": true,
+        "original_mask_unchanged:scan-011": true,
+        "original_mask_unchanged:scan-012": true,
+        "original_mask_unchanged:scan-013": true,
+        "original_mask_unchanged:scan-015": true,
+        "original_mask_unchanged:scan-016": true,
+        "original_mask_unchanged:scan-018": true,
+        "original_mask_unchanged:scan-019": true,
+        "original_mask_unchanged:scan-021": true,
+        "original_mask_unchanged:scan-022": true,
+        "previous_mask_artifact_hash": true,
+        "previous_mask_ids_exact": true,
+        "previous_mask_unchanged:scan-000": true,
+        "previous_mask_unchanged:scan-001": true,
+        "previous_mask_unchanged:scan-002": true,
+        "previous_mask_unchanged:scan-003": true,
+        "previous_mask_unchanged:scan-004": true,
+        "previous_mask_unchanged:scan-005": true,
+        "previous_mask_unchanged:scan-006": true,
+        "previous_mask_unchanged:scan-007": true,
+        "previous_mask_unchanged:scan-008": true,
+        "previous_mask_unchanged:scan-009": true,
+        "previous_mask_unchanged:scan-010": true,
+        "previous_mask_unchanged:scan-011": true,
+        "previous_mask_unchanged:scan-012": true,
+        "previous_mask_unchanged:scan-013": true,
+        "previous_mask_unchanged:scan-015": true,
+        "previous_mask_unchanged:scan-016": true,
+        "previous_mask_unchanged:scan-018": true,
+        "previous_mask_unchanged:scan-019": true,
+        "previous_mask_unchanged:scan-021": true,
+        "previous_mask_unchanged:scan-022": true,
+        "previous_mask_unchanged:scan-024": true,
+        "previous_mask_unchanged:scan-025": true,
+        "previous_mask_unchanged:scan-026": true,
+        "previous_mask_unchanged:scan-027": true,
+        "previous_mask_unchanged:scan-028": true,
+        "previous_mask_unchanged:scan-029": true,
+        "previous_mask_unchanged:scan-030": true,
+        "previous_mask_unchanged:scan-031": true,
+        "previous_mask_unchanged:scan-032": true,
+        "previous_mask_unchanged:scan-033": true,
+        "previous_mask_unchanged:scan-034": true,
+        "previous_mask_unchanged:scan-035": true,
+        "prior_capture_binding_hash": true,
+        "prior_capture_manifest_hash": true,
+        "prior_capture_view_ids": true
+      },
+      "pass": true
+    },
+    "strict_revision": {
+      "required": true,
+      "revision_plan_sha256": "3727c235cee48a18d2dd4240c7304b21bf88718d9bb20c463bddcfb2853ddad0",
+      "checks": {
+        "retained_baseline_mask_exact": true,
+        "added_mask_exact": true,
+        "final_free_exact_evidence_union": true,
+        "every_addition_has_strict_support": true,
+        "all_strict_candidates_have_strict_support": true,
+        "strict_bits_within_allowed_views": true,
+        "addition_support_matches_final": true,
+        "revision_plan_hash": true,
+        "declared_strict_view_count": true,
+        "declared_strict_pixel_guard": true,
+        "declared_metric_guard": true,
+        "no_truth_locations": true,
+        "addition_artifact_hash": true,
+        "reused_prior_manifest": true,
+        "retained_mask_artifact": true,
+        "retained_baseline_manifest": true,
+        "previous_revision_free_cells_retained": true,
+        "capture_plan_frozen": true,
+        "capture_manifest_frozen": true,
+        "checkpoint_frozen": true,
+        "view_order_exact": true,
+        "strict_support_uses_uint64": true
+      },
+      "new_free_cells": 5522,
+      "pass": true
+    },
+    "support_storage": {
+      "checks": {
+        "unsigned_storage": true,
+        "all_support_bits_roundtrip_exact": true,
+        "wide_storage_when_required": true,
+        "no_undeclared_view_bits": true
+      },
+      "high_view_free_support_counts": {
+        "scan-036": 7845,
+        "scan-037": 12070,
+        "scan-038": 11183,
+        "scan-039": 7607,
+        "scan-040": 11907,
+        "scan-041": 15275,
+        "scan-042": 15128,
+        "scan-043": 10727,
+        "scan-044": 11178,
+        "scan-045": 15832,
+        "scan-046": 15473,
+        "scan-047": 11734,
+        "scan-048": 8257,
+        "scan-049": 11677,
+        "scan-050": 12447,
+        "scan-051": 8705
+      },
+      "pass": true
+    },
+    "baseline_scan_time_robot": {
+      "scope": "Supplementary scan-time movable-object assumption check; not a static obstacle inserted into online control.",
+      "body": {
+        "center_scoring_only": [
+          -1.75,
+          -1.75,
+          0.037
+        ],
+        "radius_m": 0.037,
+        "free_voxel_solid_intersections": 0,
+        "free_voxel_face_contacts": 0,
+        "free_prism_solid_intersections": 0,
+        "free_prism_face_contacts": 0,
+        "collision_object": true
+      },
+      "head": {
+        "center_scoring_only": [
+          -1.75,
+          -1.75,
+          0.083
+        ],
+        "radius_m": 0.019,
+        "free_voxel_solid_intersections": 0,
+        "free_voxel_face_contacts": 0,
+        "free_prism_solid_intersections": 0,
+        "free_prism_face_contacts": 0,
+        "collision_object": false
+      },
+      "pass": true
+    },
+    "coverage_gate": {
+      "complete_case_radius_denominator": true,
+      "reported_gap_at_required_radius": true,
+      "regressions": [],
+      "pass": true
+    },
+    "baseline_coverage": [
+      {
+        "case_id": "reported-gap",
+        "family": "reported_request",
+        "radius_m": 0.1,
+        "start_free": true,
+        "goal_free": true,
+        "connected_and_certified": false,
+        "failure_reason": "Start and goal are disconnected after footprint inflation"
+      },
+      {
+        "case_id": "reported-gap",
+        "family": "reported_request",
+        "radius_m": 0.14,
+        "start_free": true,
+        "goal_free": true,
+        "connected_and_certified": false,
+        "failure_reason": "Start and goal are disconnected after footprint inflation"
+      },
+      {
+        "case_id": "reported-gap",
+        "family": "reported_request",
+        "radius_m": 0.18,
+        "start_free": true,
+        "goal_free": true,
+        "connected_and_certified": false,
+        "failure_reason": "Start and goal are disconnected after footprint inflation"
+      },
+      {
+        "case_id": "m78-natural_0",
+        "family": "original_m78_failed",
+        "radius_m": 0.1,
+        "start_free": true,
+        "goal_free": false,
+        "connected_and_certified": false,
+        "failure_reason": "Start or goal is blocked after footprint inflation"
+      },
+      {
+        "case_id": "m78-natural_0",
+        "family": "original_m78_failed",
+        "radius_m": 0.14,
+        "start_free": true,
+        "goal_free": false,
+        "connected_and_certified": false,
+        "failure_reason": "Start or goal is blocked after footprint inflation"
+      },
+      {
+        "case_id": "m78-natural_0",
+        "family": "original_m78_failed",
+        "radius_m": 0.18,
+        "start_free": true,
+        "goal_free": false,
+        "connected_and_certified": false,
+        "failure_reason": "Start or goal is blocked after footprint inflation"
+      },
+      {
+        "case_id": "m78-natural_1",
+        "family": "original_m78_failed",
+        "radius_m": 0.1,
+        "start_free": false,
+        "goal_free": false,
+        "connected_and_certified": false,
+        "failure_reason": "Start or goal is blocked after footprint inflation"
+      },
+      {
+        "case_id": "m78-natural_1",
+        "family": "original_m78_failed",
+        "radius_m": 0.14,
+        "start_free": false,
+        "goal_free": false,
+        "connected_and_certified": false,
+        "failure_reason": "Start or goal is blocked after footprint inflation"
+      },
+      {
+        "case_id": "m78-natural_1",
+        "family": "original_m78_failed",
+        "radius_m": 0.18,
+        "start_free": false,
+        "goal_free": false,
+        "connected_and_certified": false,
+        "failure_reason": "Start or goal is blocked after footprint inflation"
+      },
+      {
+        "case_id": "m78-visible_baseline",
+        "family": "original_m78_failed",
+        "radius_m": 0.1,
+        "start_free": true,
+        "goal_free": false,
+        "connected_and_certified": false,
+        "failure_reason": "Start or goal is blocked after footprint inflation"
+      },
+      {
+        "case_id": "m78-visible_baseline",
+        "family": "original_m78_failed",
+        "radius_m": 0.14,
+        "start_free": true,
+        "goal_free": false,
+        "connected_and_certified": false,
+        "failure_reason": "Start or goal is blocked after footprint inflation"
+      },
+      {
+        "case_id": "m78-visible_baseline",
+        "family": "original_m78_failed",
+        "radius_m": 0.18,
+        "start_free": false,
+        "goal_free": false,
+        "connected_and_certified": false,
+        "failure_reason": "Start or goal is blocked after footprint inflation"
+      },
+      {
+        "case_id": "m78-brief_dropout",
+        "family": "original_m78_failed",
+        "radius_m": 0.1,
+        "start_free": true,
+        "goal_free": false,
+        "connected_and_certified": false,
+        "failure_reason": "Start or goal is blocked after footprint inflation"
+      },
+      {
+        "case_id": "m78-brief_dropout",
+        "family": "original_m78_failed",
+        "radius_m": 0.14,
+        "start_free": true,
+        "goal_free": false,
+        "connected_and_certified": false,
+        "failure_reason": "Start or goal is blocked after footprint inflation"
+      },
+      {
+        "case_id": "m78-brief_dropout",
+        "family": "original_m78_failed",
+        "radius_m": 0.18,
+        "start_free": false,
+        "goal_free": false,
+        "connected_and_certified": false,
+        "failure_reason": "Start or goal is blocked after footprint inflation"
+      },
+      {
+        "case_id": "m78-long_dropout",
+        "family": "original_m78_failed",
+        "radius_m": 0.1,
+        "start_free": true,
+        "goal_free": false,
+        "connected_and_certified": false,
+        "failure_reason": "Start or goal is blocked after footprint inflation"
+      },
+      {
+        "case_id": "m78-long_dropout",
+        "family": "original_m78_failed",
+        "radius_m": 0.14,
+        "start_free": true,
+        "goal_free": false,
+        "connected_and_certified": false,
+        "failure_reason": "Start or goal is blocked after footprint inflation"
+      },
+      {
+        "case_id": "m78-long_dropout",
+        "family": "original_m78_failed",
+        "radius_m": 0.18,
+        "start_free": false,
+        "goal_free": false,
+        "connected_and_certified": false,
+        "failure_reason": "Start or goal is blocked after footprint inflation"
+      },
+      {
+        "case_id": "m78-invalid_memory",
+        "family": "original_m78_failed",
+        "radius_m": 0.1,
+        "start_free": true,
+        "goal_free": false,
+        "connected_and_certified": false,
+        "failure_reason": "Start or goal is blocked after footprint inflation"
+      },
+      {
+        "case_id": "m78-invalid_memory",
+        "family": "original_m78_failed",
+        "radius_m": 0.14,
+        "start_free": true,
+        "goal_free": false,
+        "connected_and_certified": false,
+        "failure_reason": "Start or goal is blocked after footprint inflation"
+      },
+      {
+        "case_id": "m78-invalid_memory",
+        "family": "original_m78_failed",
+        "radius_m": 0.18,
+        "start_free": false,
+        "goal_free": false,
+        "connected_and_certified": false,
+        "failure_reason": "Start or goal is blocked after footprint inflation"
+      },
+      {
+        "case_id": "m711-north-mode1",
+        "family": "previous_validated",
+        "radius_m": 0.1,
+        "start_free": true,
+        "goal_free": true,
+        "connected_and_certified": true,
+        "route": [
+          [
+            -1.4,
+            1.25
+          ],
+          [
+            0.2,
+            1.55
+          ]
+        ],
+        "exact_segment_certificates": [
+          true
+        ],
+        "route_length_m": 1.6278820596099706
+      },
+      {
+        "case_id": "m711-north-mode1",
+        "family": "previous_validated",
+        "radius_m": 0.14,
+        "start_free": true,
+        "goal_free": true,
+        "connected_and_certified": true,
+        "route": [
+          [
+            -1.4,
+            1.25
+          ],
+          [
+            0.2,
+            1.55
+          ]
+        ],
+        "exact_segment_certificates": [
+          true
+        ],
+        "route_length_m": 1.6278820596099706
+      },
+      {
+        "case_id": "m711-north-mode1",
+        "family": "previous_validated",
+        "radius_m": 0.18,
+        "start_free": true,
+        "goal_free": true,
+        "connected_and_certified": true,
+        "route": [
+          [
+            -1.4,
+            1.25
+          ],
+          [
+            0.2,
+            1.55
+          ]
+        ],
+        "exact_segment_certificates": [
+          true
+        ],
+        "route_length_m": 1.6278820596099706
+      },
+      {
+        "case_id": "m711-center-mode2",
+        "family": "previous_validated",
+        "radius_m": 0.1,
+        "start_free": true,
+        "goal_free": true,
+        "connected_and_certified": true,
+        "route": [
+          [
+            -0.3,
+            -0.75
+          ],
+          [
+            -0.35,
+            0.7
+          ]
+        ],
+        "exact_segment_certificates": [
+          true
+        ],
+        "route_length_m": 1.4508618128546908
+      },
+      {
+        "case_id": "m711-center-mode2",
+        "family": "previous_validated",
+        "radius_m": 0.14,
+        "start_free": true,
+        "goal_free": true,
+        "connected_and_certified": true,
+        "route": [
+          [
+            -0.3,
+            -0.75
+          ],
+          [
+            -0.33000000000000007,
+            0.6699999999999999
+          ],
+          [
+            -0.35,
+            0.7
+          ]
+        ],
+        "exact_segment_certificates": [
+          true,
+          true
+        ],
+        "route_length_m": 1.4563723788095353
+      },
+      {
+        "case_id": "m711-center-mode2",
+        "family": "previous_validated",
+        "radius_m": 0.18,
+        "start_free": true,
+        "goal_free": true,
+        "connected_and_certified": true,
+        "route": [
+          [
+            -0.3,
+            -0.75
+          ],
+          [
+            -0.27,
+            -0.050000000000000044
+          ],
+          [
+            -0.35,
+            0.7
+          ]
+        ],
+        "exact_segment_certificates": [
+          true,
+          true
+        ],
+        "route_length_m": 1.4548971611494574
+      },
+      {
+        "case_id": "m711-north-center-mode3",
+        "family": "previous_validated",
+        "radius_m": 0.1,
+        "start_free": true,
+        "goal_free": true,
+        "connected_and_certified": true,
+        "route": [
+          [
+            0.2,
+            1.55
+          ],
+          [
+            -0.16999999999999993,
+            0.5500000000000003
+          ],
+          [
+            -0.2,
+            -0.7
+          ]
+        ],
+        "exact_segment_certificates": [
+          true,
+          true
+        ],
+        "route_length_m": 2.3166150771192124
+      },
+      {
+        "case_id": "m711-north-center-mode3",
+        "family": "previous_validated",
+        "radius_m": 0.14,
+        "start_free": true,
+        "goal_free": true,
+        "connected_and_certified": true,
+        "route": [
+          [
+            0.2,
+            1.55
+          ],
+          [
+            -0.20999999999999996,
+            0.5699999999999998
+          ],
+          [
+            -0.2,
+            -0.7
+          ]
+        ],
+        "exact_segment_certificates": [
+          true,
+          true
+        ],
+        "route_length_m": 2.3323481757955706
+      },
+      {
+        "case_id": "m711-north-center-mode3",
+        "family": "previous_validated",
+        "radius_m": 0.18,
+        "start_free": true,
+        "goal_free": true,
+        "connected_and_certified": true,
+        "route": [
+          [
+            0.2,
+            1.55
+          ],
+          [
+            -0.16999999999999993,
+            0.79
+          ],
+          [
+            -0.25,
+            0.5699999999999998
+          ],
+          [
+            -0.2,
+            -0.7
+          ]
+        ],
+        "exact_segment_certificates": [
+          true,
+          true,
+          true
+        ],
+        "route_length_m": 2.3503588874399606
+      },
+      {
+        "case_id": "m711-demo-mode1",
+        "family": "previous_validated",
+        "radius_m": 0.1,
+        "start_free": true,
+        "goal_free": true,
+        "connected_and_certified": true,
+        "route": [
+          [
+            0.03254007833063689,
+            0.9713217108374255
+          ],
+          [
+            0.24745992166936648,
+            1.3086782891625797
+          ]
+        ],
+        "exact_segment_certificates": [
+          true
+        ],
+        "route_length_m": 0.39999999999999997
+      },
+      {
+        "case_id": "m711-demo-mode1",
+        "family": "previous_validated",
+        "radius_m": 0.14,
+        "start_free": true,
+        "goal_free": true,
+        "connected_and_certified": true,
+        "route": [
+          [
+            0.03254007833063689,
+            0.9713217108374255
+          ],
+          [
+            0.24745992166936648,
+            1.3086782891625797
+          ]
+        ],
+        "exact_segment_certificates": [
+          true
+        ],
+        "route_length_m": 0.39999999999999997
+      },
+      {
+        "case_id": "m711-demo-mode1",
+        "family": "previous_validated",
+        "radius_m": 0.18,
+        "start_free": true,
+        "goal_free": true,
+        "connected_and_certified": true,
+        "route": [
+          [
+            0.03254007833063689,
+            0.9713217108374255
+          ],
+          [
+            0.22999999999999998,
+            1.31
+          ],
+          [
+            0.24745992166936648,
+            1.3086782891625797
+          ]
+        ],
+        "exact_segment_certificates": [
+          true,
+          true
+        ],
+        "route_length_m": 0.40954738034572186
+      }
+    ],
+    "candidate_coverage": [
+      {
+        "case_id": "reported-gap",
+        "family": "reported_request",
+        "radius_m": 0.1,
+        "start_free": true,
+        "goal_free": true,
+        "connected_and_certified": true,
+        "route": [
+          [
+            -0.14399692380052198,
+            -0.062045330040032036
+          ],
+          [
+            0.6499999999999999,
+            -0.69
+          ],
+          [
+            1.19,
+            -0.77
+          ],
+          [
+            1.3554502369668247,
+            -0.8446386255924172
+          ]
+        ],
+        "exact_segment_certificates": [
+          true,
+          true,
+          true
+        ],
+        "route_length_m": 1.7397039308465823
+      },
+      {
+        "case_id": "reported-gap",
+        "family": "reported_request",
+        "radius_m": 0.14,
+        "start_free": true,
+        "goal_free": true,
+        "connected_and_certified": true,
+        "route": [
+          [
+            -0.14399692380052198,
+            -0.062045330040032036
+          ],
+          [
+            0.03000000000000025,
+            -1.4100000000000001
+          ],
+          [
+            0.08999999999999986,
+            -1.55
+          ],
+          [
+            0.18999999999999995,
+            -1.63
+          ],
+          [
+            0.5699999999999998,
+            -1.71
+          ],
+          [
+            0.9700000000000002,
+            -1.71
+          ],
+          [
+            1.0500000000000003,
+            -1.67
+          ],
+          [
+            1.1099999999999999,
+            -1.5899999999999999
+          ],
+          [
+            1.3554502369668247,
+            -0.8446386255924172
+          ]
+        ],
+        "exact_segment_certificates": [
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "route_length_m": 3.402023890605051
+      },
+      {
+        "case_id": "reported-gap",
+        "family": "reported_request",
+        "radius_m": 0.18,
+        "start_free": true,
+        "goal_free": true,
+        "connected_and_certified": false,
+        "failure_reason": "Start and goal are disconnected after footprint inflation"
+      },
+      {
+        "case_id": "m78-natural_0",
+        "family": "original_m78_failed",
+        "radius_m": 0.1,
+        "start_free": true,
+        "goal_free": true,
+        "connected_and_certified": true,
+        "route": [
+          [
+            -0.3643,
+            0.3957
+          ],
+          [
+            0.4843,
+            1.2443
+          ]
+        ],
+        "exact_segment_certificates": [
+          true
+        ],
+        "route_length_m": 1.2001016290298085
+      },
+      {
+        "case_id": "m78-natural_0",
+        "family": "original_m78_failed",
+        "radius_m": 0.14,
+        "start_free": true,
+        "goal_free": true,
+        "connected_and_certified": true,
+        "route": [
+          [
+            -0.3643,
+            0.3957
+          ],
+          [
+            0.43000000000000016,
+            1.23
+          ],
+          [
+            0.4843,
+            1.2443
+          ]
+        ],
+        "exact_segment_certificates": [
+          true,
+          true
+        ],
+        "route_length_m": 1.2080927985546175
+      },
+      {
+        "case_id": "m78-natural_0",
+        "family": "original_m78_failed",
+        "radius_m": 0.18,
+        "start_free": true,
+        "goal_free": true,
+        "connected_and_certified": true,
+        "route": [
+          [
+            -0.3643,
+            0.3957
+          ],
+          [
+            0.1299999999999999,
+            0.9900000000000002
+          ],
+          [
+            0.4843,
+            1.2443
+          ]
+        ],
+        "exact_segment_certificates": [
+          true,
+          true
+        ],
+        "route_length_m": 1.2091131871145127
+      },
+      {
+        "case_id": "m78-natural_1",
+        "family": "original_m78_failed",
+        "radius_m": 0.1,
+        "start_free": false,
+        "goal_free": true,
+        "connected_and_certified": false,
+        "failure_reason": "Start or goal is blocked after footprint inflation"
+      },
+      {
+        "case_id": "m78-natural_1",
+        "family": "original_m78_failed",
+        "radius_m": 0.14,
+        "start_free": false,
+        "goal_free": true,
+        "connected_and_certified": false,
+        "failure_reason": "Start or goal is blocked after footprint inflation"
+      },
+      {
+        "case_id": "m78-natural_1",
+        "family": "original_m78_failed",
+        "radius_m": 0.18,
+        "start_free": false,
+        "goal_free": false,
+        "connected_and_certified": false,
+        "failure_reason": "Start or goal is blocked after footprint inflation"
+      },
+      {
+        "case_id": "m78-visible_baseline",
+        "family": "original_m78_failed",
+        "radius_m": 0.1,
+        "start_free": true,
+        "goal_free": true,
+        "connected_and_certified": true,
+        "route": [
+          [
+            -0.3,
+            -1.72
+          ],
+          [
+            0.6,
+            -1.72
+          ]
+        ],
+        "exact_segment_certificates": [
+          true
+        ],
+        "route_length_m": 0.8999999999999999
+      },
+      {
+        "case_id": "m78-visible_baseline",
+        "family": "original_m78_failed",
+        "radius_m": 0.14,
+        "start_free": true,
+        "goal_free": true,
+        "connected_and_certified": false,
+        "failure_reason": "Route endpoints cannot connect safely to the grid"
+      },
+      {
+        "case_id": "m78-visible_baseline",
+        "family": "original_m78_failed",
+        "radius_m": 0.18,
+        "start_free": false,
+        "goal_free": false,
+        "connected_and_certified": false,
+        "failure_reason": "Start or goal is blocked after footprint inflation"
+      },
+      {
+        "case_id": "m78-brief_dropout",
+        "family": "original_m78_failed",
+        "radius_m": 0.1,
+        "start_free": true,
+        "goal_free": true,
+        "connected_and_certified": true,
+        "route": [
+          [
+            -0.3,
+            -1.72
+          ],
+          [
+            0.6,
+            -1.72
+          ]
+        ],
+        "exact_segment_certificates": [
+          true
+        ],
+        "route_length_m": 0.8999999999999999
+      },
+      {
+        "case_id": "m78-brief_dropout",
+        "family": "original_m78_failed",
+        "radius_m": 0.14,
+        "start_free": true,
+        "goal_free": true,
+        "connected_and_certified": false,
+        "failure_reason": "Route endpoints cannot connect safely to the grid"
+      },
+      {
+        "case_id": "m78-brief_dropout",
+        "family": "original_m78_failed",
+        "radius_m": 0.18,
+        "start_free": false,
+        "goal_free": false,
+        "connected_and_certified": false,
+        "failure_reason": "Start or goal is blocked after footprint inflation"
+      },
+      {
+        "case_id": "m78-long_dropout",
+        "family": "original_m78_failed",
+        "radius_m": 0.1,
+        "start_free": true,
+        "goal_free": true,
+        "connected_and_certified": true,
+        "route": [
+          [
+            -0.3,
+            -1.72
+          ],
+          [
+            0.6,
+            -1.72
+          ]
+        ],
+        "exact_segment_certificates": [
+          true
+        ],
+        "route_length_m": 0.8999999999999999
+      },
+      {
+        "case_id": "m78-long_dropout",
+        "family": "original_m78_failed",
+        "radius_m": 0.14,
+        "start_free": true,
+        "goal_free": true,
+        "connected_and_certified": false,
+        "failure_reason": "Route endpoints cannot connect safely to the grid"
+      },
+      {
+        "case_id": "m78-long_dropout",
+        "family": "original_m78_failed",
+        "radius_m": 0.18,
+        "start_free": false,
+        "goal_free": false,
+        "connected_and_certified": false,
+        "failure_reason": "Start or goal is blocked after footprint inflation"
+      },
+      {
+        "case_id": "m78-invalid_memory",
+        "family": "original_m78_failed",
+        "radius_m": 0.1,
+        "start_free": true,
+        "goal_free": true,
+        "connected_and_certified": true,
+        "route": [
+          [
+            -0.3,
+            -1.72
+          ],
+          [
+            0.6,
+            -1.72
+          ]
+        ],
+        "exact_segment_certificates": [
+          true
+        ],
+        "route_length_m": 0.8999999999999999
+      },
+      {
+        "case_id": "m78-invalid_memory",
+        "family": "original_m78_failed",
+        "radius_m": 0.14,
+        "start_free": true,
+        "goal_free": true,
+        "connected_and_certified": false,
+        "failure_reason": "Route endpoints cannot connect safely to the grid"
+      },
+      {
+        "case_id": "m78-invalid_memory",
+        "family": "original_m78_failed",
+        "radius_m": 0.18,
+        "start_free": false,
+        "goal_free": false,
+        "connected_and_certified": false,
+        "failure_reason": "Start or goal is blocked after footprint inflation"
+      },
+      {
+        "case_id": "m711-north-mode1",
+        "family": "previous_validated",
+        "radius_m": 0.1,
+        "start_free": true,
+        "goal_free": true,
+        "connected_and_certified": true,
+        "route": [
+          [
+            -1.4,
+            1.25
+          ],
+          [
+            0.2,
+            1.55
+          ]
+        ],
+        "exact_segment_certificates": [
+          true
+        ],
+        "route_length_m": 1.6278820596099706
+      },
+      {
+        "case_id": "m711-north-mode1",
+        "family": "previous_validated",
+        "radius_m": 0.14,
+        "start_free": true,
+        "goal_free": true,
+        "connected_and_certified": true,
+        "route": [
+          [
+            -1.4,
+            1.25
+          ],
+          [
+            0.2,
+            1.55
+          ]
+        ],
+        "exact_segment_certificates": [
+          true
+        ],
+        "route_length_m": 1.6278820596099706
+      },
+      {
+        "case_id": "m711-north-mode1",
+        "family": "previous_validated",
+        "radius_m": 0.18,
+        "start_free": true,
+        "goal_free": true,
+        "connected_and_certified": true,
+        "route": [
+          [
+            -1.4,
+            1.25
+          ],
+          [
+            0.2,
+            1.55
+          ]
+        ],
+        "exact_segment_certificates": [
+          true
+        ],
+        "route_length_m": 1.6278820596099706
+      },
+      {
+        "case_id": "m711-center-mode2",
+        "family": "previous_validated",
+        "radius_m": 0.1,
+        "start_free": true,
+        "goal_free": true,
+        "connected_and_certified": true,
+        "route": [
+          [
+            -0.3,
+            -0.75
+          ],
+          [
+            -0.35,
+            0.7
+          ]
+        ],
+        "exact_segment_certificates": [
+          true
+        ],
+        "route_length_m": 1.4508618128546908
+      },
+      {
+        "case_id": "m711-center-mode2",
+        "family": "previous_validated",
+        "radius_m": 0.14,
+        "start_free": true,
+        "goal_free": true,
+        "connected_and_certified": true,
+        "route": [
+          [
+            -0.3,
+            -0.75
+          ],
+          [
+            -0.35,
+            0.7
+          ]
+        ],
+        "exact_segment_certificates": [
+          true
+        ],
+        "route_length_m": 1.4508618128546908
+      },
+      {
+        "case_id": "m711-center-mode2",
+        "family": "previous_validated",
+        "radius_m": 0.18,
+        "start_free": true,
+        "goal_free": true,
+        "connected_and_certified": true,
+        "route": [
+          [
+            -0.3,
+            -0.75
+          ],
+          [
+            -0.35,
+            0.7
+          ]
+        ],
+        "exact_segment_certificates": [
+          true
+        ],
+        "route_length_m": 1.4508618128546908
+      },
+      {
+        "case_id": "m711-north-center-mode3",
+        "family": "previous_validated",
+        "radius_m": 0.1,
+        "start_free": true,
+        "goal_free": true,
+        "connected_and_certified": true,
+        "route": [
+          [
+            0.2,
+            1.55
+          ],
+          [
+            -0.2,
+            -0.7
+          ]
+        ],
+        "exact_segment_certificates": [
+          true
+        ],
+        "route_length_m": 2.2852789764052877
+      },
+      {
+        "case_id": "m711-north-center-mode3",
+        "family": "previous_validated",
+        "radius_m": 0.14,
+        "start_free": true,
+        "goal_free": true,
+        "connected_and_certified": true,
+        "route": [
+          [
+            0.2,
+            1.55
+          ],
+          [
+            0.04999999999999982,
+            0.75
+          ],
+          [
+            -0.2,
+            -0.7
+          ]
+        ],
+        "exact_segment_certificates": [
+          true,
+          true
+        ],
+        "route_length_m": 2.2853349267612018
+      },
+      {
+        "case_id": "m711-north-center-mode3",
+        "family": "previous_validated",
+        "radius_m": 0.18,
+        "start_free": true,
+        "goal_free": true,
+        "connected_and_certified": true,
+        "route": [
+          [
+            0.2,
+            1.55
+          ],
+          [
+            0.010000000000000231,
+            0.77
+          ],
+          [
+            -0.2,
+            -0.7
+          ]
+        ],
+        "exact_segment_certificates": [
+          true,
+          true
+        ],
+        "route_length_m": 2.2877318139488017
+      },
+      {
+        "case_id": "m711-demo-mode1",
+        "family": "previous_validated",
+        "radius_m": 0.1,
+        "start_free": true,
+        "goal_free": true,
+        "connected_and_certified": true,
+        "route": [
+          [
+            0.03254007833063689,
+            0.9713217108374255
+          ],
+          [
+            0.24745992166936648,
+            1.3086782891625797
+          ]
+        ],
+        "exact_segment_certificates": [
+          true
+        ],
+        "route_length_m": 0.39999999999999997
+      },
+      {
+        "case_id": "m711-demo-mode1",
+        "family": "previous_validated",
+        "radius_m": 0.14,
+        "start_free": true,
+        "goal_free": true,
+        "connected_and_certified": true,
+        "route": [
+          [
+            0.03254007833063689,
+            0.9713217108374255
+          ],
+          [
+            0.24745992166936648,
+            1.3086782891625797
+          ]
+        ],
+        "exact_segment_certificates": [
+          true
+        ],
+        "route_length_m": 0.39999999999999997
+      },
+      {
+        "case_id": "m711-demo-mode1",
+        "family": "previous_validated",
+        "radius_m": 0.18,
+        "start_free": true,
+        "goal_free": true,
+        "connected_and_certified": true,
+        "route": [
+          [
+            0.03254007833063689,
+            0.9713217108374255
+          ],
+          [
+            0.24745992166936648,
+            1.3086782891625797
+          ]
+        ],
+        "exact_segment_certificates": [
+          true
+        ],
+        "route_length_m": 0.39999999999999997
+      }
+    ],
+    "coverage_counts": {
+      "0.1": {
+        "case_denominator": 11,
+        "unique_endpoint_denominator": 8,
+        "baseline_connected": 4,
+        "candidate_connected": 10
+      },
+      "0.14": {
+        "case_denominator": 11,
+        "unique_endpoint_denominator": 8,
+        "baseline_connected": 4,
+        "candidate_connected": 6
+      },
+      "0.18": {
+        "case_denominator": 11,
+        "unique_endpoint_denominator": 8,
+        "baseline_connected": 4,
+        "candidate_connected": 5
+      }
+    },
+    "limitations": [
+      "All geometry is authored synthetic scorer data; no unseen-room or physical safety claim.",
+      "Six original failed case IDs include four identical endpoint pairs. Map connectivity cannot establish their original occlusion/control intent.",
+      "The reported route and regression endpoints are development cases; all candidate attempts and failed gates must remain visible.",
+      "A passing static gate permits fresh bounded native trials only; original arrival, visibility, actuation and failure-control gates remain mandatory."
+    ]
+  }
+}

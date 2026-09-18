@@ -1,0 +1,23 @@
+{
+  "source_rows_sha256": "8098167e4e68f61e60aabd7fdccda89b99240033916601062a907e5212859f09",
+  "source_demo_sha256": "aee21a38d17b1d4dd141d6f5a34dcaf91e355ad5bab04e588d6db7820f0f8843",
+  "crops": {
+    "A": [
+      449,
+      428,
+      839,
+      794
+    ],
+    "B": [
+      337,
+      409,
+      675,
+      726
+    ]
+  },
+  "frames": 151,
+  "playback": "2x simulation time; one saved capture every 0.2 simulation seconds displayed for 0.1 seconds",
+  "renderer_source_sha256": "242795152ef7e93d814c10b31019d2e33d3dca224790b0be33132c4723deac64",
+  "gif_sha256": "a5b79c1df859af0acd1afad9d73b7b86a0cca56b90e40797064690e4d15a1ccf",
+  "scope": "Synchronized native RGB crops and recorded observer labels; no scene synthesis or truth supplied to control."
+}

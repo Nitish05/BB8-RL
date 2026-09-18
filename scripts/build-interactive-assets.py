@@ -29,7 +29,7 @@ def portable(value, roots):
 def main(args):
     output = args.output.resolve()
     output.mkdir(parents=True, exist_ok=False)
-    memory = ROOT / "work/m78/scan-free-memory-v6-hull-fine"
+    memory = args.memory.resolve()
     registration_path = ROOT / "work/m77/registration/superpoint-lightglue/report.json"
     registration = json.loads(registration_path.read_text())
     protocol_path = (
@@ -52,9 +52,10 @@ def main(args):
         else text
         for text in map_manifest["assumptions"]
     ]
-    map_manifest["free_evidence_semantics"] = (
-        "Expanded whole-body prisms require three separated RGB supports; unknown remains blocked."
-    )
+    if "free_evidence_mode" not in map_manifest:
+        map_manifest["free_evidence_semantics"] = (
+            "Expanded whole-body prisms require three separated RGB supports; unknown remains blocked."
+        )
     map_manifest["portable_source_manifest_sha256"] = sha256(memory / "manifest.json")
     write(output / "memory/manifest.json", map_manifest)
     shutil.copy2(ROOT / "work/m6/sac-2/model.zip", output / "policy.zip")
@@ -103,6 +104,8 @@ def main(args):
             "source_map_manifest_sha256": sha256(memory / "manifest.json"),
             "source_registration_sha256": sha256(registration_path),
             "source_protocol_sha256": sha256(protocol_path),
+            "free_evidence_mode": map_manifest.get("free_evidence_mode", "full_prism"),
+            "free_evidence_semantics": map_manifest["free_evidence_semantics"],
             "model_origin": "Project-trained SAC and compact vision models, unchanged from M7.8.",
             "third_party_weights_included": False,
             "map_origin": "Project synthetic RGB scan and project photometric/free-volume reconstruction; third-party matching outputs used for camera registration.",
@@ -148,5 +151,10 @@ def main(args):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--scan-dir", type=Path, required=True)
+    parser.add_argument(
+        "--memory", type=Path,
+        default=ROOT / "work/m78/scan-free-memory-v6-hull-fine",
+        help="Independently audited scan-memory directory to package",
+    )
     parser.add_argument("--output", type=Path, required=True)
     main(parser.parse_args())

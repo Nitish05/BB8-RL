@@ -1,0 +1,284 @@
+{
+  "schema": "bb8.supplemental-scan-plan.v2",
+  "scope": "Global half-offset grid improves overlap for four-view full-prism evidence; positions fixed before capture and scoring.",
+  "seed": 78100,
+  "layout_seed": 11178,
+  "parked_robot_xy": [
+    -1.75,
+    -1.75
+  ],
+  "excluded_query_ids": [
+    14,
+    17,
+    20,
+    23
+  ],
+  "resolution_wh": [
+    1280,
+    960
+  ],
+  "views": [
+    {
+      "id": "scan-036",
+      "index": 36,
+      "position": [
+        -1.5,
+        -1.5,
+        3.0
+      ],
+      "lookat": [
+        -1.5,
+        -1.45,
+        0.0
+      ]
+    },
+    {
+      "id": "scan-037",
+      "index": 37,
+      "position": [
+        -0.5,
+        -1.5,
+        3.0
+      ],
+      "lookat": [
+        -0.5,
+        -1.45,
+        0.0
+      ]
+    },
+    {
+      "id": "scan-038",
+      "index": 38,
+      "position": [
+        0.5,
+        -1.5,
+        3.0
+      ],
+      "lookat": [
+        0.5,
+        -1.45,
+        0.0
+      ]
+    },
+    {
+      "id": "scan-039",
+      "index": 39,
+      "position": [
+        1.5,
+        -1.5,
+        3.0
+      ],
+      "lookat": [
+        1.5,
+        -1.45,
+        0.0
+      ]
+    },
+    {
+      "id": "scan-040",
+      "index": 40,
+      "position": [
+        -1.5,
+        -0.5,
+        3.0
+      ],
+      "lookat": [
+        -1.5,
+        -0.45,
+        0.0
+      ]
+    },
+    {
+      "id": "scan-041",
+      "index": 41,
+      "position": [
+        -0.5,
+        -0.5,
+        3.0
+      ],
+      "lookat": [
+        -0.5,
+        -0.45,
+        0.0
+      ]
+    },
+    {
+      "id": "scan-042",
+      "index": 42,
+      "position": [
+        0.5,
+        -0.5,
+        3.0
+      ],
+      "lookat": [
+        0.5,
+        -0.45,
+        0.0
+      ]
+    },
+    {
+      "id": "scan-043",
+      "index": 43,
+      "position": [
+        1.5,
+        -0.5,
+        3.0
+      ],
+      "lookat": [
+        1.5,
+        -0.45,
+        0.0
+      ]
+    },
+    {
+      "id": "scan-044",
+      "index": 44,
+      "position": [
+        -1.5,
+        0.5,
+        3.0
+      ],
+      "lookat": [
+        -1.5,
+        0.55,
+        0.0
+      ]
+    },
+    {
+      "id": "scan-045",
+      "index": 45,
+      "position": [
+        -0.5,
+        0.5,
+        3.0
+      ],
+      "lookat": [
+        -0.5,
+        0.55,
+        0.0
+      ]
+    },
+    {
+      "id": "scan-046",
+      "index": 46,
+      "position": [
+        0.5,
+        0.5,
+        3.0
+      ],
+      "lookat": [
+        0.5,
+        0.55,
+        0.0
+      ]
+    },
+    {
+      "id": "scan-047",
+      "index": 47,
+      "position": [
+        1.5,
+        0.5,
+        3.0
+      ],
+      "lookat": [
+        1.5,
+        0.55,
+        0.0
+      ]
+    },
+    {
+      "id": "scan-048",
+      "index": 48,
+      "position": [
+        -1.5,
+        1.5,
+        3.0
+      ],
+      "lookat": [
+        -1.5,
+        1.55,
+        0.0
+      ]
+    },
+    {
+      "id": "scan-049",
+      "index": 49,
+      "position": [
+        -0.5,
+        1.5,
+        3.0
+      ],
+      "lookat": [
+        -0.5,
+        1.55,
+        0.0
+      ]
+    },
+    {
+      "id": "scan-050",
+      "index": 50,
+      "position": [
+        0.5,
+        1.5,
+        3.0
+      ],
+      "lookat": [
+        0.5,
+        1.55,
+        0.0
+      ]
+    },
+    {
+      "id": "scan-051",
+      "index": 51,
+      "position": [
+        1.5,
+        1.5,
+        3.0
+      ],
+      "lookat": [
+        1.5,
+        1.55,
+        0.0
+      ]
+    }
+  ],
+  "depth_used": false,
+  "segmentation_used": false,
+  "camera_moving_robot_stationary": true,
+  "retained_view_ids": [
+    "scan-000",
+    "scan-001",
+    "scan-002",
+    "scan-003",
+    "scan-004",
+    "scan-005",
+    "scan-006",
+    "scan-007",
+    "scan-008",
+    "scan-009",
+    "scan-010",
+    "scan-011",
+    "scan-012",
+    "scan-013",
+    "scan-015",
+    "scan-016",
+    "scan-018",
+    "scan-019",
+    "scan-021",
+    "scan-022",
+    "scan-024",
+    "scan-025",
+    "scan-026",
+    "scan-027",
+    "scan-028",
+    "scan-029",
+    "scan-030",
+    "scan-031",
+    "scan-032",
+    "scan-033",
+    "scan-034",
+    "scan-035"
+  ],
+  "prior_capture_manifest_sha256": "845da8774aa953f97fdcfae9c4265b901e5c751b1da6f3524b7e7bed1651c52f"
+}

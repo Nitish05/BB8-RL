@@ -1,0 +1,258 @@
+{
+  "schema": "bb8.map-native-protocol.v1",
+  "created_at_utc": "2026-09-18T01:38:48.092643+00:00",
+  "scope": "Exact reported destination in all three camera modes plus all previous M711 cases; fixed before candidate geometry or native results. No settings tuned from results.",
+  "control_profile": "reserve-3cm",
+  "cases": {
+    "reported-mode1": {
+      "start": [
+        -0.14399692380052198,
+        -0.062045330040032036
+      ],
+      "goal": [
+        1.3554502369668247,
+        -0.8446386255924172
+      ],
+      "mode": 1,
+      "duration_s": 60.0,
+      "intent": "arrival"
+    },
+    "reported-mode2": {
+      "start": [
+        -0.14399692380052198,
+        -0.062045330040032036
+      ],
+      "goal": [
+        1.3554502369668247,
+        -0.8446386255924172
+      ],
+      "mode": 2,
+      "duration_s": 60.0,
+      "intent": "arrival"
+    },
+    "reported-mode3": {
+      "start": [
+        -0.14399692380052198,
+        -0.062045330040032036
+      ],
+      "goal": [
+        1.3554502369668247,
+        -0.8446386255924172
+      ],
+      "mode": 3,
+      "duration_s": 60.0,
+      "intent": "arrival"
+    },
+    "tuning-forward": {
+      "start": [
+        -1.23,
+        1.45
+      ],
+      "goal": [
+        -0.2065534089380967,
+        -0.8665560984356091
+      ],
+      "mode": 1,
+      "duration_s": 60.0,
+      "intent": "arrival"
+    },
+    "tuning-reverse": {
+      "start": [
+        -0.21,
+        -0.87
+      ],
+      "goal": [
+        -1.59,
+        1.41
+      ],
+      "mode": 1,
+      "duration_s": 60.0,
+      "intent": "arrival"
+    },
+    "north-mode1": {
+      "start": [
+        -1.4,
+        1.25
+      ],
+      "goal": [
+        0.2,
+        1.55
+      ],
+      "mode": 1,
+      "duration_s": 60.0,
+      "intent": "arrival"
+    },
+    "center-mode2": {
+      "start": [
+        -0.3,
+        -0.75
+      ],
+      "goal": [
+        -0.35,
+        0.7
+      ],
+      "mode": 2,
+      "duration_s": 60.0,
+      "intent": "arrival"
+    },
+    "north-center-mode3": {
+      "start": [
+        0.2,
+        1.55
+      ],
+      "goal": [
+        -0.2,
+        -0.7
+      ],
+      "mode": 3,
+      "duration_s": 60.0,
+      "intent": "arrival"
+    },
+    "demo-mode1": {
+      "start": [
+        0.03254007833063689,
+        0.9713217108374255
+      ],
+      "goal": [
+        0.24745992166936648,
+        1.3086782891625797
+      ],
+      "mode": 1,
+      "duration_s": 60.0,
+      "intent": "arrival"
+    },
+    "stop-mode1": {
+      "start": [
+        0.03254007833063689,
+        0.9713217108374255
+      ],
+      "goal": [
+        0.24745992166936648,
+        1.3086782891625797
+      ],
+      "mode": 1,
+      "duration_s": 5.5,
+      "intent": "stop",
+      "stop_at": 2.0
+    },
+    "all-lost-mode2": {
+      "start": [
+        0.03254007833063689,
+        0.9713217108374255
+      ],
+      "goal": [
+        0.24745992166936648,
+        1.3086782891625797
+      ],
+      "mode": 2,
+      "duration_s": 9.0,
+      "intent": "arrival",
+      "camera_dropouts": {
+        "A": [
+          [
+            2.0,
+            5.0
+          ]
+        ],
+        "B": [
+          [
+            2.0,
+            5.0
+          ]
+        ]
+      }
+    },
+    "invalid-memory-mode2": {
+      "start": [
+        0.03254007833063689,
+        0.9713217108374255
+      ],
+      "goal": [
+        0.24745992166936648,
+        1.3086782891625797
+      ],
+      "mode": 2,
+      "duration_s": 5.5,
+      "intent": "invalid",
+      "invalidate_memory_at": 2.0
+    }
+  },
+  "failure_controls": [
+    {
+      "id": "stop-mode1",
+      "mode": 1,
+      "start": [
+        0.03254007833063689,
+        0.9713217108374255
+      ],
+      "goal": [
+        0.24745992166936648,
+        1.3086782891625797
+      ],
+      "max_sim_seconds": 60.0,
+      "max_steps": 110,
+      "stop_at_sim_time": 2.0,
+      "stale_goal_after_stop": true,
+      "minimum_end_sim_time": 5.5
+    },
+    {
+      "id": "all-lost-mode2",
+      "mode": 2,
+      "start": [
+        0.03254007833063689,
+        0.9713217108374255
+      ],
+      "goal": [
+        0.24745992166936648,
+        1.3086782891625797
+      ],
+      "max_sim_seconds": 60.0,
+      "max_steps": 180,
+      "camera_dropouts": {
+        "A": [
+          [
+            2.0,
+            5.0
+          ]
+        ],
+        "B": [
+          [
+            2.0,
+            5.0
+          ]
+        ]
+      },
+      "minimum_end_sim_time": 7.0
+    },
+    {
+      "id": "invalid-memory-mode2",
+      "mode": 2,
+      "start": [
+        0.03254007833063689,
+        0.9713217108374255
+      ],
+      "goal": [
+        0.24745992166936648,
+        1.3086782891625797
+      ],
+      "max_sim_seconds": 60.0,
+      "max_steps": 110,
+      "invalidate_memory_at": 2.0,
+      "minimum_end_sim_time": 5.5
+    }
+  ],
+  "arrival_gate": {
+    "distance_m": 0.1,
+    "speed_m_s": 0.03,
+    "continuous_dwell_seconds": 0.5,
+    "fresh_accepted_rgb_and_renderer_visibility_required": true
+  },
+  "previous_protocol_sha256": "18d05f69ce4dfa1720fb24848fe1e097051f19138a14430290071dfd190c8d22",
+  "promotion": "Exact reported route passes in all three camera modes, no regressions among previous successful cases, all original unchanged independent arrival/stop/occlusion/contact/provenance gates pass. Map-only legacy cases reported separately.",
+  "case_plan_sha256": "321e1d8714498c5495cbd3f8839547416a78a8a2893ef9bba9cb2842ff433f53",
+  "map_audit_sha256": "97deb0cef6a7ada58ffdcc818439f3ace5b633197916dd3f70e189a1d7e0a78d",
+  "candidate_manifest_sha256": "dd150e3f361e6fc07da8893506491f279bbea61ef957282ecfc728bb94b72437",
+  "bundle_manifest_sha256": "fb7227dd326ec2968ca9110326a6d642d5548db7e9f78bd3f8af09ca6a8419cb",
+  "map_manifest_sha256": "fec3689439eabef3ba405046d57402fc4732cfc0d84cc24bcfa25f813304f83c",
+  "room_memory_sha256": "db176e00eb4edfc3f0ff9e327e75cb4a78d75b0025ff2fdd40c7cba95d528ea2"
+}

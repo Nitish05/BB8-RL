@@ -1,0 +1,1351 @@
+{
+  "schema": "bb8.map-native-summary.v1",
+  "scope": "One bounded twelve-case synthetic regression of one statically audited map. No native result is used to choose or modify mapping thresholds.",
+  "all_pass": true,
+  "checks": {
+    "exact_predeclared_cases": true,
+    "unchanged_failure_controls": true,
+    "unchanged_arrival_gate": true,
+    "map_passed_native_trial_gate": true,
+    "portable_map_is_audited_candidate": true,
+    "policy_unchanged": true,
+    "vision_unchanged": true,
+    "registered_cameras_unchanged": true,
+    "scene_unchanged": true,
+    "bound_bundle_hash": true,
+    "bound_portable_map_hash": true,
+    "all_twelve_cases_present_once": true,
+    "frozen_source_set_across_runs": true,
+    "all_native_intents_pass": true
+  },
+  "expected_cases": 12,
+  "recorded_cases": 12,
+  "intended_passes": 12,
+  "valid_arrival_cases": 10,
+  "missing_cases": [],
+  "unexpected_cases": [],
+  "duplicate_cases": {},
+  "frames": 4114,
+  "physics_samples": 41140,
+  "verified_image_artifacts": 14308,
+  "route_diagnostics_required": true,
+  "runs": [
+    {
+      "run": "work/m712-map-improvement/native-exact/all-lost-mode2",
+      "case": "all-lost-mode2",
+      "profile": {
+        "name": "reserve-3cm",
+        "margin_m": 0.03,
+        "speed_m_s": 0.15,
+        "lookahead_s": 0.0,
+        "planning_reserve_m": 0.04,
+        "parameters": {
+          "max_occlusion_seconds": 1.0,
+          "max_frame_age": 0.1,
+          "max_interval": 0.15,
+          "speed_cap": 0.15,
+          "max_position_radius": 0.08,
+          "measurement_sigma_multiplier": 3.0,
+          "measurement_radius_floor": 0.005,
+          "innovation_slack": 0.015,
+          "max_reacquisition_distance": 0.12,
+          "robot_radius": 0.037,
+          "clearance_margin": 0.03,
+          "command_horizon": 0.05,
+          "minimum_visual_samples": 3,
+          "max_initial_velocity_radius": 0.05,
+          "arrival_radius": 0.1,
+          "arrival_speed": 0.03,
+          "visible_dwell": 0.5,
+          "proactive_horizon_seconds": 0.0,
+          "proactive_speed_samples": 10
+        }
+      },
+      "mode": 2,
+      "intent": "arrival",
+      "hard_failures": [],
+      "audit_pass": true,
+      "valid_arrival": true,
+      "intended_pass": true,
+      "control_checks": {
+        "loss_window_s": [
+          2.0,
+          5.0
+        ],
+        "motion_before_event": {
+          "recent_physical_motion": true,
+          "recent_nonzero_acknowledged_target": true,
+          "pass": true
+        },
+        "loss_captures": 60,
+        "expired_loss_captures": 40,
+        "all_loss_frames_missing": true,
+        "all_expired_loss_requests_zero": true,
+        "all_cameras_omitted": true,
+        "complete_loss_window": true,
+        "recovery_valid_arrival": true,
+        "observed_through_minimum_7s": true,
+        "last_expired_loss_true_speed_m_s": 0.0005445657108240969,
+        "pass": true
+      },
+      "recorded_simulation_s": 7.15,
+      "first_valid_arrival": {
+        "time": 7.1000000000000005,
+        "goal": [
+          0.24745992166936648,
+          1.3086782891625797
+        ],
+        "distance_m": 0.032643731855418474,
+        "speed_m_s": 0.0029727566419322127,
+        "true_dwell_at_capture_s": 0.8100000000000005,
+        "visible_fresh_rgb": true,
+        "passed": true
+      },
+      "guarded_stop_episodes": 0,
+      "status_counts": {
+        "warming_up": 20,
+        "tracking_visible": 55,
+        "tracking_hidden": 20,
+        "occlusion_timeout": 40,
+        "settling_visible": 7,
+        "arrived_visible": 1
+      },
+      "blind_motion_violation_times": [],
+      "frames": 143,
+      "physics_samples": 1430,
+      "verified_image_artifacts": 572,
+      "unavailable_image_frames": 0,
+      "input_sha256": {
+        "case": "d923c464e755acc9d4820993d41fb746f4deab5aada7e5fca8fdc0c010d0373f",
+        "summary": "42bd95e91161b8dadcce1b702de5b45fcae79e709a53a4a25b4a703961a3dc6d",
+        "audit": "e82bebe6748356e3dad573e5371664e87f6d21866d3faf8b931a8dd825c4a9e3",
+        "manifest": "73ba3b71594aa3a8d5071713ebba007d15de191a56b19f1af952f0c6cd15f4a3",
+        "rows": "064a692e83c18b232e82573a52e6e3df16e4f3692cb52f0d4a70b3a4958a4b32",
+        "commands": "7b2cc2ad787ba1637e358fb54ad34689ca6086f77476c1e7010c754cbe755be2",
+        "scorer": "7e59a2e9cddb0c1cff789db76105a664275f25d519c235dc1d5e69c8ac40f003",
+        "harness": "d140cb4f26e65b8f1cad021b9e3d6c815e6e08ae2b4ccec6042f20dbe842d721"
+      },
+      "recorded_protocol_sha256": "a5ffd02f44d03b1f9001b8167e02150de11fe3ccb678fa5fef0fbcef2f6a3ecf",
+      "source_sha256": {
+        "interactive_runtime.py": "9aa8376a4a408ff66ce8b86905344e1bb1ab7111c341fce8b3cc0f6a3f5b4a74",
+        "occluded_control.py": "03bf1c2717698d22d34e2f4becccb143bda9c22f3f1a66627b993bbab504ca80",
+        "control_profiles.py": "58127670bfc829c26a1c9195b6c8f13553d3eedd24182a0a52fdf7191867cac0",
+        "camera.py": "e11c223599adf79551ca492643178e042cd3cca3fa71a1395549a26ef6acd11d",
+        "camera_rig.py": "4ee378b375f81c39cc710beaaff1e86caa322dbe16bbf96456404bf2469c4358",
+        "vision.py": "022513c55dd19ef7d38f78f3ea93b03996302938370fde05444359a08ee98394",
+        "genesis_backend.py": "975951b11adfe5ee808f86990fba8c3805b7120d7498510c61705915758ffec4",
+        "scan_free_space.py": "9246e2733eb02e9b8e2b26aea0628d41824e87c18b73540074501d088281b607"
+      },
+      "asset_sha256": {
+        "demo.json": "e7239da91723e0e984bb11554a903664c5a8a9fc1c5d096ec97e8bdb872b0041",
+        "policy.zip": "97b0f47802515356262a453fb1894c6146ba9f8c66ada958daac3c8b5fe98b93",
+        "vision.pt": "483065dada5480f7ef990f526cec5f8a45c16438fb7931bcd1058d44ccd06ca8",
+        "memory/manifest.json": "fec3689439eabef3ba405046d57402fc4732cfc0d84cc24bcfa25f813304f83c"
+      },
+      "route_planning_checks": {
+        "required": true,
+        "instrumented_frames": 143,
+        "frames_with_latched_diagnostics": 143,
+        "certified_frames_with_latched_diagnostics": 143,
+        "fallback_frames_with_latched_diagnostics": 0,
+        "distinct_diagnostic_values": 2,
+        "diagnostic_value_transitions": 2,
+        "strict_comparisons_without_epsilon": true,
+        "failures": [],
+        "pass": true,
+        "limit": "Diagnostics describe the last route attempt and can remain latched over many captures, including stopped states. Frame, value and transition counts are not independent planning attempts. This check does not infer a fresh radius from the current row covariance."
+      }
+    },
+    {
+      "run": "work/m712-map-improvement/native-exact/center-mode2",
+      "case": "center-mode2",
+      "profile": {
+        "name": "reserve-3cm",
+        "margin_m": 0.03,
+        "speed_m_s": 0.15,
+        "lookahead_s": 0.0,
+        "planning_reserve_m": 0.04,
+        "parameters": {
+          "max_occlusion_seconds": 1.0,
+          "max_frame_age": 0.1,
+          "max_interval": 0.15,
+          "speed_cap": 0.15,
+          "max_position_radius": 0.08,
+          "measurement_sigma_multiplier": 3.0,
+          "measurement_radius_floor": 0.005,
+          "innovation_slack": 0.015,
+          "max_reacquisition_distance": 0.12,
+          "robot_radius": 0.037,
+          "clearance_margin": 0.03,
+          "command_horizon": 0.05,
+          "minimum_visual_samples": 3,
+          "max_initial_velocity_radius": 0.05,
+          "arrival_radius": 0.1,
+          "arrival_speed": 0.03,
+          "visible_dwell": 0.5,
+          "proactive_horizon_seconds": 0.0,
+          "proactive_speed_samples": 10
+        }
+      },
+      "mode": 2,
+      "intent": "arrival",
+      "hard_failures": [],
+      "audit_pass": true,
+      "valid_arrival": true,
+      "intended_pass": true,
+      "control_checks": {
+        "pass": true,
+        "kind": "arrival"
+      },
+      "recorded_simulation_s": 12.15,
+      "first_valid_arrival": {
+        "time": 12.1,
+        "goal": [
+          -0.35,
+          0.7
+        ],
+        "distance_m": 0.0291062715354944,
+        "speed_m_s": 0.0033109743279048118,
+        "true_dwell_at_capture_s": 0.7699999999999996,
+        "visible_fresh_rgb": true,
+        "passed": true
+      },
+      "guarded_stop_episodes": 0,
+      "status_counts": {
+        "warming_up": 20,
+        "tracking_visible": 215,
+        "settling_visible": 7,
+        "arrived_visible": 1
+      },
+      "blind_motion_violation_times": [],
+      "frames": 243,
+      "physics_samples": 2430,
+      "verified_image_artifacts": 972,
+      "unavailable_image_frames": 0,
+      "input_sha256": {
+        "case": "d51ed4dfa58a45954e70a41cec70179d26ba4aec4fc10dcc147b6208dcbf8b41",
+        "summary": "e38302f56bbfa4b36f6609c5395819b978d892fc7c89d3de5297cd6a205ee229",
+        "audit": "c4f814b4438857cde7b440c94f2779a200d56b9ce6770352d28b94df408a716c",
+        "manifest": "323dbf0d84eeda66cd7cdc581382147613c9ef326cb26ac85c3013daec257da9",
+        "rows": "eaa79d77c5981952d343463d7bb5ba9875b6a69303555e892ecf9d46798bc010",
+        "commands": "8dcd96081b662f15444694a80ca62bfc05ebdc6fc2e2e6f736adc5f5b153ce31",
+        "scorer": "7e59a2e9cddb0c1cff789db76105a664275f25d519c235dc1d5e69c8ac40f003",
+        "harness": "fc06f3303c895bd296f3b1eeff9c5d75b90aa988f311e2b077de5490bccbb011"
+      },
+      "recorded_protocol_sha256": "a5ffd02f44d03b1f9001b8167e02150de11fe3ccb678fa5fef0fbcef2f6a3ecf",
+      "source_sha256": {
+        "interactive_runtime.py": "9aa8376a4a408ff66ce8b86905344e1bb1ab7111c341fce8b3cc0f6a3f5b4a74",
+        "occluded_control.py": "03bf1c2717698d22d34e2f4becccb143bda9c22f3f1a66627b993bbab504ca80",
+        "control_profiles.py": "58127670bfc829c26a1c9195b6c8f13553d3eedd24182a0a52fdf7191867cac0",
+        "camera.py": "e11c223599adf79551ca492643178e042cd3cca3fa71a1395549a26ef6acd11d",
+        "camera_rig.py": "4ee378b375f81c39cc710beaaff1e86caa322dbe16bbf96456404bf2469c4358",
+        "vision.py": "022513c55dd19ef7d38f78f3ea93b03996302938370fde05444359a08ee98394",
+        "genesis_backend.py": "975951b11adfe5ee808f86990fba8c3805b7120d7498510c61705915758ffec4",
+        "scan_free_space.py": "9246e2733eb02e9b8e2b26aea0628d41824e87c18b73540074501d088281b607"
+      },
+      "asset_sha256": {
+        "demo.json": "e4a07bcbdf760d8005dd50098a6d6980c4867e21cc36de538785e2e0a8f6fe83",
+        "policy.zip": "97b0f47802515356262a453fb1894c6146ba9f8c66ada958daac3c8b5fe98b93",
+        "vision.pt": "483065dada5480f7ef990f526cec5f8a45c16438fb7931bcd1058d44ccd06ca8",
+        "memory/manifest.json": "fec3689439eabef3ba405046d57402fc4732cfc0d84cc24bcfa25f813304f83c"
+      },
+      "route_planning_checks": {
+        "required": true,
+        "instrumented_frames": 243,
+        "frames_with_latched_diagnostics": 243,
+        "certified_frames_with_latched_diagnostics": 243,
+        "fallback_frames_with_latched_diagnostics": 0,
+        "distinct_diagnostic_values": 2,
+        "diagnostic_value_transitions": 2,
+        "strict_comparisons_without_epsilon": true,
+        "failures": [],
+        "pass": true,
+        "limit": "Diagnostics describe the last route attempt and can remain latched over many captures, including stopped states. Frame, value and transition counts are not independent planning attempts. This check does not infer a fresh radius from the current row covariance."
+      }
+    },
+    {
+      "run": "work/m712-map-improvement/native-exact/demo-mode1",
+      "case": "demo-mode1",
+      "profile": {
+        "name": "reserve-3cm",
+        "margin_m": 0.03,
+        "speed_m_s": 0.15,
+        "lookahead_s": 0.0,
+        "planning_reserve_m": 0.04,
+        "parameters": {
+          "max_occlusion_seconds": 1.0,
+          "max_frame_age": 0.1,
+          "max_interval": 0.15,
+          "speed_cap": 0.15,
+          "max_position_radius": 0.08,
+          "measurement_sigma_multiplier": 3.0,
+          "measurement_radius_floor": 0.005,
+          "innovation_slack": 0.015,
+          "max_reacquisition_distance": 0.12,
+          "robot_radius": 0.037,
+          "clearance_margin": 0.03,
+          "command_horizon": 0.05,
+          "minimum_visual_samples": 3,
+          "max_initial_velocity_radius": 0.05,
+          "arrival_radius": 0.1,
+          "arrival_speed": 0.03,
+          "visible_dwell": 0.5,
+          "proactive_horizon_seconds": 0.0,
+          "proactive_speed_samples": 10
+        }
+      },
+      "mode": 1,
+      "intent": "arrival",
+      "hard_failures": [],
+      "audit_pass": true,
+      "valid_arrival": true,
+      "intended_pass": true,
+      "control_checks": {
+        "pass": true,
+        "kind": "arrival"
+      },
+      "recorded_simulation_s": 5.15,
+      "first_valid_arrival": {
+        "time": 5.1000000000000005,
+        "goal": [
+          0.24745992166936648,
+          1.3086782891625797
+        ],
+        "distance_m": 0.03316278135806092,
+        "speed_m_s": 0.003557679509175608,
+        "true_dwell_at_capture_s": 0.7450000000000001,
+        "visible_fresh_rgb": true,
+        "passed": true
+      },
+      "guarded_stop_episodes": 0,
+      "status_counts": {
+        "warming_up": 20,
+        "tracking_visible": 60,
+        "tracking_hidden": 16,
+        "settling_visible": 6,
+        "arrived_visible": 1
+      },
+      "blind_motion_violation_times": [],
+      "frames": 103,
+      "physics_samples": 1030,
+      "verified_image_artifacts": 206,
+      "unavailable_image_frames": 0,
+      "input_sha256": {
+        "case": "5a52b08566122c94812542bfc125bbf2d458661550bb70038def72f9f2828943",
+        "summary": "038d923856b8d248323be795ddc9935cc3b0b4b9c94e0e8541fc5ad203ff7a7a",
+        "audit": "3997b78b3e01bdfd1940fb492eac37ec43c5f44f0d93644e9d2a582f9c5c22bb",
+        "manifest": "ce87b08a5554a9628d0cd8847daa62389a65271aabbf8bdb9e840175841b6c96",
+        "rows": "88e2911e4873eec2be901ec68f5db2a9000544811dee64a6fcd4efbc483f0dc3",
+        "commands": "ff3a48a15c31a235c2186aa3e21b91706cf8aa97e15f516ab9e1b7abc6fb405a",
+        "scorer": "7e59a2e9cddb0c1cff789db76105a664275f25d519c235dc1d5e69c8ac40f003",
+        "harness": "e31c766794c97c1569086df5bfe60a3624ecf5a45d040d19962d250751c30abc"
+      },
+      "recorded_protocol_sha256": "a5ffd02f44d03b1f9001b8167e02150de11fe3ccb678fa5fef0fbcef2f6a3ecf",
+      "source_sha256": {
+        "interactive_runtime.py": "9aa8376a4a408ff66ce8b86905344e1bb1ab7111c341fce8b3cc0f6a3f5b4a74",
+        "occluded_control.py": "03bf1c2717698d22d34e2f4becccb143bda9c22f3f1a66627b993bbab504ca80",
+        "control_profiles.py": "58127670bfc829c26a1c9195b6c8f13553d3eedd24182a0a52fdf7191867cac0",
+        "camera.py": "e11c223599adf79551ca492643178e042cd3cca3fa71a1395549a26ef6acd11d",
+        "camera_rig.py": "4ee378b375f81c39cc710beaaff1e86caa322dbe16bbf96456404bf2469c4358",
+        "vision.py": "022513c55dd19ef7d38f78f3ea93b03996302938370fde05444359a08ee98394",
+        "genesis_backend.py": "975951b11adfe5ee808f86990fba8c3805b7120d7498510c61705915758ffec4",
+        "scan_free_space.py": "9246e2733eb02e9b8e2b26aea0628d41824e87c18b73540074501d088281b607"
+      },
+      "asset_sha256": {
+        "demo.json": "e7239da91723e0e984bb11554a903664c5a8a9fc1c5d096ec97e8bdb872b0041",
+        "policy.zip": "97b0f47802515356262a453fb1894c6146ba9f8c66ada958daac3c8b5fe98b93",
+        "vision.pt": "483065dada5480f7ef990f526cec5f8a45c16438fb7931bcd1058d44ccd06ca8",
+        "memory/manifest.json": "fec3689439eabef3ba405046d57402fc4732cfc0d84cc24bcfa25f813304f83c"
+      },
+      "route_planning_checks": {
+        "required": true,
+        "instrumented_frames": 103,
+        "frames_with_latched_diagnostics": 103,
+        "certified_frames_with_latched_diagnostics": 103,
+        "fallback_frames_with_latched_diagnostics": 0,
+        "distinct_diagnostic_values": 2,
+        "diagnostic_value_transitions": 2,
+        "strict_comparisons_without_epsilon": true,
+        "failures": [],
+        "pass": true,
+        "limit": "Diagnostics describe the last route attempt and can remain latched over many captures, including stopped states. Frame, value and transition counts are not independent planning attempts. This check does not infer a fresh radius from the current row covariance."
+      }
+    },
+    {
+      "run": "work/m712-map-improvement/native-exact/invalid-memory-mode2",
+      "case": "invalid-memory-mode2",
+      "profile": {
+        "name": "reserve-3cm",
+        "margin_m": 0.03,
+        "speed_m_s": 0.15,
+        "lookahead_s": 0.0,
+        "planning_reserve_m": 0.04,
+        "parameters": {
+          "max_occlusion_seconds": 1.0,
+          "max_frame_age": 0.1,
+          "max_interval": 0.15,
+          "speed_cap": 0.15,
+          "max_position_radius": 0.08,
+          "measurement_sigma_multiplier": 3.0,
+          "measurement_radius_floor": 0.005,
+          "innovation_slack": 0.015,
+          "max_reacquisition_distance": 0.12,
+          "robot_radius": 0.037,
+          "clearance_margin": 0.03,
+          "command_horizon": 0.05,
+          "minimum_visual_samples": 3,
+          "max_initial_velocity_radius": 0.05,
+          "arrival_radius": 0.1,
+          "arrival_speed": 0.03,
+          "visible_dwell": 0.5,
+          "proactive_horizon_seconds": 0.0,
+          "proactive_speed_samples": 10
+        }
+      },
+      "mode": 2,
+      "intent": "invalid",
+      "hard_failures": [],
+      "audit_pass": true,
+      "valid_arrival": false,
+      "intended_pass": true,
+      "control_checks": {
+        "event_time_s": 2.0,
+        "motion_before_event": {
+          "recent_physical_motion": true,
+          "recent_nonzero_acknowledged_target": true,
+          "pass": true
+        },
+        "after_event_frames": 70,
+        "all_postevent_zero_and_goal_cleared": true,
+        "final_true_speed_m_s": 5.990693893753408e-06,
+        "complete_observation_window": true,
+        "pass": true
+      },
+      "recorded_simulation_s": 5.5,
+      "first_valid_arrival": null,
+      "guarded_stop_episodes": 0,
+      "status_counts": {
+        "warming_up": 20,
+        "tracking_visible": 20,
+        "guarded_stop": 70
+      },
+      "blind_motion_violation_times": [],
+      "frames": 110,
+      "physics_samples": 1100,
+      "verified_image_artifacts": 440,
+      "unavailable_image_frames": 0,
+      "input_sha256": {
+        "case": "f485b383f5364255289a1147d73a1c00f7be3762a4fa1095f096c6d16235bd5b",
+        "summary": "e3a859559bc7e972d236d3bc7bd8754aeeece0a0c9efaf86c448a70df59f20e2",
+        "audit": "71bcafdd03c3800b6616e2cf56aabefbc8770b718e4d92850e9e2db62b034653",
+        "manifest": "a741421a1a00de76ee5def7f30b5586f2b6bcd8fbb2409a2f548dac5b60ba05a",
+        "rows": "d473e2f8f727811d8b917dfd99f4a30d40439d714e4cc8d1786f2ee09652f045",
+        "commands": "a68bd6b4307241916fc5dd72c839a3010fc84f8e041a9a17425178c44198d0b9",
+        "scorer": "7e59a2e9cddb0c1cff789db76105a664275f25d519c235dc1d5e69c8ac40f003",
+        "harness": "784e2cb7b40143a3e1fb6cc49d08c118b2d763217c534c573277d64ff66ac2fc"
+      },
+      "recorded_protocol_sha256": "a5ffd02f44d03b1f9001b8167e02150de11fe3ccb678fa5fef0fbcef2f6a3ecf",
+      "source_sha256": {
+        "interactive_runtime.py": "9aa8376a4a408ff66ce8b86905344e1bb1ab7111c341fce8b3cc0f6a3f5b4a74",
+        "occluded_control.py": "03bf1c2717698d22d34e2f4becccb143bda9c22f3f1a66627b993bbab504ca80",
+        "control_profiles.py": "58127670bfc829c26a1c9195b6c8f13553d3eedd24182a0a52fdf7191867cac0",
+        "camera.py": "e11c223599adf79551ca492643178e042cd3cca3fa71a1395549a26ef6acd11d",
+        "camera_rig.py": "4ee378b375f81c39cc710beaaff1e86caa322dbe16bbf96456404bf2469c4358",
+        "vision.py": "022513c55dd19ef7d38f78f3ea93b03996302938370fde05444359a08ee98394",
+        "genesis_backend.py": "975951b11adfe5ee808f86990fba8c3805b7120d7498510c61705915758ffec4",
+        "scan_free_space.py": "9246e2733eb02e9b8e2b26aea0628d41824e87c18b73540074501d088281b607"
+      },
+      "asset_sha256": {
+        "demo.json": "e7239da91723e0e984bb11554a903664c5a8a9fc1c5d096ec97e8bdb872b0041",
+        "policy.zip": "97b0f47802515356262a453fb1894c6146ba9f8c66ada958daac3c8b5fe98b93",
+        "vision.pt": "483065dada5480f7ef990f526cec5f8a45c16438fb7931bcd1058d44ccd06ca8",
+        "memory/manifest.json": "fec3689439eabef3ba405046d57402fc4732cfc0d84cc24bcfa25f813304f83c"
+      },
+      "route_planning_checks": {
+        "required": true,
+        "instrumented_frames": 110,
+        "frames_with_latched_diagnostics": 110,
+        "certified_frames_with_latched_diagnostics": 110,
+        "fallback_frames_with_latched_diagnostics": 0,
+        "distinct_diagnostic_values": 2,
+        "diagnostic_value_transitions": 2,
+        "strict_comparisons_without_epsilon": true,
+        "failures": [],
+        "pass": true,
+        "limit": "Diagnostics describe the last route attempt and can remain latched over many captures, including stopped states. Frame, value and transition counts are not independent planning attempts. This check does not infer a fresh radius from the current row covariance."
+      }
+    },
+    {
+      "run": "work/m712-map-improvement/native-exact/north-center-mode3",
+      "case": "north-center-mode3",
+      "profile": {
+        "name": "reserve-3cm",
+        "margin_m": 0.03,
+        "speed_m_s": 0.15,
+        "lookahead_s": 0.0,
+        "planning_reserve_m": 0.04,
+        "parameters": {
+          "max_occlusion_seconds": 1.0,
+          "max_frame_age": 0.1,
+          "max_interval": 0.15,
+          "speed_cap": 0.15,
+          "max_position_radius": 0.08,
+          "measurement_sigma_multiplier": 3.0,
+          "measurement_radius_floor": 0.005,
+          "innovation_slack": 0.015,
+          "max_reacquisition_distance": 0.12,
+          "robot_radius": 0.037,
+          "clearance_margin": 0.03,
+          "command_horizon": 0.05,
+          "minimum_visual_samples": 3,
+          "max_initial_velocity_radius": 0.05,
+          "arrival_radius": 0.1,
+          "arrival_speed": 0.03,
+          "visible_dwell": 0.5,
+          "proactive_horizon_seconds": 0.0,
+          "proactive_speed_samples": 10
+        }
+      },
+      "mode": 3,
+      "intent": "arrival",
+      "hard_failures": [],
+      "audit_pass": true,
+      "valid_arrival": true,
+      "intended_pass": true,
+      "control_checks": {
+        "pass": true,
+        "kind": "arrival"
+      },
+      "recorded_simulation_s": 18.45,
+      "first_valid_arrival": {
+        "time": 18.400000000000002,
+        "goal": [
+          -0.2,
+          -0.7
+        ],
+        "distance_m": 0.02584670584050995,
+        "speed_m_s": 0.003586486985368508,
+        "true_dwell_at_capture_s": 0.740000000000002,
+        "visible_fresh_rgb": true,
+        "passed": true
+      },
+      "guarded_stop_episodes": 4,
+      "status_counts": {
+        "warming_up": 20,
+        "tracking_visible": 334,
+        "stopping_envelope_not_certified": 7,
+        "settling_visible": 7,
+        "arrived_visible": 1
+      },
+      "blind_motion_violation_times": [],
+      "frames": 369,
+      "physics_samples": 3690,
+      "verified_image_artifacts": 2214,
+      "unavailable_image_frames": 0,
+      "input_sha256": {
+        "case": "7fbd4876f1b370e378406e7f7aa4b6b0352f3c95433b6e1ca4a0808a914ff099",
+        "summary": "78259cf367a06d983644653680cddeb9b153c48735fbf85b52304f932429732a",
+        "audit": "a4b2fa54d7ddba52f43189a6f65428c0843b86a2ebdffe032f23434408c5fb88",
+        "manifest": "9ab2d4e599108efc16de918d82e90c4224c108086e8d11bfd8282a51baf54e90",
+        "rows": "6750db27334d446897b3f6c9b314b2f191108d12911c7e62e534fc852a3bebac",
+        "commands": "455263286ee8a8b3494827f264a42599d07cb5f921ab6b35cb3fa94aed5c38d2",
+        "scorer": "7e59a2e9cddb0c1cff789db76105a664275f25d519c235dc1d5e69c8ac40f003",
+        "harness": "45001fa031447d27cb168e93f1c8b801eaaab7aef79df904902ec33828771da5"
+      },
+      "recorded_protocol_sha256": "a5ffd02f44d03b1f9001b8167e02150de11fe3ccb678fa5fef0fbcef2f6a3ecf",
+      "source_sha256": {
+        "interactive_runtime.py": "9aa8376a4a408ff66ce8b86905344e1bb1ab7111c341fce8b3cc0f6a3f5b4a74",
+        "occluded_control.py": "03bf1c2717698d22d34e2f4becccb143bda9c22f3f1a66627b993bbab504ca80",
+        "control_profiles.py": "58127670bfc829c26a1c9195b6c8f13553d3eedd24182a0a52fdf7191867cac0",
+        "camera.py": "e11c223599adf79551ca492643178e042cd3cca3fa71a1395549a26ef6acd11d",
+        "camera_rig.py": "4ee378b375f81c39cc710beaaff1e86caa322dbe16bbf96456404bf2469c4358",
+        "vision.py": "022513c55dd19ef7d38f78f3ea93b03996302938370fde05444359a08ee98394",
+        "genesis_backend.py": "975951b11adfe5ee808f86990fba8c3805b7120d7498510c61705915758ffec4",
+        "scan_free_space.py": "9246e2733eb02e9b8e2b26aea0628d41824e87c18b73540074501d088281b607"
+      },
+      "asset_sha256": {
+        "demo.json": "dacf81e137818e7448511a3eee7eefcb3820608cee5a8bcd308000a70f750881",
+        "policy.zip": "97b0f47802515356262a453fb1894c6146ba9f8c66ada958daac3c8b5fe98b93",
+        "vision.pt": "483065dada5480f7ef990f526cec5f8a45c16438fb7931bcd1058d44ccd06ca8",
+        "memory/manifest.json": "fec3689439eabef3ba405046d57402fc4732cfc0d84cc24bcfa25f813304f83c"
+      },
+      "route_planning_checks": {
+        "required": true,
+        "instrumented_frames": 369,
+        "frames_with_latched_diagnostics": 369,
+        "certified_frames_with_latched_diagnostics": 369,
+        "fallback_frames_with_latched_diagnostics": 0,
+        "distinct_diagnostic_values": 2,
+        "diagnostic_value_transitions": 2,
+        "strict_comparisons_without_epsilon": true,
+        "failures": [],
+        "pass": true,
+        "limit": "Diagnostics describe the last route attempt and can remain latched over many captures, including stopped states. Frame, value and transition counts are not independent planning attempts. This check does not infer a fresh radius from the current row covariance."
+      }
+    },
+    {
+      "run": "work/m712-map-improvement/native-exact/north-mode1",
+      "case": "north-mode1",
+      "profile": {
+        "name": "reserve-3cm",
+        "margin_m": 0.03,
+        "speed_m_s": 0.15,
+        "lookahead_s": 0.0,
+        "planning_reserve_m": 0.04,
+        "parameters": {
+          "max_occlusion_seconds": 1.0,
+          "max_frame_age": 0.1,
+          "max_interval": 0.15,
+          "speed_cap": 0.15,
+          "max_position_radius": 0.08,
+          "measurement_sigma_multiplier": 3.0,
+          "measurement_radius_floor": 0.005,
+          "innovation_slack": 0.015,
+          "max_reacquisition_distance": 0.12,
+          "robot_radius": 0.037,
+          "clearance_margin": 0.03,
+          "command_horizon": 0.05,
+          "minimum_visual_samples": 3,
+          "max_initial_velocity_radius": 0.05,
+          "arrival_radius": 0.1,
+          "arrival_speed": 0.03,
+          "visible_dwell": 0.5,
+          "proactive_horizon_seconds": 0.0,
+          "proactive_speed_samples": 10
+        }
+      },
+      "mode": 1,
+      "intent": "arrival",
+      "hard_failures": [],
+      "audit_pass": true,
+      "valid_arrival": true,
+      "intended_pass": true,
+      "control_checks": {
+        "pass": true,
+        "kind": "arrival"
+      },
+      "recorded_simulation_s": 13.35,
+      "first_valid_arrival": {
+        "time": 13.3,
+        "goal": [
+          0.2,
+          1.55
+        ],
+        "distance_m": 0.021084704511511114,
+        "speed_m_s": 0.003422194224406331,
+        "true_dwell_at_capture_s": 0.7599999999999998,
+        "visible_fresh_rgb": true,
+        "passed": true
+      },
+      "guarded_stop_episodes": 0,
+      "status_counts": {
+        "warming_up": 20,
+        "tracking_visible": 239,
+        "settling_visible": 7,
+        "arrived_visible": 1
+      },
+      "blind_motion_violation_times": [],
+      "frames": 267,
+      "physics_samples": 2670,
+      "verified_image_artifacts": 534,
+      "unavailable_image_frames": 0,
+      "input_sha256": {
+        "case": "9210c1f2f6fe657e7495841d98feb035db64bb9aaa791a1ac8cd5f01deae5452",
+        "summary": "24c334ca1a4e9eb39516c8c3a28e9d96c4ba997d9a13e9a93fe62bc47c34ecf1",
+        "audit": "c5ff67ee6b95230e60becadb9c22d2ee8e2c25ba5d0a536f3b471b2a437fc11b",
+        "manifest": "7fbec15bb8a8b0129f62a32edee061afa1321101cc96fd131a2f7b75a9d4c4c8",
+        "rows": "f4a4e621f6056bc4fdbb4534305481a9ab0e886d1a9154069c000ec21d122966",
+        "commands": "c58b156e67abfe74d854fc6f91b02c6fa63cdbd82829b07399ff07b3b139ded4",
+        "scorer": "7e59a2e9cddb0c1cff789db76105a664275f25d519c235dc1d5e69c8ac40f003",
+        "harness": "61af586a5dc295d3894d1ccafa2236591e5498f4e44f5da259e62ca7b83b7194"
+      },
+      "recorded_protocol_sha256": "a5ffd02f44d03b1f9001b8167e02150de11fe3ccb678fa5fef0fbcef2f6a3ecf",
+      "source_sha256": {
+        "interactive_runtime.py": "9aa8376a4a408ff66ce8b86905344e1bb1ab7111c341fce8b3cc0f6a3f5b4a74",
+        "occluded_control.py": "03bf1c2717698d22d34e2f4becccb143bda9c22f3f1a66627b993bbab504ca80",
+        "control_profiles.py": "58127670bfc829c26a1c9195b6c8f13553d3eedd24182a0a52fdf7191867cac0",
+        "camera.py": "e11c223599adf79551ca492643178e042cd3cca3fa71a1395549a26ef6acd11d",
+        "camera_rig.py": "4ee378b375f81c39cc710beaaff1e86caa322dbe16bbf96456404bf2469c4358",
+        "vision.py": "022513c55dd19ef7d38f78f3ea93b03996302938370fde05444359a08ee98394",
+        "genesis_backend.py": "975951b11adfe5ee808f86990fba8c3805b7120d7498510c61705915758ffec4",
+        "scan_free_space.py": "9246e2733eb02e9b8e2b26aea0628d41824e87c18b73540074501d088281b607"
+      },
+      "asset_sha256": {
+        "demo.json": "6892840b8ebde4a762d8a2fa34b413c2ac2f3f63140b6cd8a58619d09b64eff8",
+        "policy.zip": "97b0f47802515356262a453fb1894c6146ba9f8c66ada958daac3c8b5fe98b93",
+        "vision.pt": "483065dada5480f7ef990f526cec5f8a45c16438fb7931bcd1058d44ccd06ca8",
+        "memory/manifest.json": "fec3689439eabef3ba405046d57402fc4732cfc0d84cc24bcfa25f813304f83c"
+      },
+      "route_planning_checks": {
+        "required": true,
+        "instrumented_frames": 267,
+        "frames_with_latched_diagnostics": 267,
+        "certified_frames_with_latched_diagnostics": 267,
+        "fallback_frames_with_latched_diagnostics": 0,
+        "distinct_diagnostic_values": 2,
+        "diagnostic_value_transitions": 2,
+        "strict_comparisons_without_epsilon": true,
+        "failures": [],
+        "pass": true,
+        "limit": "Diagnostics describe the last route attempt and can remain latched over many captures, including stopped states. Frame, value and transition counts are not independent planning attempts. This check does not infer a fresh radius from the current row covariance."
+      }
+    },
+    {
+      "run": "work/m712-map-improvement/native-exact/reported-mode1",
+      "case": "reported-mode1",
+      "profile": {
+        "name": "reserve-3cm",
+        "margin_m": 0.03,
+        "speed_m_s": 0.15,
+        "lookahead_s": 0.0,
+        "planning_reserve_m": 0.04,
+        "parameters": {
+          "max_occlusion_seconds": 1.0,
+          "max_frame_age": 0.1,
+          "max_interval": 0.15,
+          "speed_cap": 0.15,
+          "max_position_radius": 0.08,
+          "measurement_sigma_multiplier": 3.0,
+          "measurement_radius_floor": 0.005,
+          "innovation_slack": 0.015,
+          "max_reacquisition_distance": 0.12,
+          "robot_radius": 0.037,
+          "clearance_margin": 0.03,
+          "command_horizon": 0.05,
+          "minimum_visual_samples": 3,
+          "max_initial_velocity_radius": 0.05,
+          "arrival_radius": 0.1,
+          "arrival_speed": 0.03,
+          "visible_dwell": 0.5,
+          "proactive_horizon_seconds": 0.0,
+          "proactive_speed_samples": 10
+        }
+      },
+      "mode": 1,
+      "intent": "arrival",
+      "hard_failures": [],
+      "audit_pass": true,
+      "valid_arrival": true,
+      "intended_pass": true,
+      "control_checks": {
+        "pass": true,
+        "kind": "arrival"
+      },
+      "recorded_simulation_s": 29.8,
+      "first_valid_arrival": {
+        "time": 29.75,
+        "goal": [
+          1.3554502369668247,
+          -0.8446386255924172
+        ],
+        "distance_m": 0.031310427517291045,
+        "speed_m_s": 0.0036230172860085732,
+        "true_dwell_at_capture_s": 0.7399999999999984,
+        "visible_fresh_rgb": true,
+        "passed": true
+      },
+      "guarded_stop_episodes": 10,
+      "status_counts": {
+        "warming_up": 20,
+        "tracking_visible": 549,
+        "stopping_envelope_not_certified": 20,
+        "settling_visible": 6,
+        "arrived_visible": 1
+      },
+      "blind_motion_violation_times": [],
+      "frames": 596,
+      "physics_samples": 5960,
+      "verified_image_artifacts": 1192,
+      "unavailable_image_frames": 0,
+      "input_sha256": {
+        "case": "87c3149bc673c35c5645eb82fafe10ea647ab289cf9155c4c69ca5906ef9f646",
+        "summary": "0adeb6cc2add52b5a660663a493ca7c6e90ba0ae23d0cf5c0db8bd41750a1610",
+        "audit": "352b1f068c3548737bb77641791033f76e21806875e920130a28538cb6177b2a",
+        "manifest": "7288696c16dd44371815741f1030dd9afcbf99280e48aa351baa469a79434a1f",
+        "rows": "da848d54b721dffcddbd6c78a4894e0e39df11573a880dfab3cfe0f3da29438c",
+        "commands": "a8d20bf6eb4e4fb7957581c899576b14dc3efebd928a29a1fab2285da8837202",
+        "scorer": "7e59a2e9cddb0c1cff789db76105a664275f25d519c235dc1d5e69c8ac40f003",
+        "harness": "225996bdb67b59f68cabc22acc30ccaa29e18cb0a7c9b7a5a89cd263ccd3b37d"
+      },
+      "recorded_protocol_sha256": "a5ffd02f44d03b1f9001b8167e02150de11fe3ccb678fa5fef0fbcef2f6a3ecf",
+      "source_sha256": {
+        "interactive_runtime.py": "9aa8376a4a408ff66ce8b86905344e1bb1ab7111c341fce8b3cc0f6a3f5b4a74",
+        "occluded_control.py": "03bf1c2717698d22d34e2f4becccb143bda9c22f3f1a66627b993bbab504ca80",
+        "control_profiles.py": "58127670bfc829c26a1c9195b6c8f13553d3eedd24182a0a52fdf7191867cac0",
+        "camera.py": "e11c223599adf79551ca492643178e042cd3cca3fa71a1395549a26ef6acd11d",
+        "camera_rig.py": "4ee378b375f81c39cc710beaaff1e86caa322dbe16bbf96456404bf2469c4358",
+        "vision.py": "022513c55dd19ef7d38f78f3ea93b03996302938370fde05444359a08ee98394",
+        "genesis_backend.py": "975951b11adfe5ee808f86990fba8c3805b7120d7498510c61705915758ffec4",
+        "scan_free_space.py": "9246e2733eb02e9b8e2b26aea0628d41824e87c18b73540074501d088281b607"
+      },
+      "asset_sha256": {
+        "demo.json": "aee21a38d17b1d4dd141d6f5a34dcaf91e355ad5bab04e588d6db7820f0f8843",
+        "policy.zip": "97b0f47802515356262a453fb1894c6146ba9f8c66ada958daac3c8b5fe98b93",
+        "vision.pt": "483065dada5480f7ef990f526cec5f8a45c16438fb7931bcd1058d44ccd06ca8",
+        "memory/manifest.json": "fec3689439eabef3ba405046d57402fc4732cfc0d84cc24bcfa25f813304f83c"
+      },
+      "route_planning_checks": {
+        "required": true,
+        "instrumented_frames": 596,
+        "frames_with_latched_diagnostics": 596,
+        "certified_frames_with_latched_diagnostics": 596,
+        "fallback_frames_with_latched_diagnostics": 20,
+        "distinct_diagnostic_values": 2,
+        "diagnostic_value_transitions": 2,
+        "strict_comparisons_without_epsilon": true,
+        "failures": [],
+        "pass": true,
+        "limit": "Diagnostics describe the last route attempt and can remain latched over many captures, including stopped states. Frame, value and transition counts are not independent planning attempts. This check does not infer a fresh radius from the current row covariance."
+      }
+    },
+    {
+      "run": "work/m712-map-improvement/native-exact/reported-mode2",
+      "case": "reported-mode2",
+      "profile": {
+        "name": "reserve-3cm",
+        "margin_m": 0.03,
+        "speed_m_s": 0.15,
+        "lookahead_s": 0.0,
+        "planning_reserve_m": 0.04,
+        "parameters": {
+          "max_occlusion_seconds": 1.0,
+          "max_frame_age": 0.1,
+          "max_interval": 0.15,
+          "speed_cap": 0.15,
+          "max_position_radius": 0.08,
+          "measurement_sigma_multiplier": 3.0,
+          "measurement_radius_floor": 0.005,
+          "innovation_slack": 0.015,
+          "max_reacquisition_distance": 0.12,
+          "robot_radius": 0.037,
+          "clearance_margin": 0.03,
+          "command_horizon": 0.05,
+          "minimum_visual_samples": 3,
+          "max_initial_velocity_radius": 0.05,
+          "arrival_radius": 0.1,
+          "arrival_speed": 0.03,
+          "visible_dwell": 0.5,
+          "proactive_horizon_seconds": 0.0,
+          "proactive_speed_samples": 10
+        }
+      },
+      "mode": 2,
+      "intent": "arrival",
+      "hard_failures": [],
+      "audit_pass": true,
+      "valid_arrival": true,
+      "intended_pass": true,
+      "control_checks": {
+        "pass": true,
+        "kind": "arrival"
+      },
+      "recorded_simulation_s": 29.900000000000002,
+      "first_valid_arrival": {
+        "time": 29.85,
+        "goal": [
+          1.3554502369668247,
+          -0.8446386255924172
+        ],
+        "distance_m": 0.029349721751870145,
+        "speed_m_s": 0.0035026888744415802,
+        "true_dwell_at_capture_s": 0.75,
+        "visible_fresh_rgb": true,
+        "passed": true
+      },
+      "guarded_stop_episodes": 9,
+      "status_counts": {
+        "warming_up": 20,
+        "tracking_visible": 553,
+        "stopping_envelope_not_certified": 18,
+        "settling_visible": 6,
+        "arrived_visible": 1
+      },
+      "blind_motion_violation_times": [],
+      "frames": 598,
+      "physics_samples": 5980,
+      "verified_image_artifacts": 2392,
+      "unavailable_image_frames": 0,
+      "input_sha256": {
+        "case": "b75f6eb31fbd6b1042e6115b9228caa771ff94669d2c012ff4b5a9e69041b4a3",
+        "summary": "aa9cf85fb7bc44899199545d7dfd5ab101bcc7ad528880b4a9b5e109f0b946f0",
+        "audit": "be3c96216f1f0ce47618151b14d8b98fb16904ac7df9c18b3987e5f7249f7173",
+        "manifest": "0ef697ab3d237b08cb6645782c2142e67ad28746583e241a117818c85cbf44e3",
+        "rows": "8098167e4e68f61e60aabd7fdccda89b99240033916601062a907e5212859f09",
+        "commands": "5718d99b093dfbc637ae0d8a6ae91192d9f194700d6c69e3f69deb9cb83c9ea9",
+        "scorer": "7e59a2e9cddb0c1cff789db76105a664275f25d519c235dc1d5e69c8ac40f003",
+        "harness": "2922032fd64fd2949ecf4c42d2ae5105ba1b9eb416a62ed57237eeffe4a365f8"
+      },
+      "recorded_protocol_sha256": "a5ffd02f44d03b1f9001b8167e02150de11fe3ccb678fa5fef0fbcef2f6a3ecf",
+      "source_sha256": {
+        "interactive_runtime.py": "9aa8376a4a408ff66ce8b86905344e1bb1ab7111c341fce8b3cc0f6a3f5b4a74",
+        "occluded_control.py": "03bf1c2717698d22d34e2f4becccb143bda9c22f3f1a66627b993bbab504ca80",
+        "control_profiles.py": "58127670bfc829c26a1c9195b6c8f13553d3eedd24182a0a52fdf7191867cac0",
+        "camera.py": "e11c223599adf79551ca492643178e042cd3cca3fa71a1395549a26ef6acd11d",
+        "camera_rig.py": "4ee378b375f81c39cc710beaaff1e86caa322dbe16bbf96456404bf2469c4358",
+        "vision.py": "022513c55dd19ef7d38f78f3ea93b03996302938370fde05444359a08ee98394",
+        "genesis_backend.py": "975951b11adfe5ee808f86990fba8c3805b7120d7498510c61705915758ffec4",
+        "scan_free_space.py": "9246e2733eb02e9b8e2b26aea0628d41824e87c18b73540074501d088281b607"
+      },
+      "asset_sha256": {
+        "demo.json": "aee21a38d17b1d4dd141d6f5a34dcaf91e355ad5bab04e588d6db7820f0f8843",
+        "policy.zip": "97b0f47802515356262a453fb1894c6146ba9f8c66ada958daac3c8b5fe98b93",
+        "vision.pt": "483065dada5480f7ef990f526cec5f8a45c16438fb7931bcd1058d44ccd06ca8",
+        "memory/manifest.json": "fec3689439eabef3ba405046d57402fc4732cfc0d84cc24bcfa25f813304f83c"
+      },
+      "route_planning_checks": {
+        "required": true,
+        "instrumented_frames": 598,
+        "frames_with_latched_diagnostics": 598,
+        "certified_frames_with_latched_diagnostics": 598,
+        "fallback_frames_with_latched_diagnostics": 0,
+        "distinct_diagnostic_values": 2,
+        "diagnostic_value_transitions": 2,
+        "strict_comparisons_without_epsilon": true,
+        "failures": [],
+        "pass": true,
+        "limit": "Diagnostics describe the last route attempt and can remain latched over many captures, including stopped states. Frame, value and transition counts are not independent planning attempts. This check does not infer a fresh radius from the current row covariance."
+      }
+    },
+    {
+      "run": "work/m712-map-improvement/native-exact/reported-mode3",
+      "case": "reported-mode3",
+      "profile": {
+        "name": "reserve-3cm",
+        "margin_m": 0.03,
+        "speed_m_s": 0.15,
+        "lookahead_s": 0.0,
+        "planning_reserve_m": 0.04,
+        "parameters": {
+          "max_occlusion_seconds": 1.0,
+          "max_frame_age": 0.1,
+          "max_interval": 0.15,
+          "speed_cap": 0.15,
+          "max_position_radius": 0.08,
+          "measurement_sigma_multiplier": 3.0,
+          "measurement_radius_floor": 0.005,
+          "innovation_slack": 0.015,
+          "max_reacquisition_distance": 0.12,
+          "robot_radius": 0.037,
+          "clearance_margin": 0.03,
+          "command_horizon": 0.05,
+          "minimum_visual_samples": 3,
+          "max_initial_velocity_radius": 0.05,
+          "arrival_radius": 0.1,
+          "arrival_speed": 0.03,
+          "visible_dwell": 0.5,
+          "proactive_horizon_seconds": 0.0,
+          "proactive_speed_samples": 10
+        }
+      },
+      "mode": 3,
+      "intent": "arrival",
+      "hard_failures": [],
+      "audit_pass": true,
+      "valid_arrival": true,
+      "intended_pass": true,
+      "control_checks": {
+        "pass": true,
+        "kind": "arrival"
+      },
+      "recorded_simulation_s": 30.2,
+      "first_valid_arrival": {
+        "time": 30.150000000000002,
+        "goal": [
+          1.3554502369668247,
+          -0.8446386255924172
+        ],
+        "distance_m": 0.029318939771303332,
+        "speed_m_s": 0.003252736926330539,
+        "true_dwell_at_capture_s": 0.7750000000000021,
+        "visible_fresh_rgb": true,
+        "passed": true
+      },
+      "guarded_stop_episodes": 11,
+      "status_counts": {
+        "warming_up": 20,
+        "tracking_visible": 555,
+        "stopping_envelope_not_certified": 21,
+        "settling_visible": 7,
+        "arrived_visible": 1
+      },
+      "blind_motion_violation_times": [],
+      "frames": 604,
+      "physics_samples": 6040,
+      "verified_image_artifacts": 3624,
+      "unavailable_image_frames": 0,
+      "input_sha256": {
+        "case": "948da85383d532b44c7d3607fe6b8fd64b1eeeb17b8507ab857d2563d0d12021",
+        "summary": "01efa0860465691598e06b4d3d3082692ebc8fabc423fe3bdb0df0917d393f5d",
+        "audit": "83545c9d92a6653c5609579644bd486a28178707384a71422d40734cced1b08c",
+        "manifest": "3c148a4606b3625ae9b6226e4a83f5fe82d8ad773b7348d8af53a6c92c768f78",
+        "rows": "b89a2e6845fc78f8e4fd7b7ffe12571a15eeefe584728f40b2ede2194bd8afc4",
+        "commands": "0982abb7440e8c130859b836e93fbbf862a31b3daab6dc0d00a3991ee86b4acd",
+        "scorer": "7e59a2e9cddb0c1cff789db76105a664275f25d519c235dc1d5e69c8ac40f003",
+        "harness": "c6292fa3cd8e37ded0e423d18f28b7567f65dfea9eeb319093f7d7be7068d865"
+      },
+      "recorded_protocol_sha256": "a5ffd02f44d03b1f9001b8167e02150de11fe3ccb678fa5fef0fbcef2f6a3ecf",
+      "source_sha256": {
+        "interactive_runtime.py": "9aa8376a4a408ff66ce8b86905344e1bb1ab7111c341fce8b3cc0f6a3f5b4a74",
+        "occluded_control.py": "03bf1c2717698d22d34e2f4becccb143bda9c22f3f1a66627b993bbab504ca80",
+        "control_profiles.py": "58127670bfc829c26a1c9195b6c8f13553d3eedd24182a0a52fdf7191867cac0",
+        "camera.py": "e11c223599adf79551ca492643178e042cd3cca3fa71a1395549a26ef6acd11d",
+        "camera_rig.py": "4ee378b375f81c39cc710beaaff1e86caa322dbe16bbf96456404bf2469c4358",
+        "vision.py": "022513c55dd19ef7d38f78f3ea93b03996302938370fde05444359a08ee98394",
+        "genesis_backend.py": "975951b11adfe5ee808f86990fba8c3805b7120d7498510c61705915758ffec4",
+        "scan_free_space.py": "9246e2733eb02e9b8e2b26aea0628d41824e87c18b73540074501d088281b607"
+      },
+      "asset_sha256": {
+        "demo.json": "aee21a38d17b1d4dd141d6f5a34dcaf91e355ad5bab04e588d6db7820f0f8843",
+        "policy.zip": "97b0f47802515356262a453fb1894c6146ba9f8c66ada958daac3c8b5fe98b93",
+        "vision.pt": "483065dada5480f7ef990f526cec5f8a45c16438fb7931bcd1058d44ccd06ca8",
+        "memory/manifest.json": "fec3689439eabef3ba405046d57402fc4732cfc0d84cc24bcfa25f813304f83c"
+      },
+      "route_planning_checks": {
+        "required": true,
+        "instrumented_frames": 604,
+        "frames_with_latched_diagnostics": 604,
+        "certified_frames_with_latched_diagnostics": 604,
+        "fallback_frames_with_latched_diagnostics": 0,
+        "distinct_diagnostic_values": 2,
+        "diagnostic_value_transitions": 2,
+        "strict_comparisons_without_epsilon": true,
+        "failures": [],
+        "pass": true,
+        "limit": "Diagnostics describe the last route attempt and can remain latched over many captures, including stopped states. Frame, value and transition counts are not independent planning attempts. This check does not infer a fresh radius from the current row covariance."
+      }
+    },
+    {
+      "run": "work/m712-map-improvement/native-exact/stop-mode1",
+      "case": "stop-mode1",
+      "profile": {
+        "name": "reserve-3cm",
+        "margin_m": 0.03,
+        "speed_m_s": 0.15,
+        "lookahead_s": 0.0,
+        "planning_reserve_m": 0.04,
+        "parameters": {
+          "max_occlusion_seconds": 1.0,
+          "max_frame_age": 0.1,
+          "max_interval": 0.15,
+          "speed_cap": 0.15,
+          "max_position_radius": 0.08,
+          "measurement_sigma_multiplier": 3.0,
+          "measurement_radius_floor": 0.005,
+          "innovation_slack": 0.015,
+          "max_reacquisition_distance": 0.12,
+          "robot_radius": 0.037,
+          "clearance_margin": 0.03,
+          "command_horizon": 0.05,
+          "minimum_visual_samples": 3,
+          "max_initial_velocity_radius": 0.05,
+          "arrival_radius": 0.1,
+          "arrival_speed": 0.03,
+          "visible_dwell": 0.5,
+          "proactive_horizon_seconds": 0.0,
+          "proactive_speed_samples": 10
+        }
+      },
+      "mode": 1,
+      "intent": "stop",
+      "hard_failures": [],
+      "audit_pass": true,
+      "valid_arrival": false,
+      "intended_pass": true,
+      "control_checks": {
+        "event_time_s": 2.05,
+        "motion_before_event": {
+          "recent_physical_motion": true,
+          "recent_nonzero_acknowledged_target": true,
+          "pass": true
+        },
+        "after_event_frames": 69,
+        "all_postevent_zero_and_goal_cleared": true,
+        "final_true_speed_m_s": 6.975878235864234e-06,
+        "complete_observation_window": true,
+        "pass": true
+      },
+      "recorded_simulation_s": 5.5,
+      "first_valid_arrival": null,
+      "guarded_stop_episodes": 0,
+      "status_counts": {
+        "warming_up": 20,
+        "tracking_visible": 21,
+        "stopped": 69
+      },
+      "blind_motion_violation_times": [],
+      "frames": 110,
+      "physics_samples": 1100,
+      "verified_image_artifacts": 220,
+      "unavailable_image_frames": 0,
+      "input_sha256": {
+        "case": "b9dd9b2af98234dd305a1ff5527c148839629b6b520d4f7e5162fa15e0390044",
+        "summary": "e0001b3e62063ce7c38ff7c150fa27026dfafe6c7f0158966e2c0d2c2a2c78ab",
+        "audit": "98112b58815db946a32d00f3ead8687ff38ca4eee678c4700e08c69e1b616db6",
+        "manifest": "6ee075cacba6c02d27788d8578a9dbb7c9cd77713b0dfb10d6bdee199590791c",
+        "rows": "7c8cd53feb6dc707399e6290306208b8a723b4cfd2f9cddb739dbb0d32f73f85",
+        "commands": "c5fa64082a636c56a08f3ace5cbaa24f3ab86b6b21cba8a720a4fa567a873e58",
+        "scorer": "7e59a2e9cddb0c1cff789db76105a664275f25d519c235dc1d5e69c8ac40f003",
+        "harness": "045b379e549c424ea53f9d7cd62268a3ff1eaf14fe8ee393cbf67429e835a2f4"
+      },
+      "recorded_protocol_sha256": "a5ffd02f44d03b1f9001b8167e02150de11fe3ccb678fa5fef0fbcef2f6a3ecf",
+      "source_sha256": {
+        "interactive_runtime.py": "9aa8376a4a408ff66ce8b86905344e1bb1ab7111c341fce8b3cc0f6a3f5b4a74",
+        "occluded_control.py": "03bf1c2717698d22d34e2f4becccb143bda9c22f3f1a66627b993bbab504ca80",
+        "control_profiles.py": "58127670bfc829c26a1c9195b6c8f13553d3eedd24182a0a52fdf7191867cac0",
+        "camera.py": "e11c223599adf79551ca492643178e042cd3cca3fa71a1395549a26ef6acd11d",
+        "camera_rig.py": "4ee378b375f81c39cc710beaaff1e86caa322dbe16bbf96456404bf2469c4358",
+        "vision.py": "022513c55dd19ef7d38f78f3ea93b03996302938370fde05444359a08ee98394",
+        "genesis_backend.py": "975951b11adfe5ee808f86990fba8c3805b7120d7498510c61705915758ffec4",
+        "scan_free_space.py": "9246e2733eb02e9b8e2b26aea0628d41824e87c18b73540074501d088281b607"
+      },
+      "asset_sha256": {
+        "demo.json": "e7239da91723e0e984bb11554a903664c5a8a9fc1c5d096ec97e8bdb872b0041",
+        "policy.zip": "97b0f47802515356262a453fb1894c6146ba9f8c66ada958daac3c8b5fe98b93",
+        "vision.pt": "483065dada5480f7ef990f526cec5f8a45c16438fb7931bcd1058d44ccd06ca8",
+        "memory/manifest.json": "fec3689439eabef3ba405046d57402fc4732cfc0d84cc24bcfa25f813304f83c"
+      },
+      "route_planning_checks": {
+        "required": true,
+        "instrumented_frames": 110,
+        "frames_with_latched_diagnostics": 110,
+        "certified_frames_with_latched_diagnostics": 110,
+        "fallback_frames_with_latched_diagnostics": 0,
+        "distinct_diagnostic_values": 2,
+        "diagnostic_value_transitions": 2,
+        "strict_comparisons_without_epsilon": true,
+        "failures": [],
+        "pass": true,
+        "limit": "Diagnostics describe the last route attempt and can remain latched over many captures, including stopped states. Frame, value and transition counts are not independent planning attempts. This check does not infer a fresh radius from the current row covariance."
+      }
+    },
+    {
+      "run": "work/m712-map-improvement/native-exact/tuning-forward",
+      "case": "tuning-forward",
+      "profile": {
+        "name": "reserve-3cm",
+        "margin_m": 0.03,
+        "speed_m_s": 0.15,
+        "lookahead_s": 0.0,
+        "planning_reserve_m": 0.04,
+        "parameters": {
+          "max_occlusion_seconds": 1.0,
+          "max_frame_age": 0.1,
+          "max_interval": 0.15,
+          "speed_cap": 0.15,
+          "max_position_radius": 0.08,
+          "measurement_sigma_multiplier": 3.0,
+          "measurement_radius_floor": 0.005,
+          "innovation_slack": 0.015,
+          "max_reacquisition_distance": 0.12,
+          "robot_radius": 0.037,
+          "clearance_margin": 0.03,
+          "command_horizon": 0.05,
+          "minimum_visual_samples": 3,
+          "max_initial_velocity_radius": 0.05,
+          "arrival_radius": 0.1,
+          "arrival_speed": 0.03,
+          "visible_dwell": 0.5,
+          "proactive_horizon_seconds": 0.0,
+          "proactive_speed_samples": 10
+        }
+      },
+      "mode": 1,
+      "intent": "arrival",
+      "hard_failures": [],
+      "audit_pass": true,
+      "valid_arrival": true,
+      "intended_pass": true,
+      "control_checks": {
+        "pass": true,
+        "kind": "arrival"
+      },
+      "recorded_simulation_s": 21.5,
+      "first_valid_arrival": {
+        "time": 21.45,
+        "goal": [
+          -0.2065534089380967,
+          -0.8665560984356091
+        ],
+        "distance_m": 0.020057842472755542,
+        "speed_m_s": 0.003869868563079533,
+        "true_dwell_at_capture_s": 0.7149999999999999,
+        "visible_fresh_rgb": true,
+        "passed": true
+      },
+      "guarded_stop_episodes": 0,
+      "status_counts": {
+        "warming_up": 20,
+        "tracking_visible": 403,
+        "settling_visible": 6,
+        "arrived_visible": 1
+      },
+      "blind_motion_violation_times": [],
+      "frames": 430,
+      "physics_samples": 4300,
+      "verified_image_artifacts": 860,
+      "unavailable_image_frames": 0,
+      "input_sha256": {
+        "case": "bfc8f1c0b969f12ad144f7d005e9aad117681134a2844c7275e3ecaec3c469e2",
+        "summary": "5a28e7b2cd23a7a58547d60a76bbd834cd8844835364aae1694766b9a3c6bbb0",
+        "audit": "3987b7caa4b1ce31fe7a758d28387688970399d88f4b3ccfa74bc79bea5b8b57",
+        "manifest": "bec0b27626a69678bed9c55456a9daa49ea3a11cd9970cbfb6db569daa7b8ea0",
+        "rows": "82b02eab598755dd2517f8b2e2e1874fd2e0ed9588a5b8e1a519db1e2851b420",
+        "commands": "bd0ba70ae987b7922422abdc376f04e2c27a4257de96454fea2a7209ae85721e",
+        "scorer": "7e59a2e9cddb0c1cff789db76105a664275f25d519c235dc1d5e69c8ac40f003",
+        "harness": "d89dd2e83f47556419209ccde2f3c39527f154174ee82f526d0b6320b7f629ef"
+      },
+      "recorded_protocol_sha256": "a5ffd02f44d03b1f9001b8167e02150de11fe3ccb678fa5fef0fbcef2f6a3ecf",
+      "source_sha256": {
+        "interactive_runtime.py": "9aa8376a4a408ff66ce8b86905344e1bb1ab7111c341fce8b3cc0f6a3f5b4a74",
+        "occluded_control.py": "03bf1c2717698d22d34e2f4becccb143bda9c22f3f1a66627b993bbab504ca80",
+        "control_profiles.py": "58127670bfc829c26a1c9195b6c8f13553d3eedd24182a0a52fdf7191867cac0",
+        "camera.py": "e11c223599adf79551ca492643178e042cd3cca3fa71a1395549a26ef6acd11d",
+        "camera_rig.py": "4ee378b375f81c39cc710beaaff1e86caa322dbe16bbf96456404bf2469c4358",
+        "vision.py": "022513c55dd19ef7d38f78f3ea93b03996302938370fde05444359a08ee98394",
+        "genesis_backend.py": "975951b11adfe5ee808f86990fba8c3805b7120d7498510c61705915758ffec4",
+        "scan_free_space.py": "9246e2733eb02e9b8e2b26aea0628d41824e87c18b73540074501d088281b607"
+      },
+      "asset_sha256": {
+        "demo.json": "b09ad035e649473c931b7d7751afd5b0228a601e8fabdf3de905d7e22036b2d2",
+        "policy.zip": "97b0f47802515356262a453fb1894c6146ba9f8c66ada958daac3c8b5fe98b93",
+        "vision.pt": "483065dada5480f7ef990f526cec5f8a45c16438fb7931bcd1058d44ccd06ca8",
+        "memory/manifest.json": "fec3689439eabef3ba405046d57402fc4732cfc0d84cc24bcfa25f813304f83c"
+      },
+      "route_planning_checks": {
+        "required": true,
+        "instrumented_frames": 430,
+        "frames_with_latched_diagnostics": 430,
+        "certified_frames_with_latched_diagnostics": 430,
+        "fallback_frames_with_latched_diagnostics": 0,
+        "distinct_diagnostic_values": 2,
+        "diagnostic_value_transitions": 2,
+        "strict_comparisons_without_epsilon": true,
+        "failures": [],
+        "pass": true,
+        "limit": "Diagnostics describe the last route attempt and can remain latched over many captures, including stopped states. Frame, value and transition counts are not independent planning attempts. This check does not infer a fresh radius from the current row covariance."
+      }
+    },
+    {
+      "run": "work/m712-map-improvement/native-exact/tuning-reverse",
+      "case": "tuning-reverse",
+      "profile": {
+        "name": "reserve-3cm",
+        "margin_m": 0.03,
+        "speed_m_s": 0.15,
+        "lookahead_s": 0.0,
+        "planning_reserve_m": 0.04,
+        "parameters": {
+          "max_occlusion_seconds": 1.0,
+          "max_frame_age": 0.1,
+          "max_interval": 0.15,
+          "speed_cap": 0.15,
+          "max_position_radius": 0.08,
+          "measurement_sigma_multiplier": 3.0,
+          "measurement_radius_floor": 0.005,
+          "innovation_slack": 0.015,
+          "max_reacquisition_distance": 0.12,
+          "robot_radius": 0.037,
+          "clearance_margin": 0.03,
+          "command_horizon": 0.05,
+          "minimum_visual_samples": 3,
+          "max_initial_velocity_radius": 0.05,
+          "arrival_radius": 0.1,
+          "arrival_speed": 0.03,
+          "visible_dwell": 0.5,
+          "proactive_horizon_seconds": 0.0,
+          "proactive_speed_samples": 10
+        }
+      },
+      "mode": 1,
+      "intent": "arrival",
+      "hard_failures": [],
+      "audit_pass": true,
+      "valid_arrival": true,
+      "intended_pass": true,
+      "control_checks": {
+        "pass": true,
+        "kind": "arrival"
+      },
+      "recorded_simulation_s": 27.05,
+      "first_valid_arrival": {
+        "time": 27.0,
+        "goal": [
+          -1.59,
+          1.41
+        ],
+        "distance_m": 0.0381180688698733,
+        "speed_m_s": 0.0033214599614841437,
+        "true_dwell_at_capture_s": 0.7699999999999996,
+        "visible_fresh_rgb": true,
+        "passed": true
+      },
+      "guarded_stop_episodes": 17,
+      "status_counts": {
+        "warming_up": 20,
+        "tracking_visible": 476,
+        "stopping_envelope_not_certified": 37,
+        "settling_visible": 7,
+        "arrived_visible": 1
+      },
+      "blind_motion_violation_times": [],
+      "frames": 541,
+      "physics_samples": 5410,
+      "verified_image_artifacts": 1082,
+      "unavailable_image_frames": 0,
+      "input_sha256": {
+        "case": "2340ee862fa0757f410008c3a66789e647eae1d6407d8c8e59b23e1527daa3a5",
+        "summary": "6c9849509ffd57f8d23ef4a8eaf0cc50d11333673fca41db3d3a977134fdcad2",
+        "audit": "0e843187b49544978b320c5f952a09963df394de0c31953fda43752577a8e147",
+        "manifest": "78261cfb31fa2a034e7834554d09b16ed5c8f72fa95391bda5de57733ac881c6",
+        "rows": "eb1dd08217b15e4569408d62508798f1a6ced35575cd86ad3839b4ddfdebd7f8",
+        "commands": "3498365961d6fd880b85dc4289bee4ad57f83592c897756078931da21e114ea4",
+        "scorer": "7e59a2e9cddb0c1cff789db76105a664275f25d519c235dc1d5e69c8ac40f003",
+        "harness": "943dafacebc49c70c8db6c3e7538703778757010c5f99005aee3c475aac2529b"
+      },
+      "recorded_protocol_sha256": "a5ffd02f44d03b1f9001b8167e02150de11fe3ccb678fa5fef0fbcef2f6a3ecf",
+      "source_sha256": {
+        "interactive_runtime.py": "9aa8376a4a408ff66ce8b86905344e1bb1ab7111c341fce8b3cc0f6a3f5b4a74",
+        "occluded_control.py": "03bf1c2717698d22d34e2f4becccb143bda9c22f3f1a66627b993bbab504ca80",
+        "control_profiles.py": "58127670bfc829c26a1c9195b6c8f13553d3eedd24182a0a52fdf7191867cac0",
+        "camera.py": "e11c223599adf79551ca492643178e042cd3cca3fa71a1395549a26ef6acd11d",
+        "camera_rig.py": "4ee378b375f81c39cc710beaaff1e86caa322dbe16bbf96456404bf2469c4358",
+        "vision.py": "022513c55dd19ef7d38f78f3ea93b03996302938370fde05444359a08ee98394",
+        "genesis_backend.py": "975951b11adfe5ee808f86990fba8c3805b7120d7498510c61705915758ffec4",
+        "scan_free_space.py": "9246e2733eb02e9b8e2b26aea0628d41824e87c18b73540074501d088281b607"
+      },
+      "asset_sha256": {
+        "demo.json": "b9c0a86e773abcfa67e2559ac533b7530d3b86e81d4712cc41251a89b4fb49f8",
+        "policy.zip": "97b0f47802515356262a453fb1894c6146ba9f8c66ada958daac3c8b5fe98b93",
+        "vision.pt": "483065dada5480f7ef990f526cec5f8a45c16438fb7931bcd1058d44ccd06ca8",
+        "memory/manifest.json": "fec3689439eabef3ba405046d57402fc4732cfc0d84cc24bcfa25f813304f83c"
+      },
+      "route_planning_checks": {
+        "required": true,
+        "instrumented_frames": 541,
+        "frames_with_latched_diagnostics": 541,
+        "certified_frames_with_latched_diagnostics": 541,
+        "fallback_frames_with_latched_diagnostics": 0,
+        "distinct_diagnostic_values": 2,
+        "diagnostic_value_transitions": 2,
+        "strict_comparisons_without_epsilon": true,
+        "failures": [],
+        "pass": true,
+        "limit": "Diagnostics describe the last route attempt and can remain latched over many captures, including stopped states. Frame, value and transition counts are not independent planning attempts. This check does not infer a fresh radius from the current row covariance."
+      }
+    }
+  ],
+  "input_sha256": {
+    "case_plan": "321e1d8714498c5495cbd3f8839547416a78a8a2893ef9bba9cb2842ff433f53",
+    "bound_native_protocol": "a5ffd02f44d03b1f9001b8167e02150de11fe3ccb678fa5fef0fbcef2f6a3ecf",
+    "map_audit": "97deb0cef6a7ada58ffdcc818439f3ace5b633197916dd3f70e189a1d7e0a78d",
+    "accepted_bundle": "fb7227dd326ec2968ca9110326a6d642d5548db7e9f78bd3f8af09ca6a8419cb",
+    "baseline_bundle": "57593c411b3a551c7a7eafd55e10870adc8803f13745e88b847ddcdb9bb62a61",
+    "benchmark_audit_helper": "69663aa84d3e22682c3365ef1100b9dd18ff76544767d08fc8d91b7723c9cead",
+    "this_script": "d96586bc34d89f17c8457a931cdb42144896644c012410896d20db5cc65738b8"
+  },
+  "limits": [
+    "All three reported-route camera modes are separate attempts in the same fixed room, not independent-world reliability.",
+    "Original M7.8 scan023 routes and their distinct visibility/control intents remain separate from this interactive suite.",
+    "All failed map candidates and earlier failed native runs remain retained; no best-run replacement."
+  ]
+}

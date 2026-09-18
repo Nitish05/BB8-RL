@@ -1,0 +1,831 @@
+{
+  "schema": "bb8.map-improvement-protocol.v3",
+  "frozen_at_utc": "2026-09-18T02:03:08.159952+00:00",
+  "scope": "Membership extension for sixteen RGB-only views from the separately frozen pre-capture global offset-grid plan. The original map cases, radii, geometry gates and twelve native cases remain unchanged. Runtime uses at most three fixed cameras.",
+  "radii_m": [
+    0.1,
+    0.14,
+    0.18
+  ],
+  "required_reported_gap_radius_m": 0.14,
+  "case_denominator": 11,
+  "unique_endpoint_pair_denominator": 8,
+  "cases": [
+    {
+      "id": "reported-gap",
+      "family": "reported_request",
+      "start": [
+        -0.14399692380052198,
+        -0.062045330040032036
+      ],
+      "goal": [
+        1.3554502369668247,
+        -0.8446386255924172
+      ],
+      "mode": 1,
+      "camera_view_ids": [
+        "scan-020"
+      ],
+      "map_only": false,
+      "native_intent": "arrival"
+    },
+    {
+      "id": "m78-natural_0",
+      "family": "original_m78_failed",
+      "start": [
+        -0.3643,
+        0.3957
+      ],
+      "goal": [
+        0.4843,
+        1.2443
+      ],
+      "mode": 1,
+      "camera_view_ids": [
+        "scan-023"
+      ],
+      "original_kind": "geometric_occlusion",
+      "native_harness": "run-scan-occlusion.py with original protocol; interactive mode1 usesdifferentcamera and isnot an original-case replication",
+      "map_only": true,
+      "original_case": {
+        "id": "natural_0",
+        "kind": "geometric_occlusion",
+        "start": [
+          -0.3643,
+          0.3957
+        ],
+        "goal": [
+          0.4843,
+          1.2443
+        ],
+        "minimum_design_clearance_m": 0.2523,
+        "head_cube_shadow_length_m": 0.09,
+        "head_center_shadow_length_m": 0.19,
+        "intent": "Drive through a real box head-occlusion, reacquire RGB, and arrive visibly.",
+        "seed": 78000,
+        "layout_seed": 11178,
+        "max_seconds": 60.0,
+        "dropout_intervals_seconds": []
+      }
+    },
+    {
+      "id": "m78-natural_1",
+      "family": "original_m78_failed",
+      "start": [
+        -1.7443,
+        -1.5843
+      ],
+      "goal": [
+        -0.8957,
+        -0.7357
+      ],
+      "mode": 1,
+      "camera_view_ids": [
+        "scan-023"
+      ],
+      "original_kind": "geometric_occlusion",
+      "native_harness": "run-scan-occlusion.py with original protocol; interactive mode1 usesdifferentcamera and isnot an original-case replication",
+      "map_only": true,
+      "original_case": {
+        "id": "natural_1",
+        "kind": "geometric_occlusion",
+        "start": [
+          -1.7443,
+          -1.5843
+        ],
+        "goal": [
+          -0.8957,
+          -0.7357
+        ],
+        "minimum_design_clearance_m": 0.2194,
+        "head_cube_shadow_length_m": 0.13,
+        "head_center_shadow_length_m": 0.23,
+        "intent": "Second independent geometry-authored shadow traversal; rejection remains a result.",
+        "seed": 78001,
+        "layout_seed": 11178,
+        "max_seconds": 60.0,
+        "dropout_intervals_seconds": []
+      }
+    },
+    {
+      "id": "m78-visible_baseline",
+      "family": "original_m78_failed",
+      "start": [
+        -0.3,
+        -1.72
+      ],
+      "goal": [
+        0.6,
+        -1.72
+      ],
+      "mode": 1,
+      "camera_view_ids": [
+        "scan-023"
+      ],
+      "original_kind": "visible_baseline",
+      "native_harness": "run-scan-occlusion.py with original protocol; interactive mode1 usesdifferentcamera and isnot an original-case replication",
+      "map_only": true,
+      "original_case": {
+        "id": "visible_baseline",
+        "kind": "visible_baseline",
+        "start": [
+          -0.3,
+          -1.72
+        ],
+        "goal": [
+          0.6,
+          -1.72
+        ],
+        "intent": "Establish visible arrival on the shared control corridor.",
+        "seed": 78002,
+        "layout_seed": 11178,
+        "max_seconds": 60.0,
+        "dropout_intervals_seconds": []
+      }
+    },
+    {
+      "id": "m78-brief_dropout",
+      "family": "original_m78_failed",
+      "start": [
+        -0.3,
+        -1.72
+      ],
+      "goal": [
+        0.6,
+        -1.72
+      ],
+      "mode": 1,
+      "camera_view_ids": [
+        "scan-023"
+      ],
+      "original_kind": "injected_dropout",
+      "native_harness": "run-scan-occlusion.py with original protocol; interactive mode1 usesdifferentcamera and isnot an original-case replication",
+      "map_only": true,
+      "original_case": {
+        "id": "brief_dropout",
+        "kind": "injected_dropout",
+        "start": [
+          -0.3,
+          -1.72
+        ],
+        "goal": [
+          0.6,
+          -1.72
+        ],
+        "dropout_intervals_seconds": [
+          [
+            2.0,
+            2.3
+          ]
+        ],
+        "intent": "Continue bounded predicted motion through a brief injected observation omission and reacquire; this is not geometric occlusion.",
+        "seed": 78003,
+        "layout_seed": 11178,
+        "max_seconds": 60.0
+      }
+    },
+    {
+      "id": "m78-long_dropout",
+      "family": "original_m78_failed",
+      "start": [
+        -0.3,
+        -1.72
+      ],
+      "goal": [
+        0.6,
+        -1.72
+      ],
+      "mode": 1,
+      "camera_view_ids": [
+        "scan-023"
+      ],
+      "original_kind": "long_dropout",
+      "native_harness": "run-scan-occlusion.py with original protocol; interactive mode1 usesdifferentcamera and isnot an original-case replication",
+      "map_only": true,
+      "original_case": {
+        "id": "long_dropout",
+        "kind": "long_dropout",
+        "start": [
+          -0.3,
+          -1.72
+        ],
+        "goal": [
+          0.6,
+          -1.72
+        ],
+        "dropout_intervals_seconds": [
+          [
+            2.0,
+            5.0
+          ]
+        ],
+        "minimum_end_time_seconds": 7.0,
+        "intent": "Brake when the declared blind-motion bound expires; continue logging through observation return at5s, with no requirement to complete arrival.",
+        "seed": 78004,
+        "layout_seed": 11178,
+        "max_seconds": 60.0
+      }
+    },
+    {
+      "id": "m78-invalid_memory",
+      "family": "original_m78_failed",
+      "start": [
+        -0.3,
+        -1.72
+      ],
+      "goal": [
+        0.6,
+        -1.72
+      ],
+      "mode": 1,
+      "camera_view_ids": [
+        "scan-023"
+      ],
+      "original_kind": "invalid_memory",
+      "native_harness": "run-scan-occlusion.py with original protocol; interactive mode1 usesdifferentcamera and isnot an original-case replication",
+      "map_only": true,
+      "original_case": {
+        "id": "invalid_memory",
+        "kind": "invalid_memory",
+        "start": [
+          -0.3,
+          -1.72
+        ],
+        "goal": [
+          0.6,
+          -1.72
+        ],
+        "invalidate_memory_at_seconds": 2.0,
+        "minimum_end_time_seconds": 4.0,
+        "intent": "Immediately issue zero motion when memory version mismatches and remain stopped while it stays invalid.",
+        "seed": 78005,
+        "layout_seed": 11178,
+        "max_seconds": 60.0,
+        "dropout_intervals_seconds": []
+      }
+    },
+    {
+      "id": "m711-north-mode1",
+      "family": "previous_validated",
+      "start": [
+        -1.4,
+        1.25
+      ],
+      "goal": [
+        0.2,
+        1.55
+      ],
+      "mode": 1,
+      "camera_view_ids": [
+        "scan-020"
+      ],
+      "map_only": false,
+      "native_intent": "arrival"
+    },
+    {
+      "id": "m711-center-mode2",
+      "family": "previous_validated",
+      "start": [
+        -0.3,
+        -0.75
+      ],
+      "goal": [
+        -0.35,
+        0.7
+      ],
+      "mode": 2,
+      "camera_view_ids": [
+        "scan-020",
+        "scan-023"
+      ],
+      "map_only": false,
+      "native_intent": "arrival"
+    },
+    {
+      "id": "m711-north-center-mode3",
+      "family": "previous_validated",
+      "start": [
+        0.2,
+        1.55
+      ],
+      "goal": [
+        -0.2,
+        -0.7
+      ],
+      "mode": 3,
+      "camera_view_ids": [
+        "scan-020",
+        "scan-023",
+        "scan-014"
+      ],
+      "map_only": false,
+      "native_intent": "arrival"
+    },
+    {
+      "id": "m711-demo-mode1",
+      "family": "previous_validated",
+      "start": [
+        0.03254007833063689,
+        0.9713217108374255
+      ],
+      "goal": [
+        0.24745992166936648,
+        1.3086782891625797
+      ],
+      "mode": 1,
+      "camera_view_ids": [
+        "scan-020"
+      ],
+      "map_only": false,
+      "native_intent": "arrival"
+    }
+  ],
+  "scene": "projects/bb8/synthetic-room/room.genesis.json",
+  "scene_sha256": "73421fdfe351a2092fb0a502325157ebc692b15b1ea75aa09063c11bdc66e65a",
+  "baseline_directory": "work/m78/scan-free-memory-v6-hull-fine",
+  "baseline_manifest_sha256": "2a97e0edf3b41edad81494ada880646b4c793042c217b53bd58ee0086d40e541",
+  "baseline_artifact_sha256": {
+    "room-memory.json": "de366b55dc85f26464b0f7722440d302b8abec7fdcb01c1406c5171ca2f86e8b",
+    "free-grid.npz": "4af1361202b9b22b3bcebcd1e0eff6ccbc3c20978ad1264bd6fe530ba3dba352",
+    "floor-masks.npz": "a83fd99165f0c82d979f968871ccc32c8b46e48e38a55a4f63b84cf03a402a9f"
+  },
+  "required_body_height_m": 0.12,
+  "required_resolution_m": 0.02,
+  "required_extent_m": 2.0,
+  "required_minimum_views": 3,
+  "frozen_mapping_input_sha256": {
+    "scan-000": {
+      "rgb": "2bc98e66712330c9dcb8b6aebf26b0d7256063b681d7e7afd68ded359640ffc0",
+      "calibration": "fe8a3a1a86ad83885f714626efc9b1a1f81b1af4aad3506018954074ca000452"
+    },
+    "scan-001": {
+      "rgb": "fa481155ff1c0db672e3bf97873179dc44bc340892c7527fa0da9706fd50e157",
+      "calibration": "53c40e2607a1a8702b092ef2d498f995af9aeed3e46b66b84b6cada649186ba3"
+    },
+    "scan-002": {
+      "rgb": "cb92217384e26c18396468fead40a544288f42928b585b8ad265357f3a1dffb2",
+      "calibration": "04d267cce1727db9c50220365f7d16258904105aa458dfef38a913a0c8abaefa"
+    },
+    "scan-003": {
+      "rgb": "52440edf1c98f84de23d4548a4785bbc570a4b0f183ac094e805725f64965bc7",
+      "calibration": "666837292127f6633c4845ffb8e3a95de9d2a43a0daa3cd7d947bf9264ae9357"
+    },
+    "scan-004": {
+      "rgb": "78d305716d479071192df544d1e9e9bd8c1ec10d580b10f6d07e1894993b896d",
+      "calibration": "78ab682e6f911d974001353b0a85297075cbf23fd1b2c96fc856db7ee8cafb2a"
+    },
+    "scan-005": {
+      "rgb": "ee902d4f6e0ad5fec0b969c73ab89a581c8023e06d858fc392682da944d2d02c",
+      "calibration": "6b7733e4aaa7ea7b8db9edf5a1a76d74ac8ef37cdbd6196222d51cea338c38a1"
+    },
+    "scan-006": {
+      "rgb": "7e2838c2f421362987067cbe025743b1f327f0ae4a039961438fa168bb5d7ded",
+      "calibration": "137ebe21cd2b9368ef016cf3ce996c95165a51f38b22b948a6fa01d59a3156ff"
+    },
+    "scan-007": {
+      "rgb": "851105a5b31461bc70f67edc0170c2a639ede8567dcb8aca694a5bd43b822825",
+      "calibration": "8ece7f05827fd514fdce63bf41b9dfb15554bcc17d1c1cfddc9e2d928ea1ea2f"
+    },
+    "scan-008": {
+      "rgb": "1a4630beef982dd1451907376a86ddab2e0d85f569b60f25502bd7bf94591922",
+      "calibration": "2d66ef00b625735bade4045c331e04e3e9693b4b3b21cb13d6c5156751ff91aa"
+    },
+    "scan-009": {
+      "rgb": "29d4e3b26a74bcd355b4950fd03879016063de1e2d78683bcaf6c4c8da10c78c",
+      "calibration": "f48e9e4cc1856ff00b45a61148d7f47c6e2e972adef970ccf906ae7a69aa59a9"
+    },
+    "scan-010": {
+      "rgb": "6730471bee9d1209eccb152f13e2d618d15ae088a7c0beb7cc54987f7d49eb80",
+      "calibration": "9702f55d771e77bbd86a5e2a7153aee7066779e7502108ca982d86d1bf1a3ff7"
+    },
+    "scan-011": {
+      "rgb": "cf88a10331bc4081b54be6eb911ce61d7564939ab0e1cec96e4564f825d2c762",
+      "calibration": "e55bc6ceee54e473aee53e1abb6ff83ea0f01f3a777f845c198152213f258cb8"
+    },
+    "scan-012": {
+      "rgb": "fcb444a0b012be6b125a847fab8d2313290ef863d04b9332d251280b73be8b45",
+      "calibration": "0927498bf24dba75841085427a1cee5abc549558e16066912b61f5660a443dd4"
+    },
+    "scan-013": {
+      "rgb": "8f139477ec4529629cfe9e065cf567c22f2659ba9423236be3d5a6dc7f6095d5",
+      "calibration": "a668dd03b6c65df2edce769624321a8b2d3f1714c94ddcb552ffb964ecfaca40"
+    },
+    "scan-015": {
+      "rgb": "7cfef0a4548d15d1a2c771d884c43c4c981a913f8e427edc87ddc66ce85b3239",
+      "calibration": "8c4bc6b800a91823904ff717163fb6be5796fdab5cae9decb992a2aaea1656bf"
+    },
+    "scan-016": {
+      "rgb": "2218c33182bdd070beac74d5603ff048b90336a8d43e335adb062cdff55c71d5",
+      "calibration": "acd24c69590a369bc7a2ceaae6933ae588186565edffc198e4f8cd7dc05ea30b"
+    },
+    "scan-018": {
+      "rgb": "588702fb5467406cf45277e48861d24884d15f93fde9e153bc69a9c781b1c3e6",
+      "calibration": "32d372cabed92ae0505dee2aa0192d701da0c5c1f25f59d7aeebf7c7c0441b00"
+    },
+    "scan-019": {
+      "rgb": "cb49e24af09598518bc81294d1632339ced459e9701786d80814a7f17e692852",
+      "calibration": "e1a465eeb25e95d4b816a34325afe01d4c685e800bc558c1255ae3fcfcba42ae"
+    },
+    "scan-021": {
+      "rgb": "7863c483f243fd0caacfc0eb35a54e8306d0e5033ff8152301be334e71e8aba5",
+      "calibration": "c6c9fef8dc58e86523bb089e968ed3baa6931cf9c431c25c77b845c65c047ba5"
+    },
+    "scan-022": {
+      "rgb": "d546f0bf441cd504cb4a07c0a12e0a799c1a126df358758fc9dbe9f39243a852",
+      "calibration": "f85841919c22d1930c4213d42643bb133c376cab70c75f0c4907b65deb54c89c"
+    },
+    "scan-024": {
+      "rgb": "c26f72ac3cdd46a3aa4786f0b7dc3e74cc4e09a82abee96c9c886c269ce4554c",
+      "calibration": "48b0d905250458d92fa5ac3a00b5fdaec59b63c42329cbe5c58a0ead75e323b5"
+    },
+    "scan-025": {
+      "rgb": "fa9db9848217d6adf300e99b762ca097d30c7f1176be9fa91467e13079dcdd9b",
+      "calibration": "7f75c90b2283a199c4a161209689205ddd1a8fcd2632a1758162053328eb8170"
+    },
+    "scan-026": {
+      "rgb": "f9ec3f2eae0c3e384b45d7daeec253f0102bc29480db754849929305198e89d6",
+      "calibration": "845fe81e2145f0ac5b17d5374c1d4fc89581005d5c0afde9c8885c9797436c48"
+    },
+    "scan-027": {
+      "rgb": "e5629a7606c601dd63268d8c31dcda05d94f4b9bc42f3fcba16ea0b19893d525",
+      "calibration": "0c7ef8234debf645205d503338ff03273689d981ac9883a4a58fced975972078"
+    },
+    "scan-028": {
+      "rgb": "1a107ffd98e0230bc85cc8a87493649c36b6417a73f481c60e3356cb153c570e",
+      "calibration": "c06aba9842176848c0aea27a101ef5b9de794bec27fc572dfb3a9573c3db629d"
+    },
+    "scan-029": {
+      "rgb": "151540576ee5a6e9eed30db84d015c980651bdb41843ec4e2b99645633f9fcf1",
+      "calibration": "5e7aa50c3c48ce5f5e33ad7f4ec393e0f2ab17f01e460ad5ba30d35dfbf14832"
+    },
+    "scan-030": {
+      "rgb": "f992ea91fb12ad113a5a3c2a4f8ec8e9eac8d94f1bc48611da4c5067d100fcb0",
+      "calibration": "b0b4c30be0ebd260664e06826cd3e96813602f78438d0068f8a257cc0ae612da"
+    },
+    "scan-031": {
+      "rgb": "ebcc410228b4043a713e9116000f9963daa129a1dfbf19e53dfd8e36bda571cc",
+      "calibration": "30b6007fddb77be28009120f08ba60324cffa697806c115bb9ec282a62906ca2"
+    },
+    "scan-032": {
+      "rgb": "757c360a1f415fadc83cbe5afe600001c2d33d7c78cdbac4b573254f06f95738",
+      "calibration": "60c7fa6c1032a5a913564150813e0d3fd7afba54e739e4f147f22e598a4b145f"
+    },
+    "scan-033": {
+      "rgb": "88e92a7dda550f7514d0358acbbe441759346113573b79fb71468d23aa12422a",
+      "calibration": "affc1ccfaf4775f60001e2499967b806462cbe965206b39d25f7631394bf3115"
+    },
+    "scan-034": {
+      "rgb": "a989d917b07cc583d33ee62dfb5df88bbf1e2085ed4140085fbbc7b1208ec443",
+      "calibration": "7279cd06dd5804051850052b2dd9aae52509cd308afa4a1d90bc9e89d007d67e"
+    },
+    "scan-035": {
+      "rgb": "48c200b351797292ac48dc2897fe441ac0a1eff1019c85677a5fca3e0c45e4f2",
+      "calibration": "3f35b12dd5c969fbefddbe24bb6970499c724803988983bd2202ca3da54e1069"
+    }
+  },
+  "excluded_queries": [
+    14,
+    17,
+    20,
+    23
+  ],
+  "scan_time_robot_scoring_only": {
+    "position_xy": [
+      -1.75,
+      -1.75
+    ],
+    "body_radius_m": 0.037,
+    "body_center_z_m": 0.037,
+    "head_radius_m": 0.019,
+    "head_center_z_m": 0.083,
+    "provenance": "Scoring-only nativeoriginalscan023replay plusfrozen scene sphere dimensions; movablerobot notstaticobstacle",
+    "replay_report_sha256": "4dcf6bc4aaaac633ae5ec89d571a6ef72afa1ca3e84011b3d7fadc75a80f4245"
+  },
+  "arrival_gate": {
+    "distance_m": 0.1,
+    "speed_m_s": 0.03,
+    "continuous_dwell_s": 0.5,
+    "fresh_accepted_RGB_and_renderer_visible_head": true
+  },
+  "acceptance_rules": [
+    "Full3D FREEvoxels andwholebody-heightprisms musthavezero positive-volume intersection withstaticauthoredboxes; UNKNOWNnevercountsasFREE.",
+    "Supplementaryscan-timebody/head sphereintersection mustbezero; anyviolationretainedandrequiresexplicitassumptionreview, nooracleselfclearing.",
+    "All20 originalmappingRGB/calibrationhashes, excludedqueryancestry,3view supportandoccupiedconflicts mustbe preserved.",
+    "Reportedgapmustconnectandallreturnedsegmentsmustpass exactaccepted-map14cmcapsules.",
+    "Nobaselineconnectedcase/radiuspairmayloseconnectivity;originalfailedcaseIDsremainincoverage denominator.",
+    "Mapacceptanceonlyauthorizesboundednativevalidation, notpublishingorruntimepromotion. NativeoriginalgatesandStop/dropout/invalidmemorycontrolsremainrequired.",
+    "The twelve supplemental views require a frozen pre-capture pose plan and complete immutable capture/input hashes. They must not include the four held-out registration queries or any oracle image channels.",
+    "The additional sixteen views retain all previous 32 RGB/calibration and floor-mask arrays, and must not lower four-view/two-pixel requirements for any newly FREE cell.",
+    "Every input and support bit must retain its declared view identity through uint64 persistence; missing high bits cannot count as evidence."
+  ],
+  "native_followup": {
+    "reported_gap_modes": [
+      1,
+      3
+    ],
+    "previous_m711_protocol": "work/m711/protocol.json",
+    "previous_validation_case_ids": [
+      "north-mode1",
+      "center-mode2",
+      "north-center-mode3",
+      "demo-mode1"
+    ],
+    "failure_control_case_ids": [
+      "stop-mode1",
+      "all-lost-mode2",
+      "invalid-memory-mode2"
+    ],
+    "original_m78_protocol": "work/m78/audit/protocol.json",
+    "original_failures_retained": true,
+    "native_trial_denominators_mustbe_separate_from_static_feasibility": true
+  },
+  "source_sha256": {
+    "original_m78_protocol": "ae248c337f3cd6dc503e400175c7bf12be5858c43850c33d94bc43088d0a3320",
+    "m711_protocol": "18d05f69ce4dfa1720fb24848fe1e097051f19138a14430290071dfd190c8d22",
+    "observed_request": "3ca625ad71ebaec16ecad00535d39a028b0dbfef2463632d6187e6001fc8359f",
+    "legacy_fullvolume_scorer": "3b2e06718c8fad7da239646110d50de9296d3dc6a20def921e3dee0d51ee5ddb"
+  },
+  "asset_update_requirements": [
+    "Createfreshversionedbundle; acceptedV6bundleandallfailedcandidatesremainunchanged.",
+    "Copyallmanifestdeclaredartifacts andrehashportablemanifest/bundle/provenance; usevalidate_assetsbeforeworkers.",
+    "Learnedpolicy,visionweights,estimatedcamera posesandscene remainbyte-identical; changemaponlyplusexplicitpercase start/goal.",
+    "Restart/resetworkerwithnewmapversion;neverhotswaplivecachedmemory."
+  ],
+  "parent_protocol_sha256": "685719fdda1ae9afb4179e1cbc664f4b65741a56157dd9a9e7af4bb9848fdbcc",
+  "supplemental_view_ids": [
+    "scan-036",
+    "scan-037",
+    "scan-038",
+    "scan-039",
+    "scan-040",
+    "scan-041",
+    "scan-042",
+    "scan-043",
+    "scan-044",
+    "scan-045",
+    "scan-046",
+    "scan-047",
+    "scan-048",
+    "scan-049",
+    "scan-050",
+    "scan-051"
+  ],
+  "allowed_mapping_view_ids": [
+    "scan-000",
+    "scan-001",
+    "scan-002",
+    "scan-003",
+    "scan-004",
+    "scan-005",
+    "scan-006",
+    "scan-007",
+    "scan-008",
+    "scan-009",
+    "scan-010",
+    "scan-011",
+    "scan-012",
+    "scan-013",
+    "scan-015",
+    "scan-016",
+    "scan-018",
+    "scan-019",
+    "scan-021",
+    "scan-022",
+    "scan-024",
+    "scan-025",
+    "scan-026",
+    "scan-027",
+    "scan-028",
+    "scan-029",
+    "scan-030",
+    "scan-031",
+    "scan-032",
+    "scan-033",
+    "scan-034",
+    "scan-035",
+    "scan-036",
+    "scan-037",
+    "scan-038",
+    "scan-039",
+    "scan-040",
+    "scan-041",
+    "scan-042",
+    "scan-043",
+    "scan-044",
+    "scan-045",
+    "scan-046",
+    "scan-047",
+    "scan-048",
+    "scan-049",
+    "scan-050",
+    "scan-051"
+  ],
+  "supplemental_capture_requirements": {
+    "views": 16,
+    "view_ids": [
+      "scan-036",
+      "scan-037",
+      "scan-038",
+      "scan-039",
+      "scan-040",
+      "scan-041",
+      "scan-042",
+      "scan-043",
+      "scan-044",
+      "scan-045",
+      "scan-046",
+      "scan-047",
+      "scan-048",
+      "scan-049",
+      "scan-050",
+      "scan-051"
+    ],
+    "resolution": [
+      1280,
+      960
+    ],
+    "source": "New RGB-only rendered captures with calibrated synthetic K/poses; no depth, segmentation or truth occupancy inputs to mapping.",
+    "scene_unchanged": true,
+    "parked_robot_xy": [
+      -1.75,
+      -1.75
+    ],
+    "pose_plan_frozen_before_capture": true,
+    "input_binding": "A separate immutable binding pins this preplanned capture manifest and all 48 RGB/calibration hashes before candidate geometry scoring.",
+    "parent_input_policy": "All previous 32 RGB/calibration pairs and floor-mask arrays remain byte-identical. The original accepted 20-view baseline FREE and occupied records remain unchanged.",
+    "maximum_mapping_views": 48,
+    "excluded_query_ids": [
+      14,
+      17,
+      20,
+      23
+    ],
+    "required_candidate_evidence_mode": "full_prism",
+    "required_threshold_policy": "Retain accepted baseline FREE evidence; every new FREE cell requires full-prism evidence, four pairwise-separated views, two-pixel guard, .05 m metric guard, unchanged floor classifier/plane parameters and original occupied conflicts."
+  },
+  "membership_exception": "Only the legacy twenty-view count restriction is superseded by exact declared forty-eight-view membership. All full-volume, occupied-source, source-hash, support, unknown-space and excluded-query gates remain unchanged.",
+  "retained_mapping_view_ids": [
+    "scan-000",
+    "scan-001",
+    "scan-002",
+    "scan-003",
+    "scan-004",
+    "scan-005",
+    "scan-006",
+    "scan-007",
+    "scan-008",
+    "scan-009",
+    "scan-010",
+    "scan-011",
+    "scan-012",
+    "scan-013",
+    "scan-015",
+    "scan-016",
+    "scan-018",
+    "scan-019",
+    "scan-021",
+    "scan-022",
+    "scan-024",
+    "scan-025",
+    "scan-026",
+    "scan-027",
+    "scan-028",
+    "scan-029",
+    "scan-030",
+    "scan-031",
+    "scan-032",
+    "scan-033",
+    "scan-034",
+    "scan-035"
+  ],
+  "original_mapping_input_sha256": {
+    "scan-000": {
+      "rgb": "2bc98e66712330c9dcb8b6aebf26b0d7256063b681d7e7afd68ded359640ffc0",
+      "calibration": "fe8a3a1a86ad83885f714626efc9b1a1f81b1af4aad3506018954074ca000452"
+    },
+    "scan-001": {
+      "rgb": "fa481155ff1c0db672e3bf97873179dc44bc340892c7527fa0da9706fd50e157",
+      "calibration": "53c40e2607a1a8702b092ef2d498f995af9aeed3e46b66b84b6cada649186ba3"
+    },
+    "scan-002": {
+      "rgb": "cb92217384e26c18396468fead40a544288f42928b585b8ad265357f3a1dffb2",
+      "calibration": "04d267cce1727db9c50220365f7d16258904105aa458dfef38a913a0c8abaefa"
+    },
+    "scan-003": {
+      "rgb": "52440edf1c98f84de23d4548a4785bbc570a4b0f183ac094e805725f64965bc7",
+      "calibration": "666837292127f6633c4845ffb8e3a95de9d2a43a0daa3cd7d947bf9264ae9357"
+    },
+    "scan-004": {
+      "rgb": "78d305716d479071192df544d1e9e9bd8c1ec10d580b10f6d07e1894993b896d",
+      "calibration": "78ab682e6f911d974001353b0a85297075cbf23fd1b2c96fc856db7ee8cafb2a"
+    },
+    "scan-005": {
+      "rgb": "ee902d4f6e0ad5fec0b969c73ab89a581c8023e06d858fc392682da944d2d02c",
+      "calibration": "6b7733e4aaa7ea7b8db9edf5a1a76d74ac8ef37cdbd6196222d51cea338c38a1"
+    },
+    "scan-006": {
+      "rgb": "7e2838c2f421362987067cbe025743b1f327f0ae4a039961438fa168bb5d7ded",
+      "calibration": "137ebe21cd2b9368ef016cf3ce996c95165a51f38b22b948a6fa01d59a3156ff"
+    },
+    "scan-007": {
+      "rgb": "851105a5b31461bc70f67edc0170c2a639ede8567dcb8aca694a5bd43b822825",
+      "calibration": "8ece7f05827fd514fdce63bf41b9dfb15554bcc17d1c1cfddc9e2d928ea1ea2f"
+    },
+    "scan-008": {
+      "rgb": "1a4630beef982dd1451907376a86ddab2e0d85f569b60f25502bd7bf94591922",
+      "calibration": "2d66ef00b625735bade4045c331e04e3e9693b4b3b21cb13d6c5156751ff91aa"
+    },
+    "scan-009": {
+      "rgb": "29d4e3b26a74bcd355b4950fd03879016063de1e2d78683bcaf6c4c8da10c78c",
+      "calibration": "f48e9e4cc1856ff00b45a61148d7f47c6e2e972adef970ccf906ae7a69aa59a9"
+    },
+    "scan-010": {
+      "rgb": "6730471bee9d1209eccb152f13e2d618d15ae088a7c0beb7cc54987f7d49eb80",
+      "calibration": "9702f55d771e77bbd86a5e2a7153aee7066779e7502108ca982d86d1bf1a3ff7"
+    },
+    "scan-011": {
+      "rgb": "cf88a10331bc4081b54be6eb911ce61d7564939ab0e1cec96e4564f825d2c762",
+      "calibration": "e55bc6ceee54e473aee53e1abb6ff83ea0f01f3a777f845c198152213f258cb8"
+    },
+    "scan-012": {
+      "rgb": "fcb444a0b012be6b125a847fab8d2313290ef863d04b9332d251280b73be8b45",
+      "calibration": "0927498bf24dba75841085427a1cee5abc549558e16066912b61f5660a443dd4"
+    },
+    "scan-013": {
+      "rgb": "8f139477ec4529629cfe9e065cf567c22f2659ba9423236be3d5a6dc7f6095d5",
+      "calibration": "a668dd03b6c65df2edce769624321a8b2d3f1714c94ddcb552ffb964ecfaca40"
+    },
+    "scan-015": {
+      "rgb": "7cfef0a4548d15d1a2c771d884c43c4c981a913f8e427edc87ddc66ce85b3239",
+      "calibration": "8c4bc6b800a91823904ff717163fb6be5796fdab5cae9decb992a2aaea1656bf"
+    },
+    "scan-016": {
+      "rgb": "2218c33182bdd070beac74d5603ff048b90336a8d43e335adb062cdff55c71d5",
+      "calibration": "acd24c69590a369bc7a2ceaae6933ae588186565edffc198e4f8cd7dc05ea30b"
+    },
+    "scan-018": {
+      "rgb": "588702fb5467406cf45277e48861d24884d15f93fde9e153bc69a9c781b1c3e6",
+      "calibration": "32d372cabed92ae0505dee2aa0192d701da0c5c1f25f59d7aeebf7c7c0441b00"
+    },
+    "scan-019": {
+      "rgb": "cb49e24af09598518bc81294d1632339ced459e9701786d80814a7f17e692852",
+      "calibration": "e1a465eeb25e95d4b816a34325afe01d4c685e800bc558c1255ae3fcfcba42ae"
+    },
+    "scan-021": {
+      "rgb": "7863c483f243fd0caacfc0eb35a54e8306d0e5033ff8152301be334e71e8aba5",
+      "calibration": "c6c9fef8dc58e86523bb089e968ed3baa6931cf9c431c25c77b845c65c047ba5"
+    },
+    "scan-022": {
+      "rgb": "d546f0bf441cd504cb4a07c0a12e0a799c1a126df358758fc9dbe9f39243a852",
+      "calibration": "f85841919c22d1930c4213d42643bb133c376cab70c75f0c4907b65deb54c89c"
+    }
+  },
+  "prior_capture_binding_path": "work/m712-map-improvement/capture-input-binding.json",
+  "prior_capture_binding_sha256": "895d7e548aafb445c9b609b2e556851b198825e7a377ae80dfa02f3506a15a20",
+  "prior_mask_directory": "work/m712-map-improvement/full-prism-extended-v1",
+  "prior_floor_masks_sha256": "72dd2164cc2e8a9d66a5862082804546a6a1f5eb0ed800290253147233833351",
+  "prior_floor_mask_view_ids": [
+    "scan-000",
+    "scan-001",
+    "scan-002",
+    "scan-003",
+    "scan-004",
+    "scan-005",
+    "scan-006",
+    "scan-007",
+    "scan-008",
+    "scan-009",
+    "scan-010",
+    "scan-011",
+    "scan-012",
+    "scan-013",
+    "scan-015",
+    "scan-016",
+    "scan-018",
+    "scan-019",
+    "scan-021",
+    "scan-022",
+    "scan-024",
+    "scan-025",
+    "scan-026",
+    "scan-027",
+    "scan-028",
+    "scan-029",
+    "scan-030",
+    "scan-031",
+    "scan-032",
+    "scan-033",
+    "scan-034",
+    "scan-035"
+  ],
+  "required_support_storage": "uint64 for all 48 view bits; bits 32 through 47 must survive serialization and loading",
+  "strict_addition_policy": {
+    "minimum_views": 4,
+    "pixel_guard": 2,
+    "projection_margin_m": 0.05,
+    "body_height_m": 0.12,
+    "minimum_baseline_m": 0.5,
+    "minimum_angle_degrees": 15,
+    "retained_baseline": "original accepted 20-view FREE evidence only"
+  }
+}

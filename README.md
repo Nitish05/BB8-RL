@@ -39,6 +39,14 @@ stay rejected; unknown space is never silently treated as traversable.
 Route searches account for the current camera-position uncertainty, and every
 returned segment is independently checked against the saved map.
 
+The current scan uses **48 calibrated RGB views** and retains **25.2% more
+observed free cells** than the original bundle. Additional free space requires
+four separated image supports; occupied and unknown evidence still constrains
+motion. The [scan-coverage report](docs/M7_12_SCAN_COVERAGE.md) records all failed
+reconstruction attempts, independent geometry checks and driving results.
+
+![Scan coverage before and after additional RGB viewpoints](docs/media/m712-map-comparison.png)
+
 ## Quick start
 
 The prepared workspace launches with one command:
@@ -110,6 +118,13 @@ Click the map or enter **X = 0.24746 m, Y = 1.30868 m** after Reset to reproduce
 demo endpoint. Other destinations must pass the same checks. The application
 reports rejections and stops; it does not promise every click is reachable.
 
+![Recovered destination: actual two-camera navigation replay](docs/media/m712-reported-route.gif)
+
+*Previously rejected destination `(1.35545, -0.84464)`, starting near
+`(-0.14400, -0.06205)`. Actual two-camera RGB replay at 2× simulation speed;
+the run arrives in 29.85 simulated seconds. One- and three-camera runs are
+recorded separately in the [scan-coverage report](docs/M7_12_SCAN_COVERAGE.md).*
+
 ## Measured evidence
 
 ![Native single-camera occlusion replay, cropped from actual RGB](docs/media/occlusion.gif)
@@ -120,6 +135,8 @@ This is a selected development route.*
 
 | Experiment | Recorded result | Scope |
 |---|---|---|
+| Improved scan and reported destination | 25.2% more observed free space; one / two / three cameras arrive in 29.75 / 29.85 / 30.15 simulated seconds | M7.12; same room, unchanged control limits |
+| Revised-map regression | 12/12 intended outcomes: 10 valid arrivals and 2 braking controls; zero contacts or premature arrivals | Full second family; all 24 development attempts retained |
 | Interactive one / two / three cameras | All three modes reached the selected goal with independently valid arrival | M7.9; one shared development path |
 | Interactive failure controls | Stop, camera handover, all-view loss and invalid memory passed; 7/7 total worker cases | 758 captures, zero contacts or premature arrivals |
 | Single-camera scan-memory traversal | 6.70 cm between fully hidden captures; maximum hidden error 1.36 cm; visible arrival without contact | One selected M7.8 route |
@@ -128,7 +145,9 @@ This is a selected development route.*
 | Original scan-memory cases | 0/6; map rejects the routes | Failures retained separately |
 | SAC / Dreamer baseline | Each checkpoint reached 200/200 synthetic held-out goals | M6 uses oracle state/map; **not camera performance** |
 
-The [interactive validation report](docs/M7_9_VALIDATION.md) records the new
+The [scan-coverage report](docs/M7_12_SCAN_COVERAGE.md) records the current map,
+all reconstruction attempts, and both complete native regression families.
+The earlier [interactive validation report](docs/M7_9_VALIDATION.md) records its
 one/two/three-camera runs and Stop/recovery checks separately, with a
 [machine-readable summary](docs/evidence/m79-native.json). See
 [M7.8](docs/M7_8.md) and [capture-level evidence](docs/media/occlusion-evidence.png)
@@ -165,6 +184,7 @@ inference measurements do not establish real-time physical robot performance.
 | Area | Documentation |
 |---|---|
 | Interactive application | [Plan](docs/M7_9_PLAN.md) · [Validation](docs/M7_9_VALIDATION.md) · [User guide](docs/GETTING_STARTED.md) |
+| Scan coverage | [Reconstruction and route results](docs/M7_12_SCAN_COVERAGE.md) · [Plan](docs/M7_12_PLAN.md) |
 | Scan-once navigation | [Occlusion control](docs/M7_8.md) · [Map and registration refinement](docs/M7_7.md) |
 | Multi-camera perception | [Fusion and memory](docs/M7_5.md) · [Fast observation](docs/M7_6.md) |
 | Learned navigation | [SAC / Dreamer control](docs/M6.md) · [Training guide](docs/M4.md) |
@@ -187,7 +207,7 @@ work/            Local models, datasets and evidence — ignored by Git
 ```
 
 CI tests pure camera/control/application contracts without native graphics or
-model assets. The local non-native suite passed **475 tests**. Native and actual
+model assets. The local non-native suite passed **516 tests**. Native and actual
 browser acceptance are documented in the [validation report](docs/M7_9_VALIDATION.md).
 The [route-clearance correction](docs/M7_10_ROUTE_FIX.md) documents the subsequent
 uncertainty-aware planner and arrival-settling regression.
@@ -204,8 +224,9 @@ paths can reject tight destinations; these results cover one synthetic room.
 - Synthetic dimensions, dynamics and calibration assumptions; no physical robot
   connection. Scan cameras have known metric poses.
 - One static room and selected development routes; no general success-rate claim.
-- Unknown/insufficient map coverage blocks many destinations, including the six
-  original scan-memory cases.
+- Unknown/insufficient map coverage still blocks some destinations. The original
+  six-case scan-memory native results remain historical failures; new static
+  coverage checks are reported separately.
 - Uncertainty/response bounds are assumptions, not calibrated physical guarantees.
   Visible arrival is independently checked against physics.
 - Scene or camera changes require validated memory/calibration. Automatic

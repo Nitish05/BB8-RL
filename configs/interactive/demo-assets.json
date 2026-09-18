@@ -1,7 +1,7 @@
 {
   "repository": "Nitish05/BB8-RL",
-  "release": "v0.1.0",
-  "asset": "bb8-demo-assets-v1.zip",
-  "sha256": "4861d820940bba289722e6aea601c3f963980c787f92c6311661e3fb387668a9",
-  "scope": "Project-trained models and static synthetic scan outputs. No third-party model weights."
+  "release": "v0.1.1",
+  "asset": "bb8-demo-assets-v2.zip",
+  "sha256": "f051d598ea9cdcb94e59187c3853c4f5bc4122332f8109d26b05c933c45314fd",
+  "scope": "Unchanged project-trained models with independently audited 48-view synthetic scan memory. No third-party model weights."
 }

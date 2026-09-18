@@ -35,7 +35,25 @@ The lock records the prepared macOS environment; it is not a cross-platform lock
 The explicit asset installer downloads the pinned release through `gh`, verifies
 its checksum and installs it under ignored `work/interactive-assets`. Nothing is
 downloaded by an import or by opening the interface. To install a ZIP obtained
-separately, pass `--archive /path/to/bb8-demo-assets-v1.zip`.
+separately, pass `--archive /path/to/bb8-demo-assets-v2.zip`.
+
+## Update an existing demo installation
+
+After updating the checkout, stop the app with Ctrl-C and retain the old assets
+before installing the newly pinned release. The installer deliberately requires
+a fresh destination:
+
+```bash
+mv work/interactive-assets work/interactive-assets-v1-backup
+./scripts/python.sh scripts/install-demo-assets.py
+./scripts/launch-control-room.sh
+```
+
+Choose another backup name if that directory already exists. The models and live
+camera registration are unchanged; the new bundle improves the saved scan map.
+The 48-view scan was prepared once. Launching or switching camera modes reuses it.
+See the [scan-coverage report](M7_12_SCAN_COVERAGE.md) for reconstruction evidence
+and limitations.
 
 ## Drive with the interface
 

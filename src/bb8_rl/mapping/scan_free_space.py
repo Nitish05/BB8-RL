@@ -78,6 +78,7 @@ def floor_homography_masks(
     patch_size=31,
     minimum_patch_std=3.0,
     minimum_patch_correlation=0.98,
+    source_indices=None,
 ):
     """Reject floor-colored pixels lacking independent planar RGB agreement.
 
@@ -101,6 +102,13 @@ def floor_homography_masks(
         or not 0 < minimum_patch_correlation <= 1
     ):
         raise ValueError("Invalid homography evidence gates")
+    selected_sources = (
+        tuple(range(len(views))) if source_indices is None else tuple(source_indices)
+    )
+    if len(set(selected_sources)) != len(selected_sources) or any(
+        type(i) is not int or not 0 <= i < len(views) for i in selected_sources
+    ):
+        raise ValueError("Source indices must be distinct existing scan views")
     masks = [synthetic_floor_mask(v.rgb) for v in views]
     smooth = [cv2.GaussianBlur(v.rgb.astype(np.float32), (3, 3), 0.6) for v in views]
     homographies = [
@@ -112,7 +120,8 @@ def floor_homography_masks(
         for v in views
     ]
     result, counts = [], []
-    for i, source in enumerate(views):
+    for i in selected_sources:
+        source = views[i]
         height, width = source.rgb.shape[:2]
         yy, xx = np.indices((height, width), dtype=np.float32)
         rays = (
@@ -213,22 +222,30 @@ def prism_floor_support(
     pixel_guard=1,
     floor_mask=None,
     projection_shape="rectangle",
+    evidence_mode="full_prism",
 ):
     """Every pixel in a conservative projected-prism rectangle must be floor.
 
     Eight 3D corners bound a convex prism wholly in front of the camera. Their
     image bounds contain its entire perspective projection. Pixel bounds round
     outward and include an explicit extra pixel guard. No corner-only sampling.
+
+    The opt-in grounded_column mode tests only the four floor corners. It is
+    footprint evidence, not observed free volume; the caller must separately
+    declare that every occupied column extends continuously to the floor.
     """
     if top_z <= floor_z or type(pixel_guard) is not int or pixel_guard < 0:
         raise ValueError(
             "Need positive prism height and nonnegative integer pixel guard"
         )
+    if evidence_mode not in {"full_prism", "grounded_column"}:
+        raise ValueError("Unknown scan free-evidence mode")
     low_xy, high_xy = np.asarray(low_xy, float), np.asarray(high_xy, float)
     if low_xy.shape != high_xy.shape or low_xy.ndim != 2 or low_xy.shape[1] != 2:
         raise ValueError("Cell bounds must be Nx2 arrays")
     corners = []
-    for x, y, z in product((0, 1), repeat=3):
+    heights = (0, 1) if evidence_mode == "full_prism" else (0,)
+    for x, y, z in product((0, 1), (0, 1), heights):
         corners.append(
             np.c_[
                 np.where(x, high_xy[:, 0], low_xy[:, 0]),
@@ -390,8 +407,22 @@ class ScanFreeMemory:
         self.free_mask = np.array(free_mask, bool, copy=True)
         self.candidate_free_mask = np.array(candidate_free_mask, bool, copy=True)
         self.occupied_mask = np.array(occupied_mask, bool, copy=True)
-        self.support_bits = np.array(support_bits, np.uint32, copy=True)
         self.view_ids = tuple(view_ids)
+        raw_bits = np.asarray(support_bits)
+        if (
+            len(self.view_ids) > 64
+            or raw_bits.dtype.kind not in "ui"
+            or np.any(raw_bits < 0)
+            or (
+                len(self.view_ids) < 64
+                and np.any(raw_bits > (1 << len(self.view_ids)) - 1)
+            )
+        ):
+            raise ValueError(
+                "Support bits must refer only to at most64 declared scan views"
+            )
+        bit_type = np.uint32 if len(self.view_ids) <= 32 else np.uint64
+        self.support_bits = np.array(raw_bits, bit_type, copy=True)
         self.metadata = dict(metadata)
         self.extent = float(metadata["extent_m"])
         self.resolution = float(metadata["resolution_m"])
@@ -403,7 +434,7 @@ class ScanFreeMemory:
             or self.support_bits.shape != self.free_mask.shape
             or self.candidate_free_mask.shape != self.free_mask.shape
             or self.occupied_mask.shape != self.free_mask.shape
-            or len(self.view_ids) > 32
+            or len(self.view_ids) > 64
             or len(set(self.view_ids)) != len(self.view_ids)
             or np.any(self.free_mask & (~self.candidate_free_mask | self.occupied_mask))
         ):
@@ -615,6 +646,8 @@ def build_scan_free_memory(
     occupied_memory=None,
     floor_masks=None,
     projection_shape="rectangle",
+    evidence_mode="full_prism",
+    assume_floor_connected_columns=False,
     scene_version="m78-original-static-room",
     calibration_version="synthetic-scan20-calibration",
 ):
@@ -635,11 +668,24 @@ def build_scan_free_memory(
         or minimum_baseline_m <= 0
         or not 0 < minimum_angle_degrees < 180
         or type(minimum_views) is not int
-        or minimum_views not in (2, 3)
-        or len(views) > 32
+        or minimum_views not in (2, 3, 4)
+        or len(views) > 64
         or len({v.view_id for v in views}) != len(views)
     ):
         raise ValueError("Invalid scan support or task geometry parameters")
+    if evidence_mode not in {"full_prism", "grounded_column"}:
+        raise ValueError("Unknown scan free-evidence mode")
+    if evidence_mode == "grounded_column" and (
+        assume_floor_connected_columns is not True
+        or floor_masks is None
+        or minimum_views != 3
+        or projection_margin_m < 0.05
+        or pixel_guard < 1
+    ):
+        raise ValueError(
+            "Grounded-column evidence needs an explicit floor-connected-column "
+            "assumption, supplied floor masks, three views, .05m XY and pixel guards"
+        )
     if any(
         v.view_id.startswith("scan-") and int(v.view_id[5:]) in EXCLUDED_QUERY_IDS
         for v in views
@@ -687,6 +733,7 @@ def build_scan_free_memory(
             pixel_guard=pixel_guard,
             floor_mask=None if floor_masks is None else floor_masks[i],
             projection_shape=projection_shape,
+            evidence_mode=evidence_mode,
         )
     separated = np.zeros(len(low), bool)
     compatible_pairs = {}
@@ -710,9 +757,10 @@ def build_scan_free_memory(
             continue
         separated |= np.logical_and.reduce([compatible_pairs[pair] for pair in pairs])
     candidate = (support.sum(axis=0) >= minimum_views) & separated
-    bits = np.zeros(len(low), np.uint32)
+    bit_type = np.uint32 if len(views) <= 32 else np.uint64
+    bits = np.zeros(len(low), bit_type)
     for i in range(len(views)):
-        bits |= support[i].astype(np.uint32) * np.uint32(1 << i)
+        bits |= support[i].astype(bit_type) * bit_type(1 << i)
     epsilon = 1e-9
     for cell in np.flatnonzero(candidate):
         ids = tuple(view.view_id for i, view in enumerate(views) if support[i, cell])
@@ -739,6 +787,7 @@ def build_scan_free_memory(
         "projection_margin_m": projection_margin_m,
         "pixel_guard": pixel_guard,
         "projection_shape": projection_shape,
+        "free_evidence_mode": evidence_mode,
         "minimum_views": minimum_views,
         "support_separation_rule": "all pairs in a supporting camera clique satisfy baseline and per-cell angle gates",
         "minimum_baseline_m": minimum_baseline_m,
@@ -764,11 +813,27 @@ def build_scan_free_memory(
             "opaque grounded scene objects with no overhangs",
             "no scene change since scan",
         ],
-        "free_evidence_semantics": "all pixels in whole expanded body-prism projection superset observed as floor in at least two separated cameras",
+        "free_evidence_semantics": (
+            "all pixels in expanded ground-footprint projection observed as floor "
+            "in three pairwise-separated cameras; body-height freedom inferred "
+            "only under the explicit floor-connected-column assumption"
+            if evidence_mode == "grounded_column"
+            else "all pixels in whole expanded body-prism projection superset "
+            "observed as floor in the declared minimum separated cameras"
+        ),
         "missing_geometry_creates_free": False,
         "physical_or_general_scene_guarantee": False,
         "occupied_conflict_layer_preserved": occupied_memory is not None,
     }
+    if evidence_mode == "grounded_column":
+        metadata["assumptions"].append(
+            "For every occupied point above the support plane, the entire vertical "
+            "column down to that plane is occupied. This stronger assumption "
+            "holds for vertical solid fixture boxes, not arbitrary grounded "
+            "objects, rounded bodies, overhangs, or suspended objects."
+        )
+        metadata["floor_connected_columns_assumed"] = True
+        metadata["body_volume_observed_directly"] = False
     return ScanFreeMemory(
         memory,
         free,

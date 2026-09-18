@@ -1,0 +1,465 @@
+{
+  "schema": "bb8.map-native-family-comparison.v1",
+  "scope": "Two complete, sequential development families in one synthetic room. Second-family acceptance uses all its own twelve cases; earlier failures remain retained and cannot be replaced case by case.",
+  "all_pairing_and_second_family_gates_pass": true,
+  "checks": {
+    "two_complete_twelve_case_families": true,
+    "same_exact_case_ids": true,
+    "same_protocol_map_and_assets": true,
+    "second_family_has_required_route_instrumentation": true,
+    "second_family_itself_passes": true
+  },
+  "retained_attempts": 24,
+  "families": {
+    "before_route_fix": {
+      "all_pass": false,
+      "recorded_cases": 12,
+      "intended_passes": 9,
+      "valid_arrival_cases": 7,
+      "frames": 5916,
+      "physics_samples": 59160,
+      "verified_image_artifacts": 21500
+    },
+    "after_route_fix": {
+      "all_pass": true,
+      "recorded_cases": 12,
+      "intended_passes": 12,
+      "valid_arrival_cases": 10,
+      "frames": 4114,
+      "physics_samples": 41140,
+      "verified_image_artifacts": 14308
+    }
+  },
+  "prior_failed_case_ids_retained": [
+    "reported-mode1",
+    "reported-mode2",
+    "reported-mode3"
+  ],
+  "paired_cases": [
+    {
+      "case": "all-lost-mode2",
+      "before_route_fix": {
+        "intended_pass": true,
+        "valid_arrival": true,
+        "hard_failures": [],
+        "first_valid_arrival": {
+          "time": 7.1000000000000005,
+          "goal": [
+            0.24745992166936648,
+            1.3086782891625797
+          ],
+          "distance_m": 0.032643731855418474,
+          "speed_m_s": 0.0029727566419322127,
+          "true_dwell_at_capture_s": 0.8100000000000005,
+          "visible_fresh_rgb": true,
+          "passed": true
+        },
+        "recorded_simulation_s": 7.15,
+        "guarded_stop_episodes": 0
+      },
+      "after_route_fix": {
+        "intended_pass": true,
+        "valid_arrival": true,
+        "hard_failures": [],
+        "first_valid_arrival": {
+          "time": 7.1000000000000005,
+          "goal": [
+            0.24745992166936648,
+            1.3086782891625797
+          ],
+          "distance_m": 0.032643731855418474,
+          "speed_m_s": 0.0029727566419322127,
+          "true_dwell_at_capture_s": 0.8100000000000005,
+          "visible_fresh_rgb": true,
+          "passed": true
+        },
+        "recorded_simulation_s": 7.15,
+        "guarded_stop_episodes": 0
+      }
+    },
+    {
+      "case": "center-mode2",
+      "before_route_fix": {
+        "intended_pass": true,
+        "valid_arrival": true,
+        "hard_failures": [],
+        "first_valid_arrival": {
+          "time": 12.1,
+          "goal": [
+            -0.35,
+            0.7
+          ],
+          "distance_m": 0.0291062715354944,
+          "speed_m_s": 0.0033109743279048118,
+          "true_dwell_at_capture_s": 0.7699999999999996,
+          "visible_fresh_rgb": true,
+          "passed": true
+        },
+        "recorded_simulation_s": 12.15,
+        "guarded_stop_episodes": 0
+      },
+      "after_route_fix": {
+        "intended_pass": true,
+        "valid_arrival": true,
+        "hard_failures": [],
+        "first_valid_arrival": {
+          "time": 12.1,
+          "goal": [
+            -0.35,
+            0.7
+          ],
+          "distance_m": 0.0291062715354944,
+          "speed_m_s": 0.0033109743279048118,
+          "true_dwell_at_capture_s": 0.7699999999999996,
+          "visible_fresh_rgb": true,
+          "passed": true
+        },
+        "recorded_simulation_s": 12.15,
+        "guarded_stop_episodes": 0
+      }
+    },
+    {
+      "case": "demo-mode1",
+      "before_route_fix": {
+        "intended_pass": true,
+        "valid_arrival": true,
+        "hard_failures": [],
+        "first_valid_arrival": {
+          "time": 5.1000000000000005,
+          "goal": [
+            0.24745992166936648,
+            1.3086782891625797
+          ],
+          "distance_m": 0.03316278135806092,
+          "speed_m_s": 0.003557679509175608,
+          "true_dwell_at_capture_s": 0.7450000000000001,
+          "visible_fresh_rgb": true,
+          "passed": true
+        },
+        "recorded_simulation_s": 5.15,
+        "guarded_stop_episodes": 0
+      },
+      "after_route_fix": {
+        "intended_pass": true,
+        "valid_arrival": true,
+        "hard_failures": [],
+        "first_valid_arrival": {
+          "time": 5.1000000000000005,
+          "goal": [
+            0.24745992166936648,
+            1.3086782891625797
+          ],
+          "distance_m": 0.03316278135806092,
+          "speed_m_s": 0.003557679509175608,
+          "true_dwell_at_capture_s": 0.7450000000000001,
+          "visible_fresh_rgb": true,
+          "passed": true
+        },
+        "recorded_simulation_s": 5.15,
+        "guarded_stop_episodes": 0
+      }
+    },
+    {
+      "case": "invalid-memory-mode2",
+      "before_route_fix": {
+        "intended_pass": true,
+        "valid_arrival": false,
+        "hard_failures": [],
+        "first_valid_arrival": null,
+        "recorded_simulation_s": 5.5,
+        "guarded_stop_episodes": 0
+      },
+      "after_route_fix": {
+        "intended_pass": true,
+        "valid_arrival": false,
+        "hard_failures": [],
+        "first_valid_arrival": null,
+        "recorded_simulation_s": 5.5,
+        "guarded_stop_episodes": 0
+      }
+    },
+    {
+      "case": "north-center-mode3",
+      "before_route_fix": {
+        "intended_pass": true,
+        "valid_arrival": true,
+        "hard_failures": [],
+        "first_valid_arrival": {
+          "time": 18.400000000000002,
+          "goal": [
+            -0.2,
+            -0.7
+          ],
+          "distance_m": 0.02584670584050995,
+          "speed_m_s": 0.003586486985368508,
+          "true_dwell_at_capture_s": 0.740000000000002,
+          "visible_fresh_rgb": true,
+          "passed": true
+        },
+        "recorded_simulation_s": 18.45,
+        "guarded_stop_episodes": 4
+      },
+      "after_route_fix": {
+        "intended_pass": true,
+        "valid_arrival": true,
+        "hard_failures": [],
+        "first_valid_arrival": {
+          "time": 18.400000000000002,
+          "goal": [
+            -0.2,
+            -0.7
+          ],
+          "distance_m": 0.02584670584050995,
+          "speed_m_s": 0.003586486985368508,
+          "true_dwell_at_capture_s": 0.740000000000002,
+          "visible_fresh_rgb": true,
+          "passed": true
+        },
+        "recorded_simulation_s": 18.45,
+        "guarded_stop_episodes": 4
+      }
+    },
+    {
+      "case": "north-mode1",
+      "before_route_fix": {
+        "intended_pass": true,
+        "valid_arrival": true,
+        "hard_failures": [],
+        "first_valid_arrival": {
+          "time": 13.3,
+          "goal": [
+            0.2,
+            1.55
+          ],
+          "distance_m": 0.021084704511511114,
+          "speed_m_s": 0.003422194224406331,
+          "true_dwell_at_capture_s": 0.7599999999999998,
+          "visible_fresh_rgb": true,
+          "passed": true
+        },
+        "recorded_simulation_s": 13.35,
+        "guarded_stop_episodes": 0
+      },
+      "after_route_fix": {
+        "intended_pass": true,
+        "valid_arrival": true,
+        "hard_failures": [],
+        "first_valid_arrival": {
+          "time": 13.3,
+          "goal": [
+            0.2,
+            1.55
+          ],
+          "distance_m": 0.021084704511511114,
+          "speed_m_s": 0.003422194224406331,
+          "true_dwell_at_capture_s": 0.7599999999999998,
+          "visible_fresh_rgb": true,
+          "passed": true
+        },
+        "recorded_simulation_s": 13.35,
+        "guarded_stop_episodes": 0
+      }
+    },
+    {
+      "case": "reported-mode1",
+      "before_route_fix": {
+        "intended_pass": false,
+        "valid_arrival": false,
+        "hard_failures": [],
+        "first_valid_arrival": null,
+        "recorded_simulation_s": 60.0,
+        "guarded_stop_episodes": 0
+      },
+      "after_route_fix": {
+        "intended_pass": true,
+        "valid_arrival": true,
+        "hard_failures": [],
+        "first_valid_arrival": {
+          "time": 29.75,
+          "goal": [
+            1.3554502369668247,
+            -0.8446386255924172
+          ],
+          "distance_m": 0.031310427517291045,
+          "speed_m_s": 0.0036230172860085732,
+          "true_dwell_at_capture_s": 0.7399999999999984,
+          "visible_fresh_rgb": true,
+          "passed": true
+        },
+        "recorded_simulation_s": 29.8,
+        "guarded_stop_episodes": 10
+      }
+    },
+    {
+      "case": "reported-mode2",
+      "before_route_fix": {
+        "intended_pass": false,
+        "valid_arrival": false,
+        "hard_failures": [],
+        "first_valid_arrival": null,
+        "recorded_simulation_s": 60.0,
+        "guarded_stop_episodes": 0
+      },
+      "after_route_fix": {
+        "intended_pass": true,
+        "valid_arrival": true,
+        "hard_failures": [],
+        "first_valid_arrival": {
+          "time": 29.85,
+          "goal": [
+            1.3554502369668247,
+            -0.8446386255924172
+          ],
+          "distance_m": 0.029349721751870145,
+          "speed_m_s": 0.0035026888744415802,
+          "true_dwell_at_capture_s": 0.75,
+          "visible_fresh_rgb": true,
+          "passed": true
+        },
+        "recorded_simulation_s": 29.900000000000002,
+        "guarded_stop_episodes": 9
+      }
+    },
+    {
+      "case": "reported-mode3",
+      "before_route_fix": {
+        "intended_pass": false,
+        "valid_arrival": false,
+        "hard_failures": [],
+        "first_valid_arrival": null,
+        "recorded_simulation_s": 60.0,
+        "guarded_stop_episodes": 0
+      },
+      "after_route_fix": {
+        "intended_pass": true,
+        "valid_arrival": true,
+        "hard_failures": [],
+        "first_valid_arrival": {
+          "time": 30.150000000000002,
+          "goal": [
+            1.3554502369668247,
+            -0.8446386255924172
+          ],
+          "distance_m": 0.029318939771303332,
+          "speed_m_s": 0.003252736926330539,
+          "true_dwell_at_capture_s": 0.7750000000000021,
+          "visible_fresh_rgb": true,
+          "passed": true
+        },
+        "recorded_simulation_s": 30.2,
+        "guarded_stop_episodes": 11
+      }
+    },
+    {
+      "case": "stop-mode1",
+      "before_route_fix": {
+        "intended_pass": true,
+        "valid_arrival": false,
+        "hard_failures": [],
+        "first_valid_arrival": null,
+        "recorded_simulation_s": 5.5,
+        "guarded_stop_episodes": 0
+      },
+      "after_route_fix": {
+        "intended_pass": true,
+        "valid_arrival": false,
+        "hard_failures": [],
+        "first_valid_arrival": null,
+        "recorded_simulation_s": 5.5,
+        "guarded_stop_episodes": 0
+      }
+    },
+    {
+      "case": "tuning-forward",
+      "before_route_fix": {
+        "intended_pass": true,
+        "valid_arrival": true,
+        "hard_failures": [],
+        "first_valid_arrival": {
+          "time": 21.45,
+          "goal": [
+            -0.2065534089380967,
+            -0.8665560984356091
+          ],
+          "distance_m": 0.020057842472755542,
+          "speed_m_s": 0.003869868563079533,
+          "true_dwell_at_capture_s": 0.7149999999999999,
+          "visible_fresh_rgb": true,
+          "passed": true
+        },
+        "recorded_simulation_s": 21.5,
+        "guarded_stop_episodes": 0
+      },
+      "after_route_fix": {
+        "intended_pass": true,
+        "valid_arrival": true,
+        "hard_failures": [],
+        "first_valid_arrival": {
+          "time": 21.45,
+          "goal": [
+            -0.2065534089380967,
+            -0.8665560984356091
+          ],
+          "distance_m": 0.020057842472755542,
+          "speed_m_s": 0.003869868563079533,
+          "true_dwell_at_capture_s": 0.7149999999999999,
+          "visible_fresh_rgb": true,
+          "passed": true
+        },
+        "recorded_simulation_s": 21.5,
+        "guarded_stop_episodes": 0
+      }
+    },
+    {
+      "case": "tuning-reverse",
+      "before_route_fix": {
+        "intended_pass": true,
+        "valid_arrival": true,
+        "hard_failures": [],
+        "first_valid_arrival": {
+          "time": 27.0,
+          "goal": [
+            -1.59,
+            1.41
+          ],
+          "distance_m": 0.0381180688698733,
+          "speed_m_s": 0.0033214599614841437,
+          "true_dwell_at_capture_s": 0.7699999999999996,
+          "visible_fresh_rgb": true,
+          "passed": true
+        },
+        "recorded_simulation_s": 27.05,
+        "guarded_stop_episodes": 17
+      },
+      "after_route_fix": {
+        "intended_pass": true,
+        "valid_arrival": true,
+        "hard_failures": [],
+        "first_valid_arrival": {
+          "time": 27.0,
+          "goal": [
+            -1.59,
+            1.41
+          ],
+          "distance_m": 0.0381180688698733,
+          "speed_m_s": 0.0033214599614841437,
+          "true_dwell_at_capture_s": 0.7699999999999996,
+          "visible_fresh_rgb": true,
+          "passed": true
+        },
+        "recorded_simulation_s": 27.05,
+        "guarded_stop_episodes": 17
+      }
+    }
+  ],
+  "limits": [
+    "The repeated fixed routes and three camera modes do not establish general reliability or independent-world performance.",
+    "Static map coverage is distinct from native navigation, and the retained original M7.8 map-only failures remain outside these families.",
+    "Control uncertainty, reserve, physical stopping and original arrival gates are not weakened by exact-radius fallback."
+  ],
+  "input_sha256": {
+    "before_family": "bb1892684025757a2d2ad5353e6a5cb3ee82e5fefd2e85c2583d75f5ff7f158f",
+    "after_family": "eddac96bd80e13e96a2b8f9afb8a01eb104d8d4061c7b5c1732c291efaf9caec",
+    "this_script": "47a9d9f847dea0e6666013f6e18a349416d7e7568b2bbbb99d1589c7ea7c4451"
+  }
+}

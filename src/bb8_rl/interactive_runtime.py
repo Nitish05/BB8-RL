@@ -106,6 +106,7 @@ class ControlSession:
         self.planning_reserve = float(planning_reserve)
         self.grid = memory.planning_grid(self.planning_radius)
         self.route_grids = {}
+        self.route_planning_details = None
         self.clock, self.heartbeat_seconds = clock, float(heartbeat_seconds)
         self.last_heartbeat = clock()
         self.parameters = parameters or OcclusionParameters()
@@ -120,19 +121,67 @@ class ControlSession:
         )
 
     def route_with_clearance(self, start, goal, radius):
-        """Plan with current uncertainty; cache upward-rounded frozen-map grids."""
+        """Prefer cached coarse grids; retry the exact required reserve if needed."""
         if not math.isfinite(radius) or radius < 0:
             raise ValueError("Route clearance must be finite and nonnegative")
-        # Round upwards, never below the independently required capsule radius.
-        # Two-centimeter buckets limit grid churn as RGB covariance changes.
-        clearance = math.ceil(
-            max(self.planning_radius, radius + self.planning_reserve) / 0.02
-        ) * 0.02
-        if clearance not in self.route_grids:
-            if len(self.route_grids) >= 16:
-                self.route_grids.pop(next(iter(self.route_grids)))
-            self.route_grids[clearance] = self.memory.planning_grid(clearance)
-        return self.route_grids[clearance].route(start, goal)
+        required = max(self.planning_radius, radius + self.planning_reserve)
+        if not math.isfinite(required):
+            raise ValueError("Route clearance including reserve must be finite")
+        # Division may put an exact boundary just above its integer index:
+        # .14/.02 is 7.000000000000001. Compare the actual product, without
+        # epsilon, so a nextafter value above the boundary still rounds up.
+        steps = math.floor(required / 0.02)
+        rounded = steps * 0.02
+        if rounded < required:
+            rounded = (steps + 1) * 0.02
+        self.route_planning_details = {
+            "required_radius_m": required,
+            "rounded_radius_m": rounded,
+            "selected_radius_m": rounded,
+            "exact_fallback_used": False,
+            "certificate_radius_m": required,
+            "route_certified": False,
+        }
+
+        def grid_for(clearance):
+            # Exact retries share the same bounded cache; no unbounded set of
+            # covariance-dependent radii accumulates.
+            if clearance not in self.route_grids:
+                if len(self.route_grids) >= 16:
+                    self.route_grids.pop(next(iter(self.route_grids)))
+                self.route_grids[clearance] = self.memory.planning_grid(clearance)
+            return self.route_grids[clearance]
+
+        rounded_grid = grid_for(rounded)
+        try:
+            route = rounded_grid.route(start, goal)
+        except ValueError:
+            if rounded == required:
+                raise
+            self.route_planning_details.update(
+                selected_radius_m=required, exact_fallback_used=True
+            )
+            # Retain every millimeter of requested clearance and reserve.
+            route = grid_for(required).route(start, goal)
+        route = np.asarray(route, float)
+        if (
+            route.ndim != 2
+            or route.shape[1] != 2
+            or len(route) < 1
+            or not np.isfinite(route).all()
+            or not np.allclose(route[0], start)
+            or not np.allclose(route[-1], goal)
+            or not self.memory.segment_free(start, start, required)
+            or not self.memory.segment_free(goal, goal, required)
+            or not all(
+                self.memory.segment_free(a, b, required) for a, b in pairwise(route)
+            )
+        ):
+            raise ValueError(
+                "Planned route lacks the full requested clearance and reserve"
+            )
+        self.route_planning_details["route_certified"] = True
+        return route
 
     def cancel(self, phase="stopped", message="Stopped; choose a goal to resume."):
         self.stop()
@@ -269,7 +318,9 @@ class ControlSession:
                     + self.idle_belief.position_radius,
                 )
                 route = np.asarray(
-                    self.route_with_clearance(measurement.xy, self.pending_goal, radius),
+                    self.route_with_clearance(
+                        measurement.xy, self.pending_goal, radius
+                    ),
                     float,
                 )
                 if (
@@ -356,6 +407,7 @@ class ControlSession:
             self.controller.belief if self.controller is not None else self.idle_belief
         )
         return {
+            "route_planning": self.route_planning_details,
             "phase": self.phase,
             "pose": None if belief.xy is None else belief.xy.tolist(),
             "position_radius": float(belief.position_radius)
@@ -731,6 +783,7 @@ def worker_main(config, command_queue, event_queue, stop_event):
                 "prior_acknowledged_command_intervals": intervals,
                 "action": action,
                 "controller_status": session.status,
+                "route_planning": session.route_planning_details,
                 "controller_arrived": bool(
                     session.controller is not None and session.controller.arrived
                 ),

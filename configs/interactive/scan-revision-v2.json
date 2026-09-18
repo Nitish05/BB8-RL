@@ -1,0 +1,43 @@
+{
+  "schema": "bb8.extended-map-revision-plan.v1",
+  "revision": "full-prism-extended-v2",
+  "frozen_before_builder_revision_and_candidate_generation": true,
+  "estimator_inputs": [
+    "original20RGB/calibrations",
+    "supplemental12RGB/calibrations",
+    "frozenfull-prism-v1floor masks",
+    "acceptedbaselineFREEevidence",
+    "unchangedoccupiedevidence"
+  ],
+  "truth_geometry_or_failed_cell_locations_used": false,
+  "rationale": "Require an additional mutually separated witness for every added cell and an additional native-pixel border guard to reduce ambiguity and projection-boundary sensitivity. Keep accepted baseline evidence unchanged; do not tune spatial regions.",
+  "new_evidence": {
+    "mode": "full_prism",
+    "body_height_m": 0.12,
+    "metric_projection_margin_m": 0.05,
+    "minimum_pairwise_separated_views": 4,
+    "minimum_baseline_m": 0.5,
+    "minimum_angle_degrees": 15.0,
+    "pixel_guard": 2,
+    "projection_shape": "convex_hull"
+  },
+  "retained_evidence": {
+    "source": "work/interactive-assets/memory",
+    "minimum_views": 3,
+    "pixel_guard": 1,
+    "original20finalfloormasks": "bit_identical",
+    "occupied": "exactrecordsandcells",
+    "final_free": "originalacceptedFREEunionstrictnewpositiveevidence"
+  },
+  "mask_policy": "Reusethecomplete32viewfloor-masks.npzfromfrozenfull-prism-extended-v1;nohomography/learnedthresholdrefitormaskunion.",
+  "audit_gate": "Unchangedindependentzero-false-FREEwholeprism+parkedrobotgate;reportedrouteat.14m;allpreviousconnectedcasesretained;strictsupportbitsforallnewFREE.",
+  "inputs_sha256": {
+    "work/interactive-assets/memory/manifest.json": "07a704a3f24d4c2f8f32056f80a520acd086098ee6e586c81c24fe18e7a52488",
+    "work/interactive-assets/memory/floor-masks.npz": "a83fd99165f0c82d979f968871ccc32c8b46e48e38a55a4f63b84cf03a402a9f",
+    "work/m712-map-improvement/full-prism-extended-v1/manifest.json": "26f9453a7b34dfc2174596707bab252acb60589bea8dee12a0b92b1a67d40843",
+    "work/m712-map-improvement/full-prism-extended-v1/floor-masks.npz": "72dd2164cc2e8a9d66a5862082804546a6a1f5eb0ed800290253147233833351",
+    "work/m712-map-improvement/capture-plan.json": "563d2adfd41db37101bb012dd2ee403a06e9ecb47b0c0e3fa38f82ecdc03b491",
+    "scripts/build-extended-scan-memory.py": "d0819ec8b81fe985e8d2f59527495b0443e8ad7a0ec7c4b7365b64fe83069f18",
+    "src/bb8_rl/mapping/scan_free_space.py": "6cd92684a210aa924f6cf1266246a67e2ec19709ba4ec487000c1153b23f5917"
+  }
+}
