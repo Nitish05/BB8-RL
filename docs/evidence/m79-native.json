@@ -1,0 +1,224 @@
+{
+  "schema": "bb8.interactive-native-suite.v1",
+  "scope": "Seven correlated development cases on one selected path, not reliability estimate; independent source/camera/physics audits. Reset/mode/UI remain separate supervisor checks.",
+  "denominator": 7,
+  "intent_pass_count": 7,
+  "cases": [
+    {
+      "case": "goal-mode1",
+      "intent_pass": true,
+      "checks": {
+        "independent_audit": true,
+        "visible_true_arrival": true,
+        "physical_motion": true
+      },
+      "details": {},
+      "first_arrival": [
+        {
+          "time": 4.95,
+          "goal": [
+            0.24745992166936648,
+            1.3086782891625797
+          ],
+          "distance_m": 0.033799555403108576,
+          "speed_m_s": 0.005475354594750557,
+          "true_dwell_at_capture_s": 0.5949999999999998,
+          "visible_fresh_rgb": true,
+          "passed": true
+        }
+      ],
+      "frames": 100,
+      "image_artifacts": 200,
+      "physics_samples": 1000,
+      "all_views_native_hidden_captures": 10,
+      "report": "work/m79/audit-final/goal-mode1/report.json",
+      "report_sha256": "cbf147ddd170fe08412925e00e2dbfbc0ab3a49aab3f41912d3a95809cf356ae"
+    },
+    {
+      "case": "goal-mode2",
+      "intent_pass": true,
+      "checks": {
+        "independent_audit": true,
+        "visible_true_arrival": true,
+        "physical_motion": true
+      },
+      "details": {},
+      "first_arrival": [
+        {
+          "time": 4.9,
+          "goal": [
+            0.24745992166936648,
+            1.3086782891625797
+          ],
+          "distance_m": 0.029916913619905953,
+          "speed_m_s": 0.006019672810790597,
+          "true_dwell_at_capture_s": 0.5600000000000005,
+          "visible_fresh_rgb": true,
+          "passed": true
+        }
+      ],
+      "frames": 99,
+      "image_artifacts": 396,
+      "physics_samples": 990,
+      "all_views_native_hidden_captures": 0,
+      "report": "work/m79/audit-final/goal-mode2/report.json",
+      "report_sha256": "a37d5d3d7f61e0f9344502f2f32cf39a952c4de388181f684f6dd91c674c5398"
+    },
+    {
+      "case": "goal-mode3",
+      "intent_pass": true,
+      "checks": {
+        "independent_audit": true,
+        "visible_true_arrival": true,
+        "physical_motion": true
+      },
+      "details": {},
+      "first_arrival": [
+        {
+          "time": 4.95,
+          "goal": [
+            0.24745992166936648,
+            1.3086782891625797
+          ],
+          "distance_m": 0.028902239024901848,
+          "speed_m_s": 0.005427602282938738,
+          "true_dwell_at_capture_s": 0.5949999999999998,
+          "visible_fresh_rgb": true,
+          "passed": true
+        }
+      ],
+      "frames": 100,
+      "image_artifacts": 600,
+      "physics_samples": 1000,
+      "all_views_native_hidden_captures": 0,
+      "report": "work/m79/audit-final/goal-mode3/report.json",
+      "report_sha256": "b78586918b186ec5e3b5c6e16782fde54b9844013c2d9a40fec600d2dcac757b"
+    },
+    {
+      "case": "stop-moving",
+      "intent_pass": true,
+      "checks": {
+        "independent_audit": true,
+        "moving_before_stop": true,
+        "cancelled_no_stale_resume": true,
+        "physically_stopped": true
+      },
+      "details": {
+        "stop": [
+          {
+            "action": "stop",
+            "time": 2.05,
+            "recorded_after_frames": 64,
+            "motion_preceded_event": true,
+            "zero_commands_and_cancelled_goal": true,
+            "final_true_speed_m_s": 1.4321024302840048e-05
+          }
+        ]
+      },
+      "first_arrival": [],
+      "frames": 105,
+      "image_artifacts": 210,
+      "physics_samples": 1050,
+      "all_views_native_hidden_captures": 0,
+      "report": "work/m79/audit-final/stop-moving/report.json",
+      "report_sha256": "c9cc3f908f6c7b8c6ed87f173d5c0581373fe5174c8eee6cbd0a9c8ac065fd15"
+    },
+    {
+      "case": "handover-mode2",
+      "intent_pass": true,
+      "checks": {
+        "independent_audit": true,
+        "visible_true_arrival": true,
+        "physical_motion": true,
+        "B_only_handover": true,
+        "driving_during_handover": true
+      },
+      "details": {
+        "handover_frames": 20
+      },
+      "first_arrival": [
+        {
+          "time": 4.9,
+          "goal": [
+            0.24745992166936648,
+            1.3086782891625797
+          ],
+          "distance_m": 0.029943379464599258,
+          "speed_m_s": 0.006016688619246478,
+          "true_dwell_at_capture_s": 0.5600000000000005,
+          "visible_fresh_rgb": true,
+          "passed": true
+        }
+      ],
+      "frames": 99,
+      "image_artifacts": 396,
+      "physics_samples": 990,
+      "all_views_native_hidden_captures": 0,
+      "report": "work/m79/audit-final/handover-mode2/report.json",
+      "report_sha256": "acd4f5a240354daedbe3c8f9b8e4faa76c547f64e499eba89060a61608ac549e"
+    },
+    {
+      "case": "all-lost-mode2",
+      "intent_pass": true,
+      "checks": {
+        "independent_audit": true,
+        "moving_before_event": true,
+        "zero_after_guard": true,
+        "physical_stop": true,
+        "reacquired": true,
+        "visible_true_arrival": true
+      },
+      "details": {
+        "guarded_frames": 40,
+        "last_guarded_true_speed_m_s": 0.0006287319275369357
+      },
+      "first_arrival": [
+        {
+          "time": 6.9,
+          "goal": [
+            0.24745992166936648,
+            1.3086782891625797
+          ],
+          "distance_m": 0.03342889951432962,
+          "speed_m_s": 0.005282269159834825,
+          "true_dwell_at_capture_s": 0.6100000000000003,
+          "visible_fresh_rgb": true,
+          "passed": true
+        }
+      ],
+      "frames": 150,
+      "image_artifacts": 600,
+      "physics_samples": 1500,
+      "all_views_native_hidden_captures": 0,
+      "report": "work/m79/audit-final/all-lost-mode2/report.json",
+      "report_sha256": "1998e8316b6e67c6be94c031dbe3bf97b30cc8d8dbc09b3f4280dad6255f8b87"
+    },
+    {
+      "case": "invalid-memory",
+      "intent_pass": true,
+      "checks": {
+        "independent_audit": true,
+        "moving_before_event": true,
+        "zero_after_guard": true,
+        "physical_stop": true,
+        "goal_cancelled": true
+      },
+      "details": {
+        "guarded_frames": 65,
+        "last_guarded_true_speed_m_s": 1.418906738794776e-05
+      },
+      "first_arrival": [],
+      "frames": 105,
+      "image_artifacts": 420,
+      "physics_samples": 1050,
+      "all_views_native_hidden_captures": 0,
+      "report": "work/m79/audit-final/invalid-memory/report.json",
+      "report_sha256": "a9e1b2e36dac89039271b8eed88c32b3cdfa4fe3c7d3c4d57ede4ec7f6228fb2"
+    }
+  ],
+  "initial_preserved_failure": "native-initial/goal-mode1: incomplete bundle; failed before physics",
+  "protocol_sha256": "ee390b4accaa99ad08a905285bb16b16ca7da3e01c7c46d727d78a269d540915",
+  "total_frames": 758,
+  "total_image_artifacts": 2822,
+  "total_physics_samples": 7580
+}

@@ -1,0 +1,7 @@
+{
+  "repository": "Nitish05/BB8-RL",
+  "release": "v0.1.0",
+  "asset": "bb8-demo-assets-v1.zip",
+  "sha256": "4861d820940bba289722e6aea601c3f963980c787f92c6311661e3fb387668a9",
+  "scope": "Project-trained models and static synthetic scan outputs. No third-party model weights."
+}

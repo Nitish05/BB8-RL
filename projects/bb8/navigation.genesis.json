@@ -1,0 +1,381 @@
+{
+  "schema_version": 4,
+  "name": "BB8-RL navigation task \u2014 synthetic obstacle slots",
+  "robot": null,
+  "robots": [],
+  "objects": [
+    {
+      "name": "bb8_body",
+      "format": "sphere",
+      "radius": 0.037,
+      "position": [
+        0,
+        0,
+        0.037
+      ],
+      "fixed": false,
+      "material": {
+        "density": 942.6190537099208,
+        "friction": 0.6,
+        "color": [
+          0.18,
+          0.18,
+          0.2,
+          1
+        ]
+      }
+    },
+    {
+      "name": "bb8_head",
+      "format": "sphere",
+      "radius": 0.019,
+      "position": [
+        0,
+        0,
+        0.083
+      ],
+      "fixed": true,
+      "collision_group": 0,
+      "collision_mask": 0,
+      "material": {
+        "color": [
+          0.7,
+          0.72,
+          0.75,
+          1
+        ]
+      }
+    },
+    {
+      "name": "wall_0_minus",
+      "format": "box",
+      "fixed": true,
+      "position": [
+        -1.525,
+        0,
+        0.075
+      ],
+      "size": [
+        0.05,
+        3.1,
+        0.15
+      ],
+      "material": {
+        "color": [
+          0.22,
+          0.3,
+          0.36,
+          1
+        ]
+      }
+    },
+    {
+      "name": "wall_0_plus",
+      "format": "box",
+      "fixed": true,
+      "position": [
+        1.525,
+        0,
+        0.075
+      ],
+      "size": [
+        0.05,
+        3.1,
+        0.15
+      ],
+      "material": {
+        "color": [
+          0.22,
+          0.3,
+          0.36,
+          1
+        ]
+      }
+    },
+    {
+      "name": "wall_1_minus",
+      "format": "box",
+      "fixed": true,
+      "position": [
+        0,
+        -1.525,
+        0.075
+      ],
+      "size": [
+        3.1,
+        0.05,
+        0.15
+      ],
+      "material": {
+        "color": [
+          0.22,
+          0.3,
+          0.36,
+          1
+        ]
+      }
+    },
+    {
+      "name": "wall_1_plus",
+      "format": "box",
+      "fixed": true,
+      "position": [
+        0,
+        1.525,
+        0.075
+      ],
+      "size": [
+        3.1,
+        0.05,
+        0.15
+      ],
+      "material": {
+        "color": [
+          0.22,
+          0.3,
+          0.36,
+          1
+        ]
+      }
+    },
+    {
+      "name": "obstacle_0",
+      "format": "box",
+      "fixed": true,
+      "size": [
+        0.3,
+        0.3,
+        0.3
+      ],
+      "position": [
+        4.0,
+        0,
+        0.15
+      ],
+      "material": {
+        "color": [
+          0.72,
+          0.32,
+          0.16,
+          1
+        ],
+        "friction": 0.6
+      }
+    },
+    {
+      "name": "obstacle_1",
+      "format": "box",
+      "fixed": true,
+      "size": [
+        0.3,
+        0.3,
+        0.3
+      ],
+      "position": [
+        4.6,
+        0,
+        0.15
+      ],
+      "material": {
+        "color": [
+          0.72,
+          0.32,
+          0.16,
+          1
+        ],
+        "friction": 0.6
+      }
+    },
+    {
+      "name": "obstacle_2",
+      "format": "box",
+      "fixed": true,
+      "size": [
+        0.3,
+        0.3,
+        0.3
+      ],
+      "position": [
+        5.2,
+        0,
+        0.15
+      ],
+      "material": {
+        "color": [
+          0.72,
+          0.32,
+          0.16,
+          1
+        ],
+        "friction": 0.6
+      }
+    },
+    {
+      "name": "obstacle_3",
+      "format": "box",
+      "fixed": true,
+      "size": [
+        0.3,
+        0.3,
+        0.3
+      ],
+      "position": [
+        5.8,
+        0,
+        0.15
+      ],
+      "material": {
+        "color": [
+          0.72,
+          0.32,
+          0.16,
+          1
+        ],
+        "friction": 0.6
+      }
+    },
+    {
+      "name": "obstacle_4",
+      "format": "box",
+      "fixed": true,
+      "size": [
+        0.3,
+        0.3,
+        0.3
+      ],
+      "position": [
+        6.4,
+        0,
+        0.15
+      ],
+      "material": {
+        "color": [
+          0.72,
+          0.32,
+          0.16,
+          1
+        ],
+        "friction": 0.6
+      }
+    },
+    {
+      "name": "obstacle_5",
+      "format": "box",
+      "fixed": true,
+      "size": [
+        0.3,
+        0.3,
+        0.3
+      ],
+      "position": [
+        7.0,
+        0,
+        0.15
+      ],
+      "material": {
+        "color": [
+          0.72,
+          0.32,
+          0.16,
+          1
+        ],
+        "friction": 0.6
+      }
+    },
+    {
+      "name": "obstacle_6",
+      "format": "box",
+      "fixed": true,
+      "size": [
+        0.3,
+        0.3,
+        0.3
+      ],
+      "position": [
+        7.6,
+        0,
+        0.15
+      ],
+      "material": {
+        "color": [
+          0.72,
+          0.32,
+          0.16,
+          1
+        ],
+        "friction": 0.6
+      }
+    },
+    {
+      "name": "obstacle_7",
+      "format": "box",
+      "fixed": true,
+      "size": [
+        0.3,
+        0.3,
+        0.3
+      ],
+      "position": [
+        8.2,
+        0,
+        0.15
+      ],
+      "material": {
+        "color": [
+          0.72,
+          0.32,
+          0.16,
+          1
+        ],
+        "friction": 0.6
+      }
+    }
+  ],
+  "physics": {
+    "time_step": 0.005,
+    "substeps": 1,
+    "max_contacts": 1024
+  },
+  "environment": {
+    "ground": true,
+    "camera_position": [
+      2.4,
+      -2.8,
+      3.4
+    ],
+    "camera_lookat": [
+      0,
+      0,
+      0
+    ],
+    "camera_fov": 60,
+    "ambient_light": [
+      0.35,
+      0.35,
+      0.35
+    ]
+  },
+  "sensors": [
+    {
+      "name": "navigation_camera",
+      "type": "camera",
+      "resolution": [
+        320,
+        240
+      ],
+      "position": [
+        2.4,
+        -2.8,
+        3.4
+      ],
+      "lookat": [
+        0,
+        0,
+        0
+      ],
+      "fov": 60,
+      "rate": 30
+    }
+  ],
+  "seed": 0
+}

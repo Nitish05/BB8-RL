@@ -1,0 +1,37 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "bb8-rl"
+version = "0.1.0"
+description = "BB-8 navigation and reinforcement-learning project using Genesis Studio"
+readme = "README.md"
+requires-python = ">=3.10,<3.14"
+dependencies = ["genesis-studio-api==0.2.0", "PyYAML>=6,<7"]
+
+[project.optional-dependencies]
+simulation = ["genesis-world[render]>=1.3.2,<1.4", "torch>=2.7,<3"]
+dev = ["pytest>=8.3,<9", "ruff>=0.16,<1"]
+camera = ["opencv-python>=4.10,<6"]
+navigation = ["gymnasium>=1.2,<2", "numpy>=1.26,<3"]
+training = ["stable-baselines3==2.9.0", "gymnasium>=1.2,<2", "numpy>=1.26,<3"]
+control-room = ["stable-baselines3==2.9.0", "gymnasium>=1.2,<2", "numpy>=1.26,<3", "opencv-python>=4.10,<6", "torch>=2.7,<3"]
+
+[project.scripts]
+bb8-rl = "bb8_rl.cli:main"
+bb8-control-room = "bb8_rl.interactive:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/bb8_rl"]
+
+[tool.hatch.build.targets.sdist]
+only-include = ["src", "tests", "configs", "projects", "assets", "scripts", "docs", "README.md", "AGENTS.md", "BB8-Control-Room.command", "pyproject.toml", ".gitignore"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
+markers = [
+  "genesis: opt-in real Genesis integration",
+  "native_gui: opt-in native Studio and simulation viewer",
+]

@@ -1,0 +1,15 @@
+{
+  "status": "passed",
+  "project_sha256": "73421fdfe351a2092fb0a502325157ebc692b15b1ea75aa09063c11bdc66e65a",
+  "resolved_backend": "cpu",
+  "all_floor_corners_in_frame": true,
+  "bb8_visible_pixels": 78,
+  "bb8_bbox_xyxy": [
+    398,
+    488,
+    406,
+    498
+  ],
+  "numerical_roundtrip_error_m": 3.66205343881779e-15,
+  "scope": "Initial-pose visibility and geometric frustum coverage; not all floor pixels are observable behind obstacles."
+}

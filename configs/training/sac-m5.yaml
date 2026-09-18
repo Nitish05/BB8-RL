@@ -1,0 +1,14 @@
+schema_version: 1
+task: ../../projects/bb8/synthetic-room/task-penalty-v2.yaml
+seed: 17
+total_steps: 30000
+checkpoint_every: 15000
+buffer_size: 40000
+learning_starts: 1500
+batch_size: 128
+learning_rate: 0.0003
+gamma: 0.98
+tau: 0.005
+device: cpu
+physics_backend: cpu
+torch_threads: 2

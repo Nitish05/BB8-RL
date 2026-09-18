@@ -1,0 +1,16 @@
+.venv/
+.venv-*/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+*.egg-info/
+work/
+runs/
+datasets/
+dist/
+*.log
+.DS_Store
+.env
+.env.*
+*.genesis.autosave.json

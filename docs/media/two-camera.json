@@ -1,0 +1,21 @@
+{
+  "source_rows_sha256": "65a882dc2494e734627231e265f37948668af1cb236f547280184fbfb0e374a4",
+  "source_demo_sha256": "e7239da91723e0e984bb11554a903664c5a8a9fc1c5d096ec97e8bdb872b0041",
+  "crops": {
+    "A": [
+      575,
+      257,
+      895,
+      557
+    ],
+    "B": [
+      641,
+      315,
+      961,
+      615
+    ]
+  },
+  "frames": 50,
+  "gif_sha256": "5a11de2287361f49e72162e13f18a571e43af52fc6a2436dd3fa8dd70b7d144d",
+  "scope": "Synchronized native RGB crops and recorded observer labels; no scene synthesis or truth supplied to control."
+}

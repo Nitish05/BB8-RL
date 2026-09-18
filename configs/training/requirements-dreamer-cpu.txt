@@ -1,0 +1,20 @@
+# CPU subset of the pinned authors' requirements, tested on native macOS arm64.
+# Atari, Minecraft, CUDA and cloud logging extras are not used by BB8-RL.
+numpy==1.26.4
+jax==0.4.33
+jaxlib==0.4.33
+optax==0.2.3
+chex==0.1.87
+elements==3.22.1
+granular==0.23.3
+ninjax==3.6.3
+portal==3.8.1
+einops==0.8.2
+jaxtyping==0.3.11
+colored_traceback==0.4.2
+ruamel.yaml==0.19.1
+ml-dtypes==0.5.4
+scipy==1.17.1
+# Compatible image utilities inherited by Genesis; avoid NumPy >=2 requirements.
+opencv-python==4.11.0.86
+tifffile==2024.9.20

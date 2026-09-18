@@ -1,0 +1,13 @@
+schema_version: 1
+task: ../../projects/bb8/synthetic-room/task-penalty-v2.yaml
+upstream: ../../work/m5/dreamerv3-upstream
+seed: 17
+total_steps: 30000
+checkpoint_every: 15000
+buffer_size: 40000
+learning_starts: 1500
+batch_size: 4
+batch_length: 32
+train_ratio: 16
+horizon: 50
+physics_backend: cpu

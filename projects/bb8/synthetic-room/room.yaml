@@ -1,0 +1,29 @@
+schema_version: 1
+project: room.genesis.json
+body: bb8_body
+head: bb8_head
+camera: navigation_camera
+obstacle_names:
+- room_obstacle_0
+- room_obstacle_1
+- room_obstacle_2
+- room_obstacle_3
+- room_obstacle_4
+- room_obstacle_5
+- room_obstacle_6
+arena_half_extent: 2.0
+action_steps: 10
+provenance: synthetic
+notes: User-authorized arbitrary room dimensions and seeded random obstacles. Fixed
+  elevated pinhole camera; exact simulator geometry, not measured calibration. Low
+  perimeter walls are a cutaway floor boundary. BB8 geometry and dynamics are synthetic.
+  Authored geometry is shared by all episodes using this room's task.yaml.
+drive:
+  max_speed: 0.35
+  response_time: 0.25
+  max_acceleration: 0.7
+  max_deceleration: 0.9
+  dead_zone: 0.05
+  latency: 0.05
+  max_command_age: 0.15
+  heading_offset: 0.0

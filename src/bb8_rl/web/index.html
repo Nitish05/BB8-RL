@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101c28">
+  <title>BB8-RL · Control room</title>
+  <link rel="stylesheet" href="/style.css">
+  <script src="/app.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#workspace">Skip to navigation workspace</a>
+  <div class="app-shell">
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="BB8-RL control room">
+        <svg class="brand-mark" viewBox="0 0 40 46" aria-hidden="true"><path d="M10 16a10 10 0 0 1 20 0Z"/><circle cx="20" cy="30" r="13"/><circle cx="20" cy="30" r="6"/><path d="M24 5V1"/><circle class="brand-eye" cx="22" cy="11" r="2"/></svg>
+        <span>BB8<span class="brand-separator">—</span>RL<small>CONTROL ROOM</small></span>
+      </a>
+      <div class="topbar-context"><span class="context-line"></span><span>Visual navigation</span><span class="simulation-tag">SIMULATION</span></div>
+      <div class="topbar-actions">
+        <span id="connection-status" class="connection-status" role="status"><span class="status-dot"></span><span id="connection-text">Connecting</span></span>
+        <button id="stop-button" class="button stop-button" type="button" disabled aria-keyshortcuts="Escape"><span class="stop-icon" aria-hidden="true"></span>Stop<span class="keycap">Esc</span></button>
+      </div>
+    </header>
+
+    <aside class="sidebar" aria-label="Navigation controls">
+      <section class="control-section">
+        <p class="eyebrow">01 / CAMERA SETUP</p>
+        <h2>More ways to see.</h2>
+        <p class="muted section-description">Choose the fixed cameras observing the room.</p>
+        <div class="mode-selector" role="group" aria-label="Number of active cameras">
+          <button type="button" data-mode="1" aria-pressed="true" disabled><strong>1</strong><span>camera</span></button>
+          <button type="button" data-mode="2" aria-pressed="false" disabled><strong>2</strong><span>cameras</span></button>
+          <button type="button" data-mode="3" aria-pressed="false" disabled><strong>3</strong><span>cameras</span></button>
+        </div>
+        <p class="microcopy">Changing cameras resets the episode.</p>
+      </section>
+
+      <section class="control-section destination-section">
+        <p class="eyebrow">02 / DESTINATION</p>
+        <h2>Give BB-8 a goal.</h2>
+        <p class="muted section-description">Select observed free space on the map, or enter coordinates.</p>
+        <form id="goal-form">
+          <div class="coordinate-inputs">
+            <label for="goal-x">X <span>metres</span><input id="goal-x" name="x" type="number" step="0.01" placeholder="0.00" required disabled inputmode="decimal"></label>
+            <label for="goal-y">Y <span>metres</span><input id="goal-y" name="y" type="number" step="0.01" placeholder="0.00" required disabled inputmode="decimal"></label>
+          </div>
+          <button id="goal-button" class="button secondary-button full-width" type="submit" disabled>Set destination<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10h12m-5-5 5 5-5 5"/></svg></button>
+        </form>
+        <div class="or-divider"><span>or start here</span></div>
+        <button id="demo-button" class="button primary-button full-width" type="button" disabled><svg viewBox="0 0 20 20" aria-hidden="true"><path d="m7 4 8 6-8 6Z"/></svg>Demo route</button>
+        <p class="microcopy">A prepared route for this room. Other destinations still need clearance.</p>
+      </section>
+
+      <section class="mission-summary" aria-label="Mission summary">
+        <div class="summary-heading"><span class="eyebrow">THIS EPISODE</span><button id="reset-button" class="text-button" type="button" disabled><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 7a6 6 0 1 1 0 6M4 3v4h4"/></svg>Reset</button></div>
+        <dl class="summary-list">
+          <div><dt>Destination</dt><dd id="goal-value">Not set</dd></div>
+          <div><dt>Simulation time</dt><dd id="sim-time-value">—</dd></div>
+          <div><dt>Frame processing</dt><dd id="processing-value">—</dd></div>
+        </dl>
+      </section>
+      <div class="sidebar-footnote"><span class="tiny-orbit" aria-hidden="true"></span><div>One room. A remembered map.<br><span>Position and clearance are estimates.</span></div></div>
+    </aside>
+
+    <main id="workspace" class="main-content">
+      <div class="workspace-heading"><div><p class="eyebrow">NAVIGATION WORKSPACE</p><h1>A little robot.<br class="compact-break"> A bigger picture.</h1></div><span id="phase-chip" class="phase-chip"><span class="status-dot"></span><span id="phase-text">Starting up</span></span></div>
+      <div id="asset-notice" class="notice asset-notice" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 10 18H2Z"/><path d="M12 9v5m0 3v1"/></svg><div><strong>Demo assets needed</strong><p id="asset-message">The local app has not loaded its map and policy bundle.</p></div></div>
+      <div id="connection-notice" class="notice connection-notice" hidden><strong>Connection interrupted</strong><p>Controls are unavailable. Waiting for the local app to reconnect.</p></div>
+
+      <div class="workspace-grid">
+        <section class="map-panel panel" aria-labelledby="map-title">
+          <div class="panel-heading"><div><h2 id="map-title">Remembered room</h2><p id="map-subtitle">Waiting for the saved scan map</p></div><span class="panel-tag">MAP VIEW</span></div>
+          <div class="map-toolbar"><div class="map-legend" aria-label="Map legend"><span><i class="legend-free"></i>Observed free</span><span><i class="legend-occupied"></i>Occupied</span><span><i class="legend-unknown"></i>Unknown</span></div><span class="axis-note">metres / XY</span></div>
+          <div id="map-stage" class="map-stage">
+            <canvas id="map-canvas" role="img" tabindex="0" aria-label="Estimated room map. Arrow keys move the target cursor; Enter requests a goal; Escape stops." aria-describedby="map-instructions">The estimated map is displayed here. Use the X and Y destination form to set a goal.</canvas>
+            <div id="map-placeholder" class="map-placeholder"><div class="placeholder-orbit" aria-hidden="true"><span></span></div><strong id="map-placeholder-title">Loading room memory</strong><p id="map-placeholder-description">The saved scan will appear here when available.</p></div>
+            <div class="map-scale-label" id="map-coordinate" aria-live="off"><span class="crosshair-symbol" aria-hidden="true">＋</span><span id="coordinate-value">Move over the map</span><span id="coordinate-state"></span></div>
+          </div>
+          <div class="map-footer"><p id="map-instructions"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="m5 3 10 8-5 1-2 5Z"/></svg>Click free space to request a destination.</p><span id="map-selection">No target selected</span></div>
+        </section>
+
+        <aside class="vision-column" aria-label="Live visual observations">
+          <section class="camera-section" aria-labelledby="camera-title"><div class="camera-section-heading"><h2 id="camera-title">Eyes on the room</h2><span id="camera-count" class="camera-count">1 VIEW</span></div>
+            <div id="camera-feeds" class="camera-feeds" data-mode="1">
+              <article class="camera-card" data-camera="A"><div class="camera-card-heading"><span class="camera-label"><span class="camera-letter">A</span>Camera A</span><span class="camera-status" data-camera-status="A">Waiting</span></div><div class="camera-image-wrap"><img data-camera-image="A" alt="Live RGB observation from camera A" hidden><div class="camera-placeholder" data-camera-placeholder="A"><svg viewBox="0 0 40 32" aria-hidden="true"><rect x="2" y="6" width="27" height="22" rx="4"/><path d="m29 13 9-5v20l-9-5M10 6l3-4h9l3 4"/><circle cx="15" cy="17" r="6"/></svg><span>No RGB frame yet</span></div><span class="feed-label">RGB · LIVE</span></div><div class="camera-card-footer"><span data-camera-source="A">Awaiting observation</span><span data-camera-frame="A">—</span></div></article>
+              <article class="camera-card" data-camera="B" hidden><div class="camera-card-heading"><span class="camera-label"><span class="camera-letter">B</span>Camera B</span><span class="camera-status" data-camera-status="B">Waiting</span></div><div class="camera-image-wrap"><img data-camera-image="B" alt="Live RGB observation from camera B" hidden><div class="camera-placeholder" data-camera-placeholder="B"><svg viewBox="0 0 40 32" aria-hidden="true"><rect x="2" y="6" width="27" height="22" rx="4"/><path d="m29 13 9-5v20l-9-5M10 6l3-4h9l3 4"/><circle cx="15" cy="17" r="6"/></svg><span>No RGB frame yet</span></div><span class="feed-label">RGB · LIVE</span></div><div class="camera-card-footer"><span data-camera-source="B">Awaiting observation</span><span data-camera-frame="B">—</span></div></article>
+              <article class="camera-card" data-camera="C" hidden><div class="camera-card-heading"><span class="camera-label"><span class="camera-letter">C</span>Camera C</span><span class="camera-status" data-camera-status="C">Waiting</span></div><div class="camera-image-wrap"><img data-camera-image="C" alt="Live RGB observation from camera C" hidden><div class="camera-placeholder" data-camera-placeholder="C"><svg viewBox="0 0 40 32" aria-hidden="true"><rect x="2" y="6" width="27" height="22" rx="4"/><path d="m29 13 9-5v20l-9-5M10 6l3-4h9l3 4"/><circle cx="15" cy="17" r="6"/></svg><span>No RGB frame yet</span></div><span class="feed-label">RGB · LIVE</span></div><div class="camera-card-footer"><span data-camera-source="C">Awaiting observation</span><span data-camera-frame="C">—</span></div></article>
+            </div>
+          </section>
+          <section class="estimate-card panel" aria-labelledby="estimate-title"><div class="estimate-heading"><span class="robot-key" aria-hidden="true"></span><h2 id="estimate-title">BB-8 estimate</h2></div><dl class="estimate-list"><div><dt>Position</dt><dd id="pose-value">Waiting for vision</dd></div><div><dt>Position bound</dt><dd id="radius-value">—</dd></div><div><dt>Controller</dt><dd id="controller-value">Not connected</dd></div></dl><div class="route-legend"><span><i class="route-key"></i>Planned route</span><span><i class="uncertainty-key"></i>Position bound</span></div></section>
+          <div class="memory-note"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 5 6-2 6 2 6-2v16l-6 2-6-2-6 2Zm6-2v16m6-14v16"/></svg><p>The scan remembers the room.<br><span>Live cameras locate BB-8 within it.</span></p></div>
+        </aside>
+      </div>
+
+      <section class="activity-bar" aria-label="Navigation status"><span id="activity-icon" class="activity-icon" aria-hidden="true">i</span><div><strong id="activity-title">Connecting to the local app</strong><p id="activity-message" role="status" aria-live="polite" aria-atomic="true">The live map and camera observations will appear when ready.</p></div><span class="local-session">LOCAL SESSION</span></section>
+    </main>
+  </div>
+  <noscript><div class="noscript-notice">JavaScript is required for live camera observations and navigation controls.</div></noscript>
+</body>
+</html>

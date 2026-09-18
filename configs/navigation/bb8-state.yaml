@@ -1,0 +1,23 @@
+schema_version: 1
+project: ../../projects/bb8/empty-floor.genesis.json
+body: bb8_body
+head: bb8_head
+camera: navigation_camera
+arena_half_extent: 1.5
+action_steps: 10
+provenance: synthetic
+notes: >-
+  Provisional 3 m square arena. Body radius 0.037 m and effective total mass
+  0.2 kg are synthetic fixture values, not measured or manufacturer specifications.
+  Head is an independently translated, non-colliding sphere. Its mass/inertia
+  contribution is approximated in the effective body. Appearance is schematic,
+  not a perception training replica of the actual special-edition robot.
+drive:
+  max_speed: 0.35
+  response_time: 0.25
+  max_acceleration: 0.7
+  max_deceleration: 0.9
+  dead_zone: 0.05
+  latency: 0.05
+  max_command_age: 0.15
+  heading_offset: 0.0

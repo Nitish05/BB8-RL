@@ -1,0 +1,498 @@
+{
+  "schema_version": 4,
+  "name": "BB8 synthetic 4 m room \u2014 seed 42",
+  "robot": null,
+  "robots": [],
+  "objects": [
+    {
+      "collision_group": 65535,
+      "collision_mask": 65535,
+      "visible": true,
+      "material": {
+        "friction": 0.6,
+        "density": 942.6190537099208,
+        "color": [
+          0.18,
+          0.18,
+          0.2,
+          1.0
+        ]
+      },
+      "name": "bb8_body",
+      "fixed": false,
+      "position": [
+        -1.3,
+        -1.3,
+        0.037
+      ],
+      "euler": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "format": "sphere",
+      "radius": 0.037
+    },
+    {
+      "collision_group": 0,
+      "collision_mask": 0,
+      "visible": true,
+      "material": {
+        "friction": 1.0,
+        "density": 1000.0,
+        "color": [
+          0.7,
+          0.72,
+          0.75,
+          1.0
+        ]
+      },
+      "name": "bb8_head",
+      "fixed": true,
+      "position": [
+        -1.3,
+        -1.3,
+        0.083
+      ],
+      "euler": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "format": "sphere",
+      "radius": 0.019
+    },
+    {
+      "collision_group": 65535,
+      "collision_mask": 65535,
+      "visible": true,
+      "material": {
+        "friction": 1.0,
+        "density": 1000.0,
+        "color": [
+          0.22,
+          0.3,
+          0.36,
+          1.0
+        ]
+      },
+      "name": "wall_0_minus",
+      "fixed": true,
+      "position": [
+        -2.025,
+        0.0,
+        0.075
+      ],
+      "euler": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "format": "box",
+      "size": [
+        0.05,
+        4.1,
+        0.15
+      ]
+    },
+    {
+      "collision_group": 65535,
+      "collision_mask": 65535,
+      "visible": true,
+      "material": {
+        "friction": 1.0,
+        "density": 1000.0,
+        "color": [
+          0.22,
+          0.3,
+          0.36,
+          1.0
+        ]
+      },
+      "name": "wall_0_plus",
+      "fixed": true,
+      "position": [
+        2.025,
+        0.0,
+        0.075
+      ],
+      "euler": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "format": "box",
+      "size": [
+        0.05,
+        4.1,
+        0.15
+      ]
+    },
+    {
+      "collision_group": 65535,
+      "collision_mask": 65535,
+      "visible": true,
+      "material": {
+        "friction": 1.0,
+        "density": 1000.0,
+        "color": [
+          0.22,
+          0.3,
+          0.36,
+          1.0
+        ]
+      },
+      "name": "wall_1_minus",
+      "fixed": true,
+      "position": [
+        0.0,
+        -2.025,
+        0.075
+      ],
+      "euler": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "format": "box",
+      "size": [
+        4.1,
+        0.05,
+        0.15
+      ]
+    },
+    {
+      "collision_group": 65535,
+      "collision_mask": 65535,
+      "visible": true,
+      "material": {
+        "friction": 1.0,
+        "density": 1000.0,
+        "color": [
+          0.22,
+          0.3,
+          0.36,
+          1.0
+        ]
+      },
+      "name": "wall_1_plus",
+      "fixed": true,
+      "position": [
+        0.0,
+        2.025,
+        0.075
+      ],
+      "euler": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "format": "box",
+      "size": [
+        4.1,
+        0.05,
+        0.15
+      ]
+    },
+    {
+      "collision_group": 65535,
+      "collision_mask": 65535,
+      "visible": true,
+      "material": {
+        "friction": 1.0,
+        "density": 1000.0,
+        "color": [
+          0.3,
+          0.44,
+          0.58,
+          1.0
+        ]
+      },
+      "name": "room_obstacle_0",
+      "fixed": true,
+      "position": [
+        0.5723672842721553,
+        -1.1768856911258163,
+        0.20378968798670738
+      ],
+      "euler": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "format": "box",
+      "size": [
+        0.5208846169945871,
+        0.4036074539132183,
+        0.40757937597341476
+      ]
+    },
+    {
+      "collision_group": 65535,
+      "collision_mask": 65535,
+      "visible": true,
+      "material": {
+        "friction": 1.0,
+        "density": 1000.0,
+        "color": [
+          0.35,
+          0.44,
+          0.58,
+          1.0
+        ]
+      },
+      "name": "room_obstacle_1",
+      "fixed": true,
+      "position": [
+        -1.078470465240917,
+        -0.1438807801028553,
+        0.1929096457915431
+      ],
+      "euler": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "format": "box",
+      "size": [
+        0.5914678230728646,
+        0.5163988956966236,
+        0.3858192915830862
+      ]
+    },
+    {
+      "collision_group": 65535,
+      "collision_mask": 65535,
+      "visible": true,
+      "material": {
+        "friction": 1.0,
+        "density": 1000.0,
+        "color": [
+          0.4,
+          0.44,
+          0.58,
+          1.0
+        ]
+      },
+      "name": "room_obstacle_2",
+      "fixed": true,
+      "position": [
+        0.9360086784854069,
+        -0.16409882340073972,
+        0.1715797680120997
+      ],
+      "euler": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "format": "box",
+      "size": [
+        0.3797793084814034,
+        0.5743677460970106,
+        0.3431595360241994
+      ]
+    },
+    {
+      "collision_group": 65535,
+      "collision_mask": 65535,
+      "visible": true,
+      "material": {
+        "friction": 1.0,
+        "density": 1000.0,
+        "color": [
+          0.3,
+          0.44,
+          0.58,
+          1.0
+        ]
+      },
+      "name": "room_obstacle_3",
+      "fixed": true,
+      "position": [
+        1.1400512518343733,
+        0.8073121415139094,
+        0.2206047036592355
+      ],
+      "euler": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "format": "box",
+      "size": [
+        0.5153307090298809,
+        0.3740840888454539,
+        0.441209407318471
+      ]
+    },
+    {
+      "collision_group": 65535,
+      "collision_mask": 65535,
+      "visible": true,
+      "material": {
+        "friction": 1.0,
+        "density": 1000.0,
+        "color": [
+          0.35,
+          0.44,
+          0.58,
+          1.0
+        ]
+      },
+      "name": "room_obstacle_4",
+      "fixed": true,
+      "position": [
+        -1.0025604730041113,
+        0.5308419644031184,
+        0.08157056486808431
+      ],
+      "euler": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "format": "box",
+      "size": [
+        0.31812354774818863,
+        0.41335235130446196,
+        0.16314112973616862
+      ]
+    },
+    {
+      "collision_group": 65535,
+      "collision_mask": 65535,
+      "visible": true,
+      "material": {
+        "friction": 1.0,
+        "density": 1000.0,
+        "color": [
+          0.4,
+          0.44,
+          0.58,
+          1.0
+        ]
+      },
+      "name": "room_obstacle_5",
+      "fixed": true,
+      "position": [
+        0.4780674841168932,
+        0.5949795980163718,
+        0.19303865662532077
+      ],
+      "euler": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "format": "box",
+      "size": [
+        0.3199678708662879,
+        0.2525767944128519,
+        0.38607731325064154
+      ]
+    },
+    {
+      "collision_group": 65535,
+      "collision_mask": 65535,
+      "visible": true,
+      "material": {
+        "friction": 1.0,
+        "density": 1000.0,
+        "color": [
+          0.3,
+          0.44,
+          0.58,
+          1.0
+        ]
+      },
+      "name": "room_obstacle_6",
+      "fixed": true,
+      "position": [
+        -0.7715754909905118,
+        -1.2809220491017086,
+        0.20301046099022493
+      ],
+      "euler": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "format": "box",
+      "size": [
+        0.3251046354868352,
+        0.39298502530362267,
+        0.40602092198044987
+      ]
+    }
+  ],
+  "environment": {
+    "lights": null,
+    "gravity": [
+      0.0,
+      0.0,
+      -9.81
+    ],
+    "ground": true,
+    "camera_position": [
+      2.8,
+      -3.4,
+      5.2
+    ],
+    "camera_lookat": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "camera_fov": 58.0,
+    "ambient_light": [
+      0.35,
+      0.35,
+      0.35
+    ],
+    "light_direction": [
+      -1.0,
+      -1.0,
+      -1.0
+    ],
+    "light_intensity": 5.0
+  },
+  "physics": {
+    "time_step": 0.005,
+    "substeps": 1,
+    "max_contacts": 1024
+  },
+  "sensors": [
+    {
+      "name": "navigation_camera",
+      "type": "camera",
+      "parent": null,
+      "robot_name": null,
+      "enabled": true,
+      "position": [
+        2.8,
+        -3.4,
+        5.2
+      ],
+      "euler": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "lookat": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "resolution": [
+        1280,
+        960
+      ],
+      "fov": 58.0,
+      "rate": 30.0,
+      "filter_links": []
+    }
+  ],
+  "assets": [],
+  "seed": 42
+}
