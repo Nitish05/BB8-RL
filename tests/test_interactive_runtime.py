@@ -19,8 +19,10 @@ class Memory:
         self.blocked = False
         self.route_blocked = False
         self.queries = []
+        self.planning_radii = []
 
     def planning_grid(self, radius):
+        self.planning_radii.append(radius)
         return self
 
     def segment_free(self, a, b, radius):
@@ -162,6 +164,39 @@ def test_idle_localization_continues_with_zero_action_and_no_truth_input():
     advance(control, 10, "missing")
     assert control.phase == "localizing"
     assert control.state()["pose_source"] == "predicted"
+
+
+def test_current_rgb_uncertainty_reaches_preflight_and_controller_planner():
+    control, memory, _, _ = session()
+    control.receive([{"action": "demo", "generation": 1}])
+    for index in range(30):
+        timestamp = index * 0.05
+        measurement = observed(timestamp)
+        measurement.covariance = np.eye(2) * 0.02**2
+        intervals = [] if index == 0 else [
+            {"start": timestamp - 0.05, "end": timestamp, "command": [0, 0]}
+        ]
+        action = control.decide(timestamp, measurement, [0, 0], intervals)
+    required = 0.037 + 0.04 + 3 * 0.02
+    assert memory.planning_radii == pytest.approx([0.1, 0.14])
+    assert control.controller.route_planning_radius == pytest.approx(required)
+    assert action[0] > 0
+    assert control.status == "tracking_visible"
+    assert any(radius == pytest.approx(required) for _, _, radius in memory.queries)
+
+
+def test_planning_grid_cache_rounds_up_and_is_bounded():
+    control, memory, _, _ = session()
+    control.route_with_clearance([0, 0], [0.5, 0], 0.13001)
+    control.route_with_clearance([0, 0], [0.5, 0], 0.13999)
+    assert memory.planning_radii == pytest.approx([0.1, 0.14])
+    for radius in np.linspace(0.15, 0.8, 35):
+        control.route_with_clearance([0, 0], [0.5, 0], radius)
+        assert memory.planning_radii[-1] >= radius
+    assert len(control.route_grids) == 16
+    for radius in (float("nan"), float("inf"), -0.1):
+        with pytest.raises(ValueError, match="clearance"):
+            control.route_with_clearance([0, 0], [0.5, 0], radius)
 
 
 def test_latest_queue_is_bounded_and_newest_event_survives():

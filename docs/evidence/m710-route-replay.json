@@ -1,0 +1,338 @@
+{
+  "scope": "Recorded RGB position/covariance and command-only replay; no true pose/velocity or renderer labels consumed. Zero actor isolates routing.",
+  "recorded_rows_sha256": "80ba4cd6d9086f4a564d36a24e2ed69f4c8a7304a06a00f65c060e081febfe16",
+  "map_manifest_sha256": "07a704a3f24d4c2f8f32056f80a520acd086098ee6e586c81c24fe18e7a52488",
+  "source_sha256": "f5da28c58899135028899788af1c365a6fb3e9ce1000a3591027aa66ee5ce31f",
+  "controller_sha256": "d4070d26b5f7091ae9e2fe24cef14f5a5480dc26a307d7f78608fdca91a869a1",
+  "start_estimated": [
+    -1.2290556363956253,
+    1.4520498812623426
+  ],
+  "goal": [
+    -0.2065534089380967,
+    -0.8665560984356091
+  ],
+  "required_radius_m": 0.13046861212768912,
+  "static_route_evidence": {
+    "old_fixed": {
+      "planning_radius_m": 0.1,
+      "route": [
+        [
+          -1.2290556363956253,
+          1.4520498812623426
+        ],
+        [
+          -0.5900000000000001,
+          0.81
+        ],
+        [
+          -0.34999999999999987,
+          -0.10999999999999988
+        ],
+        [
+          -0.2065534089380967,
+          -0.8665560984356091
+        ]
+      ],
+      "segment_certificates_at_required_radius": [
+        false,
+        false,
+        false
+      ],
+      "all_segments_certified": false,
+      "length_m": 2.626705118693469
+    },
+    "actual_required": {
+      "planning_radius_m": 0.13046861212768912,
+      "route": [
+        [
+          -1.2290556363956253,
+          1.4520498812623426
+        ],
+        [
+          -0.6099999999999999,
+          0.8900000000000001
+        ],
+        [
+          -0.55,
+          0.77
+        ],
+        [
+          -0.33000000000000007,
+          -0.07000000000000006
+        ],
+        [
+          -0.2065534089380967,
+          -0.8665560984356091
+        ]
+      ],
+      "segment_certificates_at_required_radius": [
+        true,
+        true,
+        true,
+        true
+      ],
+      "all_segments_certified": true,
+      "length_m": 2.64470065762814
+    }
+  },
+  "replay": {
+    "legacy_fixed_grid": [
+      {
+        "step": 867,
+        "status": "warming_up",
+        "route_available": false,
+        "requested_planning_radius_m": null
+      },
+      {
+        "step": 868,
+        "status": "warming_up",
+        "route_available": false,
+        "requested_planning_radius_m": null
+      },
+      {
+        "step": 869,
+        "status": "warming_up",
+        "route_available": false,
+        "requested_planning_radius_m": null
+      },
+      {
+        "step": 870,
+        "status": "warming_up",
+        "route_available": false,
+        "requested_planning_radius_m": null
+      },
+      {
+        "step": 871,
+        "status": "warming_up",
+        "route_available": false,
+        "requested_planning_radius_m": null
+      },
+      {
+        "step": 872,
+        "status": "warming_up",
+        "route_available": false,
+        "requested_planning_radius_m": null
+      },
+      {
+        "step": 873,
+        "status": "warming_up",
+        "route_available": false,
+        "requested_planning_radius_m": null
+      },
+      {
+        "step": 874,
+        "status": "warming_up",
+        "route_available": false,
+        "requested_planning_radius_m": null
+      },
+      {
+        "step": 875,
+        "status": "warming_up",
+        "route_available": false,
+        "requested_planning_radius_m": null
+      },
+      {
+        "step": 876,
+        "status": "warming_up",
+        "route_available": false,
+        "requested_planning_radius_m": null
+      },
+      {
+        "step": 877,
+        "status": "warming_up",
+        "route_available": false,
+        "requested_planning_radius_m": null
+      },
+      {
+        "step": 878,
+        "status": "warming_up",
+        "route_available": false,
+        "requested_planning_radius_m": null
+      },
+      {
+        "step": 879,
+        "status": "warming_up",
+        "route_available": false,
+        "requested_planning_radius_m": null
+      },
+      {
+        "step": 880,
+        "status": "warming_up",
+        "route_available": false,
+        "requested_planning_radius_m": null
+      },
+      {
+        "step": 881,
+        "status": "warming_up",
+        "route_available": false,
+        "requested_planning_radius_m": null
+      },
+      {
+        "step": 882,
+        "status": "warming_up",
+        "route_available": false,
+        "requested_planning_radius_m": null
+      },
+      {
+        "step": 883,
+        "status": "warming_up",
+        "route_available": false,
+        "requested_planning_radius_m": null
+      },
+      {
+        "step": 884,
+        "status": "warming_up",
+        "route_available": false,
+        "requested_planning_radius_m": null
+      },
+      {
+        "step": 885,
+        "status": "warming_up",
+        "route_available": false,
+        "requested_planning_radius_m": null
+      },
+      {
+        "step": 886,
+        "status": "warming_up",
+        "route_available": false,
+        "requested_planning_radius_m": null
+      },
+      {
+        "step": 887,
+        "status": "route_not_certified",
+        "route_available": false,
+        "requested_planning_radius_m": 0.13046861212768912
+      }
+    ],
+    "radius_aware": [
+      {
+        "step": 867,
+        "status": "warming_up",
+        "route_available": false,
+        "requested_planning_radius_m": null
+      },
+      {
+        "step": 868,
+        "status": "warming_up",
+        "route_available": false,
+        "requested_planning_radius_m": null
+      },
+      {
+        "step": 869,
+        "status": "warming_up",
+        "route_available": false,
+        "requested_planning_radius_m": null
+      },
+      {
+        "step": 870,
+        "status": "warming_up",
+        "route_available": false,
+        "requested_planning_radius_m": null
+      },
+      {
+        "step": 871,
+        "status": "warming_up",
+        "route_available": false,
+        "requested_planning_radius_m": null
+      },
+      {
+        "step": 872,
+        "status": "warming_up",
+        "route_available": false,
+        "requested_planning_radius_m": null
+      },
+      {
+        "step": 873,
+        "status": "warming_up",
+        "route_available": false,
+        "requested_planning_radius_m": null
+      },
+      {
+        "step": 874,
+        "status": "warming_up",
+        "route_available": false,
+        "requested_planning_radius_m": null
+      },
+      {
+        "step": 875,
+        "status": "warming_up",
+        "route_available": false,
+        "requested_planning_radius_m": null
+      },
+      {
+        "step": 876,
+        "status": "warming_up",
+        "route_available": false,
+        "requested_planning_radius_m": null
+      },
+      {
+        "step": 877,
+        "status": "warming_up",
+        "route_available": false,
+        "requested_planning_radius_m": null
+      },
+      {
+        "step": 878,
+        "status": "warming_up",
+        "route_available": false,
+        "requested_planning_radius_m": null
+      },
+      {
+        "step": 879,
+        "status": "warming_up",
+        "route_available": false,
+        "requested_planning_radius_m": null
+      },
+      {
+        "step": 880,
+        "status": "warming_up",
+        "route_available": false,
+        "requested_planning_radius_m": null
+      },
+      {
+        "step": 881,
+        "status": "warming_up",
+        "route_available": false,
+        "requested_planning_radius_m": null
+      },
+      {
+        "step": 882,
+        "status": "warming_up",
+        "route_available": false,
+        "requested_planning_radius_m": null
+      },
+      {
+        "step": 883,
+        "status": "warming_up",
+        "route_available": false,
+        "requested_planning_radius_m": null
+      },
+      {
+        "step": 884,
+        "status": "warming_up",
+        "route_available": false,
+        "requested_planning_radius_m": null
+      },
+      {
+        "step": 885,
+        "status": "warming_up",
+        "route_available": false,
+        "requested_planning_radius_m": null
+      },
+      {
+        "step": 886,
+        "status": "warming_up",
+        "route_available": false,
+        "requested_planning_radius_m": null
+      },
+      {
+        "step": 887,
+        "status": "tracking_visible",
+        "route_available": true,
+        "requested_planning_radius_m": 0.13046861212768912
+      }
+    ]
+  },
+  "assertions_pass": true
+}

@@ -36,6 +36,8 @@ evidence, route and uncertainty behind each motion request.
 **Destinations depend on map coverage.** A clear cell alone does not establish
 that the robot footprint, route and stopping envelope are clear. Rejected goals
 stay rejected; unknown space is never silently treated as traversable.
+Route searches account for the current camera-position uncertainty, and every
+returned segment is independently checked against the saved map.
 
 ## Quick start
 
@@ -185,8 +187,10 @@ work/            Local models, datasets and evidence — ignored by Git
 ```
 
 CI tests pure camera/control/application contracts without native graphics or
-model assets. The local non-native suite passed **423 tests**. Native and actual
+model assets. The local non-native suite passed **446 tests**. Native and actual
 browser acceptance are documented in the [validation report](docs/M7_9_VALIDATION.md).
+The [route-clearance correction](docs/M7_10_ROUTE_FIX.md) documents the subsequent
+uncertainty-aware planner and arrival-settling regression.
 
 ## Current boundaries
 

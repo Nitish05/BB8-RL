@@ -803,6 +803,20 @@ def arrival_ready():
     return control, last
 
 
+def settle_until_visible_dwell(control, timestamp):
+    """Advance visible zero-ack captures to the calculated settling deadline."""
+    step(control, timestamp)
+    deadline = control.arrival_settle_until
+    assert deadline is not None
+    while control.visible_since is None:
+        timestamp += 0.05
+        step(control, timestamp)
+        assert control.arrival_settle_until == deadline
+        assert not control.arrived
+    assert control.visible_since >= deadline - 1e-9
+    return timestamp
+
+
 def test_arrival_dwell_waits_for_pending_motion_to_expire_then_full_visible_hold():
     control, last = arrival_ready()
     control.issued_history.append((last, last + 0.15, 0.15))
@@ -814,8 +828,8 @@ def test_arrival_dwell_waits_for_pending_motion_to_expire_then_full_visible_hold
         assert control.visible_since is None
         assert not control.arrived
         np.testing.assert_array_equal(action, [0, 0])
-    start = last + 0.20
-    for index in range(10):
+    start = settle_until_visible_dwell(control, last + 0.20)
+    for index in range(1, 10):
         step(control, start + index * 0.05)
         assert control.visible_since == pytest.approx(start)
         assert not control.arrived
@@ -832,7 +846,8 @@ def test_arrival_dwell_rejects_nonzero_ack_even_with_low_estimated_speed():
     assert control.visible_since is None
     assert np.all(control.issued_action == 0)
     step(control, last + 0.10)
-    assert control.visible_since == pytest.approx(last + 0.10)
+    assert control.arrival_settle_until > last + 0.10
+    assert control.visible_since is None
     assert not control.arrived
 
 
@@ -855,8 +870,208 @@ def test_missing_frame_restarts_settled_visible_dwell():
     step(control, last + 0.40, measurement(last + 0.40, status="missing"))
     assert control.visible_since is None
     assert not control.arrived
-    for index in range(10):
-        step(control, last + 0.45 + index * 0.05)
+    assert control.arrival_settle_until is None
+    start = settle_until_visible_dwell(control, last + 0.45)
+    for index in range(1, 10):
+        step(control, start + index * 0.05)
         assert not control.arrived
-    step(control, last + 0.95)
+    step(control, start + 0.50)
     assert control.arrived
+
+
+@pytest.mark.parametrize("speed", [0.0, 0.02, 0.03, 0.06, 0.175, 0.35])
+def test_arrival_settle_time_matches_saturated_then_exponential_braking(speed):
+    control = controller()
+    duration = control._arrival_braking_time(speed)
+    d, target = control.dynamics, control.parameters.arrival_speed
+    threshold = d.braking_acceleration_lower * d.response_time_upper
+    saturated_time = max(0, (speed - threshold) / d.braking_acceleration_lower)
+    if duration <= saturated_time:
+        remaining_speed = speed - d.braking_acceleration_lower * duration
+    else:
+        remaining_speed = min(speed, threshold) * np.exp(
+            -(duration - saturated_time) / d.response_time_upper
+        )
+    assert remaining_speed <= target + 1e-12
+    if speed > target:
+        assert remaining_speed == pytest.approx(target)
+        assert duration > 0
+    else:
+        assert duration == 0
+
+
+def test_arrival_uncertainty_adds_persistent_settle_before_unchanged_visible_hold():
+    control, last = arrival_ready()
+    # A low nominal speed is insufficient while its velocity-error ball is wide.
+    control.belief.velocity = np.array([0.02, 0])
+    control.belief.velocity_radius = 0.06
+    control.belief.target_velocity_center = None
+    first = last + 0.05
+    action = step(control, first)
+    bound = np.linalg.norm(control.belief.velocity) + control.belief.velocity_radius
+    assert np.linalg.norm(control.belief.velocity) < 0.03
+    assert control.arrival_settle_speed_bound == pytest.approx(bound)
+    assert control.arrival_settle_until == pytest.approx(
+        first + control._arrival_braking_time(bound)
+    )
+    deadline = control.arrival_settle_until
+    assert deadline > first
+    assert control.visible_since is None
+    np.testing.assert_array_equal(action, [0, 0])
+    timestamp = first
+    while timestamp + 0.05 < deadline - 1e-9:
+        timestamp += 0.05
+        step(control, timestamp)
+        assert control.status == "settling_visible"
+        assert control.visible_since is None
+        assert control.arrival_settle_until == deadline
+    start = settle_until_visible_dwell(control, timestamp + 0.05)
+    for index in range(1, 10):
+        step(control, start + index * 0.05)
+        assert not control.arrived
+    step(control, start + 0.5)
+    assert control.arrived
+
+
+@pytest.mark.parametrize(
+    "interruption",
+    ["missing", "ambiguous", "ack", "pending", "history", "unsafe", "far", "stale"],
+)
+def test_arrival_settle_resets_on_visual_or_command_or_clearance_loss(interruption):
+    control, last = arrival_ready()
+    control.belief.velocity_radius = 0.10
+    control.belief.target_velocity_center = None
+    first = last + 0.05
+    step(control, first)
+    previous_deadline = control.arrival_settle_until
+    assert previous_deadline > first + 0.05
+    timestamp = first + 0.05
+    kwargs = {}
+    item = measurement(timestamp)
+    if interruption in ("missing", "ambiguous"):
+        item = measurement(timestamp, status=interruption)
+    elif interruption == "ack":
+        kwargs["applied"] = (0.06, 0)
+    elif interruption == "pending":
+        control.issued_history.append((first, first + 0.15, 0.10))
+    elif interruption == "history":
+        kwargs["command_history_valid"] = False
+    elif interruption == "unsafe":
+        control.segment_free = lambda a, b, radius: False
+    elif interruption == "far":
+        control.goal = np.array([0.6, 0])
+    elif interruption == "stale":
+        kwargs["now"] = timestamp + 0.2
+    step(control, timestamp, item, **kwargs)
+    assert control.arrival_settle_until is None
+    assert control.arrival_settle_speed_bound is None
+    assert control.visible_since is None
+    assert not control.arrived
+
+
+def disk_obstacle_certificate(start, end, radius):
+    """Independent analytic segment-to-disk clearance for the planner tests."""
+    start, end = np.asarray(start), np.asarray(end)
+    obstacle = np.array([0.3, 0.0])
+    direction = end - start
+    fraction = np.clip(
+        np.dot(obstacle - start, direction) / max(np.dot(direction, direction), 1e-12),
+        0,
+        1,
+    )
+    return np.linalg.norm(obstacle - start - fraction * direction) > 0.03 + radius
+
+
+def test_radius_aware_planner_receives_current_error_margin_and_finds_clear_detour():
+    calls = []
+
+    def radius_planner(start, goal, radius):
+        calls.append((start.copy(), goal.copy(), radius))
+        return np.array([start, [0.1, 0.25], [0.5, 0.25], goal])
+
+    control = controller(
+        route_planner=radius_planner, segment_free=disk_obstacle_certificate
+    )
+    fallback = controller(segment_free=disk_obstacle_certificate)
+    for index in range(40):
+        timestamp = index * 0.05
+        item = measurement(timestamp, sigma=0.053 / 3)
+        step(control, timestamp, item)
+        step(fallback, timestamp, item)
+    assert calls and calls[0][2] == pytest.approx(0.037 + 0.040 + 0.053)
+    assert control.route is not None
+    assert control.status == "tracking_visible"
+    assert control.diagnostics["route_planning_radius_m"] == pytest.approx(0.13)
+    assert fallback.route is None
+    assert fallback.status == "route_not_certified"
+    np.testing.assert_array_equal(fallback.issued_action, [0, 0])
+
+
+def test_radius_planner_result_still_needs_independent_capsule_certificate():
+    control = controller(
+        route_planner=lambda start, goal, radius: np.array([start, goal]),
+        segment_free=disk_obstacle_certificate,
+    )
+    warm(control)
+    assert control.status == "route_not_certified"
+    assert control.route is None
+    assert control.diagnostics["requested_planning_radius_m"] == pytest.approx(0.083)
+    assert control.diagnostics["route_planning_radius_m"] is None
+    np.testing.assert_array_equal(control.issued_action, [0, 0])
+
+
+@pytest.mark.parametrize("problem", ["wrong_endpoint", "nonfinite", "raises"])
+def test_invalid_radius_planner_never_falls_back_to_different_uncertainty(problem):
+    class ForbiddenFallback:
+        def route(self, start, goal):
+            raise AssertionError("An explicitly supplied planner must not be bypassed")
+
+    def planner(start, goal, radius):
+        if problem == "raises":
+            raise ValueError("No path at requested radius")
+        return [start, [np.nan, 0] if problem == "nonfinite" else goal + 1]
+
+    control = controller(route_planner=planner)
+    control.grid = ForbiddenFallback()
+    warm(control)
+    assert control.status == (
+        "no_proven_route_memory" if problem == "raises" else "invalid_route"
+    )
+    assert control.route is None
+    np.testing.assert_array_equal(control.issued_action, [0, 0])
+
+
+def test_lost_segment_stops_then_replans_only_on_later_visible_observation():
+    calls = []
+    reject_old = [False]
+
+    def planner(start, goal, radius):
+        calls.append(radius)
+        return (
+            np.array([start, [0, 0.25], goal])
+            if reject_old[0]
+            else np.array([start, goal])
+        )
+
+    def certificate(start, end, radius):
+        # The old next segment loses clearance; a separate known detour exists.
+        return not (
+            reject_old[0] and np.allclose(start, [0, 0]) and np.allclose(end, [0.6, 0])
+        )
+
+    control = controller(route_planner=planner, segment_free=certificate)
+    last = warm(control)
+    assert len(calls) == 1
+    reject_old[0] = True
+    action = step(control, last + 0.05)
+    assert control.status == "route_not_certified"
+    assert control.route is None
+    assert len(calls) == 1  # No immediate replan on the failure observation.
+    np.testing.assert_array_equal(action, [0, 0])
+    step(control, last + 0.10, measurement(last + 0.10, status="missing"))
+    assert control.status == "no_proven_route_memory"
+    assert len(calls) == 1
+    step(control, last + 0.15)
+    assert len(calls) == 2
+    assert control.route is not None
+    assert control.status == "tracking_visible"

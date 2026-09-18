@@ -79,6 +79,7 @@ The application binds only to loopback and never connects to robot hardware.
 | Port already in use | Choose `--port 8766` or stop the earlier terminal session |
 | No current pose | Wait for initialization; inspect camera status; Reset if the worker reports an error |
 | Destination rejected | Choose a point with more observed clearance; unknown cells cannot be overridden |
+| Route not certified | The complete route needs room for the robot, margin and current camera uncertainty. The planner searches with that radius; if no route passes, try a more open destination or another camera mode |
 | Motion cancelled after tab closes | Reopen the app and submit a new goal; heartbeat cancellation is intentional |
 | Graphics/runtime error | Run the existing doctor, verify the native Python environment and local Genesis installation |
 

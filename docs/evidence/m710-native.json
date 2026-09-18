@@ -1,0 +1,239 @@
+{
+  "schema": "bb8.route-regression-summary.v1",
+  "scope": "Selected synthetic bug-route and existing demo regression, not unseen-room or general reliability evidence.",
+  "bug_route_start": [
+    -1.23,
+    1.45
+  ],
+  "bug_route_goal": [
+    -0.2065534089380967,
+    -0.8665560984356091
+  ],
+  "original_arrival_gates": {
+    "distance_m": 0.1,
+    "speed_m_s": 0.03,
+    "continuous_physics_dwell_s": 0.5,
+    "fresh_accepted_rgb_required": true
+  },
+  "denominator": 3,
+  "intent_pass_count": 3,
+  "final_cases": [
+    {
+      "case": "route-mode1",
+      "variant": "v2",
+      "mode": 1,
+      "intent_pass": true,
+      "first_declared_arrival": [
+        {
+          "time": 36.65,
+          "goal": [
+            -0.2065534089380967,
+            -0.8665560984356091
+          ],
+          "distance_m": 0.020140482557536952,
+          "speed_m_s": 0.004302610875681999,
+          "true_dwell_at_capture_s": 0.6799999999999997,
+          "visible_fresh_rgb": true,
+          "passed": true
+        }
+      ],
+      "frames": 734,
+      "rgb_and_head_mask_pngs": 1468,
+      "physics_and_acknowledged_command_intervals": 7340,
+      "nonzero_requested_frames": 560,
+      "status_counts": {
+        "warming_up": 20,
+        "tracking_visible": 572,
+        "stopping_envelope_not_certified": 136,
+        "settling_visible": 5,
+        "arrived_visible": 1
+      },
+      "collision": false,
+      "boundary_violation": false,
+      "all_native_views_hidden_captures": 0,
+      "all_hidden_false_accepts": 0,
+      "provenance_pass": true,
+      "command_partitions_pass": true,
+      "controller_source_sha256": "4438f2f0e63bb41d2618c588b1d59605a8004931994d80ff57e025618dfbb9f7",
+      "runtime_source_sha256": "7e27ade5e63c8ae0ccf194c096839d4685e02012e4dbbef24fd59964aeb7e652",
+      "report_relative_path": "work/m710/audit-v2/route-mode1/report.json",
+      "report_sha256": "e1d7ecfcb63e22919d5ef93eabaa8b466abecc484174f33b383f7ac693880a65"
+    },
+    {
+      "case": "route-mode3",
+      "variant": "v2",
+      "mode": 3,
+      "intent_pass": true,
+      "first_declared_arrival": [
+        {
+          "time": 38.4,
+          "goal": [
+            -0.2065534089380967,
+            -0.8665560984356091
+          ],
+          "distance_m": 0.023177460326930552,
+          "speed_m_s": 0.003971837965881816,
+          "true_dwell_at_capture_s": 0.7049999999999983,
+          "visible_fresh_rgb": true,
+          "passed": true
+        }
+      ],
+      "frames": 769,
+      "rgb_and_head_mask_pngs": 4614,
+      "physics_and_acknowledged_command_intervals": 7690,
+      "nonzero_requested_frames": 581,
+      "status_counts": {
+        "warming_up": 20,
+        "tracking_visible": 593,
+        "stopping_envelope_not_certified": 150,
+        "settling_visible": 5,
+        "arrived_visible": 1
+      },
+      "collision": false,
+      "boundary_violation": false,
+      "all_native_views_hidden_captures": 0,
+      "all_hidden_false_accepts": 0,
+      "provenance_pass": true,
+      "command_partitions_pass": true,
+      "controller_source_sha256": "4438f2f0e63bb41d2618c588b1d59605a8004931994d80ff57e025618dfbb9f7",
+      "runtime_source_sha256": "7e27ade5e63c8ae0ccf194c096839d4685e02012e4dbbef24fd59964aeb7e652",
+      "report_relative_path": "work/m710/audit-v2/route-mode3/report.json",
+      "report_sha256": "b137abe840fda43cbba570a9e3a9eac1f5e72566ba700141e0c8bbb4030fa185"
+    },
+    {
+      "case": "demo-mode1",
+      "variant": "v2",
+      "mode": 1,
+      "intent_pass": true,
+      "first_declared_arrival": [
+        {
+          "time": 5.1000000000000005,
+          "goal": [
+            0.24745992166936648,
+            1.3086782891625797
+          ],
+          "distance_m": 0.03316278135806092,
+          "speed_m_s": 0.003557679509175608,
+          "true_dwell_at_capture_s": 0.7450000000000001,
+          "visible_fresh_rgb": true,
+          "passed": true
+        }
+      ],
+      "frames": 103,
+      "rgb_and_head_mask_pngs": 206,
+      "physics_and_acknowledged_command_intervals": 1030,
+      "nonzero_requested_frames": 66,
+      "status_counts": {
+        "warming_up": 20,
+        "tracking_visible": 60,
+        "tracking_hidden": 16,
+        "settling_visible": 6,
+        "arrived_visible": 1
+      },
+      "collision": false,
+      "boundary_violation": false,
+      "all_native_views_hidden_captures": 10,
+      "all_hidden_false_accepts": 0,
+      "provenance_pass": true,
+      "command_partitions_pass": true,
+      "controller_source_sha256": "4438f2f0e63bb41d2618c588b1d59605a8004931994d80ff57e025618dfbb9f7",
+      "runtime_source_sha256": "7e27ade5e63c8ae0ccf194c096839d4685e02012e4dbbef24fd59964aeb7e652",
+      "report_relative_path": "work/m710/audit-v2/demo-mode1/report.json",
+      "report_sha256": "077b0fa7e22ef6a71200a9ce99fcef488399f7a581e461ba47d2ccefddc5bf32"
+    }
+  ],
+  "retained_v1_cases": [
+    {
+      "case": "route-mode1",
+      "variant": "v1",
+      "mode": 1,
+      "intent_pass": false,
+      "first_declared_arrival": [
+        {
+          "time": 36.45,
+          "goal": [
+            -0.2065534089380967,
+            -0.8665560984356091
+          ],
+          "distance_m": 0.02129502906931681,
+          "speed_m_s": 0.007645273705257275,
+          "true_dwell_at_capture_s": 0.480000000000004,
+          "visible_fresh_rgb": true,
+          "passed": false
+        }
+      ],
+      "frames": 730,
+      "rgb_and_head_mask_pngs": 1460,
+      "physics_and_acknowledged_command_intervals": 7300,
+      "nonzero_requested_frames": 560,
+      "status_counts": {
+        "warming_up": 20,
+        "tracking_visible": 572,
+        "stopping_envelope_not_certified": 136,
+        "settling_visible": 1,
+        "arrived_visible": 1
+      },
+      "collision": false,
+      "boundary_violation": false,
+      "all_native_views_hidden_captures": 0,
+      "all_hidden_false_accepts": 0,
+      "provenance_pass": true,
+      "command_partitions_pass": true,
+      "controller_source_sha256": "d4070d26b5f7091ae9e2fe24cef14f5a5480dc26a307d7f78608fdca91a869a1",
+      "runtime_source_sha256": "0fa1fbffe0e437b4959f742ff3daf00000c033aa484cc9f1fa77a50fd78af900",
+      "report_relative_path": "work/m710/audit-v1/route-mode1/report.json",
+      "report_sha256": "86fa986ab9af5eef32d98a610742aec06ed8be1151e3142c8fb3d43682781c32"
+    },
+    {
+      "case": "route-mode3",
+      "variant": "v1",
+      "mode": 3,
+      "intent_pass": true,
+      "first_declared_arrival": [
+        {
+          "time": 38.2,
+          "goal": [
+            -0.2065534089380967,
+            -0.8665560984356091
+          ],
+          "distance_m": 0.024235517968910502,
+          "speed_m_s": 0.0070575241439372344,
+          "true_dwell_at_capture_s": 0.5050000000000026,
+          "visible_fresh_rgb": true,
+          "passed": true
+        }
+      ],
+      "frames": 765,
+      "rgb_and_head_mask_pngs": 4590,
+      "physics_and_acknowledged_command_intervals": 7650,
+      "nonzero_requested_frames": 581,
+      "status_counts": {
+        "warming_up": 20,
+        "tracking_visible": 593,
+        "stopping_envelope_not_certified": 150,
+        "settling_visible": 1,
+        "arrived_visible": 1
+      },
+      "collision": false,
+      "boundary_violation": false,
+      "all_native_views_hidden_captures": 0,
+      "all_hidden_false_accepts": 0,
+      "provenance_pass": true,
+      "command_partitions_pass": true,
+      "controller_source_sha256": "d4070d26b5f7091ae9e2fe24cef14f5a5480dc26a307d7f78608fdca91a869a1",
+      "runtime_source_sha256": "0fa1fbffe0e437b4959f742ff3daf00000c033aa484cc9f1fa77a50fd78af900",
+      "report_relative_path": "work/m710/audit-v1/route-mode3/report.json",
+      "report_sha256": "265ec387dba6e857d8d173947719192f6d26a299133022f7ed26b0d876196ceb"
+    }
+  ],
+  "prior_failure": "V1 mode1 traversed the route but declared arrival with only .480 s true dwell; it remains failed.",
+  "controller_change_limit": "Additional delay uses a declared zero-command braking-tail assumption, not calibrated physical-speed sensing or an adversarial sustained-disturbance guarantee.",
+  "replay": {
+    "source": "work/m710/replay.json",
+    "required_radius_m": 0.13046861212768912,
+    "old_fixed_radius_m": 0.1,
+    "old_route_all_segments_certified": false,
+    "required_radius_route_all_segments_certified": true,
+    "truth_consumed_by_replay": false
+  }
+}

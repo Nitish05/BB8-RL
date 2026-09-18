@@ -100,6 +100,7 @@ class ControlSession:
         self.last_motion_generation = self.generation - 1
         self.planning_radius = float(planning_radius)
         self.grid = memory.planning_grid(self.planning_radius)
+        self.route_grids = {}
         self.clock, self.heartbeat_seconds = clock, float(heartbeat_seconds)
         self.last_heartbeat = clock()
         self.parameters, self.dynamics = OcclusionParameters(), CommandDynamics()
@@ -111,6 +112,19 @@ class ControlSession:
             "Waiting for a fresh RGB position.",
             "localizing",
         )
+
+    def route_with_clearance(self, start, goal, radius):
+        """Plan with current uncertainty; cache upward-rounded frozen-map grids."""
+        if not math.isfinite(radius) or radius < 0:
+            raise ValueError("Route clearance must be finite and nonnegative")
+        # Round upwards, never below the independently required capsule radius.
+        # Two-centimeter buckets limit grid churn as RGB covariance changes.
+        clearance = math.ceil(max(self.planning_radius, radius) / 0.02) * 0.02
+        if clearance not in self.route_grids:
+            if len(self.route_grids) >= 16:
+                self.route_grids.pop(next(iter(self.route_grids)))
+            self.route_grids[clearance] = self.memory.planning_grid(clearance)
+        return self.route_grids[clearance].route(start, goal)
 
     def cancel(self, phase="stopped", message="Stopped; choose a goal to resume."):
         self.stop()
@@ -240,8 +254,15 @@ class ControlSession:
             )
         if self.pending_goal is not None and fresh_visible:
             try:
+                radius = max(
+                    self.planning_radius,
+                    self.parameters.robot_radius
+                    + self.parameters.clearance_margin
+                    + self.idle_belief.position_radius,
+                )
                 route = np.asarray(
-                    self.grid.route(measurement.xy, self.pending_goal), float
+                    self.route_with_clearance(measurement.xy, self.pending_goal, radius),
+                    float,
                 )
                 if (
                     route.ndim != 2
@@ -251,10 +272,10 @@ class ControlSession:
                     or not np.allclose(route[0], measurement.xy)
                     or not np.allclose(route[-1], self.pending_goal)
                     or not self.memory.segment_free(
-                        measurement.xy, measurement.xy, self.planning_radius
+                        measurement.xy, measurement.xy, radius
                     )
                     or not all(
-                        self.memory.segment_free(a, b, self.planning_radius)
+                        self.memory.segment_free(a, b, radius)
                         for a, b in pairwise(route)
                     )
                 ):
@@ -268,6 +289,7 @@ class ControlSession:
                     self.memory.segment_free,
                     map_version=self.map_version,
                     calibration_version=self.calibration_version,
+                    route_planner=self.route_with_clearance,
                 )
                 self.pending_goal = None
                 self.message = (
@@ -288,6 +310,23 @@ class ControlSession:
             now=timestamp,
         )
         self.status = self.controller.status
+        self.message = {
+            "route_not_certified": (
+                "The current route lacks clearance for BB-8 and its position "
+                "uncertainty. Stopped pending a new route from a visible estimate."
+            ),
+            "no_proven_route_memory": (
+                "No clear route is available from the current camera estimate. "
+                "Try a more open destination or another camera mode."
+            ),
+            "stopping_envelope_not_certified": (
+                "Stopped: the next motion lacks stopping clearance. "
+                "Try a more open destination or another camera mode."
+            ),
+        }.get(
+            self.status,
+            "RGB navigation; physics pauses during capture and inference.",
+        )
         self.phase = (
             "arrived"
             if self.controller.arrived

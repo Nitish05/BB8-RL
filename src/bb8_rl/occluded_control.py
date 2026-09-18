@@ -443,6 +443,17 @@ class OccludedController:
     V6 starts arrival dwell only after a zero endpoint acknowledgement and a
     complete command history with no unexpired nonzero targets. A pending or
     still-acknowledged motion request requires visible settling with zero output.
+
+    An optional ``route_planner(start, goal, radius)`` can construct a route for
+    the current physical margin plus position uncertainty. Its result still
+    requires independent whole-capsule certification. New routes require a
+    current visible fix; losing a retained segment's clearance first stops.
+
+    Arrival additionally waits for the assumed zero-command braking response
+    to reduce the initial speed enclosure to arrival_speed, before the full
+    visible dwell begins. This uses the same lower acceleration / upper response
+    time assumption as the stopping-envelope tail, not an adversarial sustained
+    q-disturbance guarantee or calibrated physical-speed measurement.
     """
 
     def __init__(
@@ -456,6 +467,7 @@ class OccludedController:
         calibration_version,
         parameters=None,
         dynamics=None,
+        route_planner=None,
     ):
         self.parameters = parameters or OcclusionParameters()
         self.dynamics = dynamics or CommandDynamics()
@@ -468,6 +480,7 @@ class OccludedController:
             not callable(policy)
             or not callable(segment_free)
             or not callable(getattr(grid, "route", None))
+            or (route_planner is not None and not callable(route_planner))
         ):
             raise TypeError("Need policy, route grid and whole-capsule certificate")
         if (
@@ -478,6 +491,8 @@ class OccludedController:
         ):
             raise ValueError("Frozen map/calibration versions are required")
         self.policy, self.grid, self.segment_free = policy, grid, segment_free
+        self.route_planner = route_planner
+        self.requested_planning_radius = self.route_planning_radius = None
         self.map_version, self.calibration_version = map_version, calibration_version
         self.belief = CommandBelief(self.dynamics, self.parameters)
         self.route = None
@@ -485,6 +500,7 @@ class OccludedController:
         self.status = "uninitialized"
         self.arrived = False
         self.visible_since = None
+        self.arrival_settle_until = self.arrival_settle_speed_bound = None
         self.envelope_radius = None
         self.segment_certificate = False
         self.issued_action = np.zeros(2, np.float32)
@@ -509,6 +525,8 @@ class OccludedController:
         )
         if status not in ("tracking_visible", "arrived_visible"):
             self.visible_since = None
+            if status != "settling_visible":
+                self._reset_arrival()
         if self.request_now is not None:
             if self.history_started_at is None:
                 self.history_started_at = self.request_now
@@ -520,6 +538,30 @@ class OccludedController:
                 )
             )
         return self.issued_action.copy()
+
+    def _reset_arrival(self):
+        self.visible_since = None
+        self.arrival_settle_until = self.arrival_settle_speed_bound = None
+
+    def _arrival_braking_time(self, speed_bound):
+        """Time to the speed gate under the existing conditional braking tail.
+
+        For ds/dt=-min(a_lower,s/tau_upper), first reach a_lower*tau_upper
+        with saturated braking, then decay exponentially to arrival_speed.
+        The generic model-error q is not a sustained adversarial force during
+        this tail: q*tau_upper can exceed the speed gate. This extra wait thus
+        preserves the declared braking assumption, not a physical guarantee.
+        """
+        d, target = self.dynamics, self.parameters.arrival_speed
+        threshold = d.braking_acceleration_lower * d.response_time_upper
+        saturated = (
+            max(0.0, speed_bound - max(target, threshold))
+            / d.braking_acceleration_lower
+        )
+        exponential = d.response_time_upper * np.log(
+            max(target, min(speed_bound, threshold)) / target
+        )
+        return float(saturated + exponential)
 
     def _refresh_command_history(self, timestamp, now):
         """Retain every issued target alive at capture, even if expired by now."""
@@ -629,6 +671,7 @@ class OccludedController:
         self.envelope_trials = []
         self.segment_certificate = False
         self.envelope_radius = None
+        self.requested_planning_radius = None
         self.arrived = False
         self.consulted_versions = {
             "map": map_version,
@@ -640,6 +683,7 @@ class OccludedController:
             or calibration_version != self.calibration_version
         ):
             self.route = None
+            self.route_planning_radius = None
             self.velocity_initialized = False
             return self._finish("memory_or_calibration_invalid")
         p, d, b = self.parameters, self.dynamics, self.belief
@@ -666,6 +710,7 @@ class OccludedController:
             return self._finish("invalid_missing_measurement")
         if b.timestamp is not None and timestamp - b.timestamp > p.max_interval + 1e-9:
             self.route = None
+            self.route_planning_radius = None
             self.velocity_initialized = False
             # State is stale; require a new controller / fresh initialization.
             return self._finish("control_interval_exceeded")
@@ -704,9 +749,15 @@ class OccludedController:
         if self.route is None:
             if not visible:
                 return self._finish("no_proven_route_memory")
+            self.requested_planning_radius = float(base_radius)
             try:
-                route = np.asarray(self.grid.route(b.xy, self.goal), float)
-            except (ValueError, RuntimeError):
+                planned = (
+                    self.grid.route(b.xy, self.goal)
+                    if self.route_planner is None
+                    else self.route_planner(b.xy.copy(), self.goal.copy(), base_radius)
+                )
+                route = np.asarray(planned, float)
+            except (TypeError, ValueError, RuntimeError):
                 return self._finish("no_proven_route_memory")
             if (
                 route.ndim != 2
@@ -722,6 +773,7 @@ class OccludedController:
             ) or not self._certify(b.xy, b.xy, base_radius):
                 return self._finish("route_not_certified")
             self.route, self.index = route.copy(), min(1, len(route) - 1)
+            self.route_planning_radius = float(base_radius)
         if (
             self.index < len(self.route) - 1
             and np.linalg.norm(self.route[self.index] - b.xy) < 0.045
@@ -731,6 +783,7 @@ class OccludedController:
             self.index += 1
         if not self._certify(b.xy, self.route[self.index], base_radius):
             self.route = None
+            self.route_planning_radius = None
             return self._finish("route_not_certified")
         near = (
             np.linalg.norm(b.xy - self.goal) + b.position_radius <= p.arrival_radius
@@ -743,7 +796,16 @@ class OccludedController:
                 or np.linalg.norm(d.target(applied_command)) > 0
                 or any(speed > 0 for _, _, speed in self.issued_history)
             ):
-                self.visible_since = None
+                self._reset_arrival()
+                return self._finish("settling_visible")
+            if self.arrival_settle_until is None:
+                self.arrival_settle_speed_bound = float(
+                    np.linalg.norm(b.velocity) + b.velocity_radius
+                )
+                self.arrival_settle_until = timestamp + self._arrival_braking_time(
+                    self.arrival_settle_speed_bound
+                )
+            if timestamp < self.arrival_settle_until - 1e-9:
                 return self._finish("settling_visible")
             if self.visible_since is None:
                 self.visible_since = timestamp
@@ -752,7 +814,7 @@ class OccludedController:
                 return self._finish("arrived_visible")
             return self._finish("tracking_visible")
         else:
-            self.visible_since = None
+            self._reset_arrival()
         vector = np.asarray(
             [
                 *(self.route[self.index] - b.xy),
@@ -834,7 +896,12 @@ class OccludedController:
             "segment_certificate": self.segment_certificate,
             "arrived": self.arrived,
             "dynamics_bounds_calibrated": False,
-            "controller_revision": "v6-causal-visible-arrival-settling",
+            "controller_revision": "v8-model-settling-before-visible-dwell",
+            "arrival_settle_until": self.arrival_settle_until,
+            "arrival_settle_speed_bound_m_s": self.arrival_settle_speed_bound,
+            "arrival_visible_since": self.visible_since,
+            "requested_planning_radius_m": self.requested_planning_radius,
+            "route_planning_radius_m": self.route_planning_radius,
             "velocity_initialized": self.velocity_initialized,
             "max_initial_velocity_radius_m_s": self.parameters.max_initial_velocity_radius,
             "prediction_mode": b.last_prediction_mode if current else "stale",
