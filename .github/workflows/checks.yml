@@ -28,9 +28,12 @@ jobs:
           tests/test_extended_scan_memory.py tests/test_scan_revision.py
           tests/test_dense_scan_memory.py
           tests/test_interactive_runtime.py tests/test_occluded_control.py
+          tests/test_localization_recovery.py tests/test_braking_prediction.py
+          tests/test_localization_audit.py tests/test_localization_loss_replay.py
           tests/test_camera.py tests/test_camera_rig.py tests/test_camera_runtime.py
           -k 'not world_rejects_invalid_rig_before_loading_scene'
       - name: Check frontend syntax
         run: |
           node --check src/bb8_rl/web/app.js
           node tests/test_web_coordinates.js
+          node tests/test_web_localization.js

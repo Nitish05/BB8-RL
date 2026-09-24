@@ -1,0 +1,564 @@
+{
+  "schema": "bb8.m713-prolonged-loss.v1",
+  "protocol": {
+    "allowed_input_fields": [
+      "measurement",
+      "prior_applied_command",
+      "prior_acknowledged_command_intervals"
+    ],
+    "allowed_prefix_sha256": "6f8da1e5ac2faf14a56cbc6cf31dd513012f15c62a89ab45ed3bc59db67cf046",
+    "duration_seconds": 240.0,
+    "dynamics": {
+      "acceleration_uncertainty": 0.12,
+      "braking_acceleration_lower": 0.5,
+      "dead_zone": 0.05,
+      "heading_offset": 0.0,
+      "latency_mismatch": 0.05,
+      "max_acceleration": 0.7,
+      "max_command_age": 0.15,
+      "max_deceleration": 0.9,
+      "max_speed": 0.35,
+      "response_time": 0.25,
+      "response_time_upper": 0.35
+    },
+    "geometry": "No navigation; permissive point predicate for a goal that must be rejected before route planning.",
+    "goal_attempt_offset_seconds": 2.0,
+    "parameters": {
+      "arrival_radius": 0.1,
+      "arrival_speed": 0.03,
+      "clearance_margin": 0.04,
+      "command_horizon": 0.05,
+      "innovation_slack": 0.015,
+      "max_frame_age": 0.1,
+      "max_initial_velocity_radius": 0.05,
+      "max_interval": 0.15,
+      "max_occlusion_seconds": 1.0,
+      "max_position_radius": 0.08,
+      "max_reacquisition_distance": 0.12,
+      "measurement_radius_floor": 0.005,
+      "measurement_sigma_multiplier": 3.0,
+      "minimum_visual_samples": 3,
+      "proactive_horizon_seconds": 0.0,
+      "proactive_speed_samples": 10,
+      "robot_radius": 0.037,
+      "speed_cap": 0.15,
+      "visible_dwell": 0.5
+    },
+    "policy_loaded": false,
+    "prefix_end_sim_time": 1.0,
+    "prefix_selection": "Earliest accepted visible zero-ACK frame with existing consecutive minimum visual samples and velocity-radius initialization gate.",
+    "recovery_anchor_assertion": "Freeze pose, timestamp and source on the first lost frame; require exact equality throughout the synthetic loss.",
+    "sample_offset_seconds": [
+      0,
+      1,
+      10,
+      60,
+      120,
+      240
+    ],
+    "schema_version": 1,
+    "scope": "Offline counterfactual bookkeeping after a native RGB/command prefix; NOT 240 seconds of native or physical observation.",
+    "source_native_raw_prefix_sha256": "4f0310c23888685ea15f80e4511c62b3f9c9dbd8cbc6634eea6418a50e2ff7d7",
+    "source_prefix_rows": 21,
+    "source_rows_path": "/Users/rrnitish/Documents/Codex/BB8-RL/work/m713/native-v2/demo-mode1/worker/rows.jsonl",
+    "source_sha256": {
+      "scripts/replay-localization-loss.py": "140c28be3db99a950712aa28a03647212270f86faf9c986d890575c345b27d83",
+      "src/bb8_rl/braking_prediction.py": "aa8559f904b1ce43ba6d062e28030fe6821e90b43ecc86436473660c7a244073",
+      "src/bb8_rl/interactive_runtime.py": "892461e149a3f5c64a20577dcb265f60c838d1932f777d21e098618b181032c6",
+      "src/bb8_rl/occluded_control.py": "03bf1c2717698d22d34e2f4becccb143bda9c22f3f1a66627b993bbab504ca80"
+    },
+    "synthetic_ack_tick_seconds": 0.005,
+    "synthetic_frame_seconds": 0.05,
+    "synthetic_inputs": "All frames missing; all complete acknowledged intervals and endpoint commands zero. This is assumed counterfactual input, not measured actuator history.",
+    "truth_to_replay": false
+  },
+  "report": {
+    "artifact_sha256": {
+      "prefix-inputs.jsonl": "6f8da1e5ac2faf14a56cbc6cf31dd513012f15c62a89ab45ed3bc59db67cf046",
+      "replay.jsonl": "96b109887d3f2169a089e65c9dcd18acbe23e776b8b1879e21dcf5b623530f09"
+    },
+    "checks": {
+      "advisory_finite_and_non_authoritative": true,
+      "all_actions_zero": true,
+      "existing_prediction_limits_respected": true,
+      "expired_pose_and_radius_unavailable": true,
+      "loss_detected": true,
+      "new_goal_rejected_while_lost": true,
+      "no_goal_or_route_after_loss": true,
+      "raw_radius_monotone_during_missing": true,
+      "recovery_anchor_valid_and_fixed_after_loss": true,
+      "sources_unchanged": true
+    },
+    "first_lost_offset_seconds": 1.05,
+    "full_240_second_bookkeeping": true,
+    "goal_attempt": {
+      "offset_seconds": 2.0,
+      "record": {
+        "action": "goal",
+        "generation": 1,
+        "outcome": "rejected",
+        "reason": "Localization lost; wait for visual reacquisition or reset.",
+        "sim_time": 3.0,
+        "wall_time": 0.0,
+        "x": 0.5,
+        "y": 0.0
+      }
+    },
+    "passed": true,
+    "prefix_rows": 21,
+    "protocol_sha256": "8c1155aee5c19b32efc7b463120b0e14548751e8f872025be1de2d7d1a67062c",
+    "recovery_anchor": {
+      "recovery_anchor_pose": [
+        0.02870608167650776,
+        0.9739787904378641
+      ],
+      "recovery_anchor_source": "predicted",
+      "recovery_anchor_time": 2.0
+    },
+    "samples": [
+      {
+        "offset_seconds": 0,
+        "state": {
+          "braking_prediction": {
+            "anchor_radius_m": 0.041385399252026236,
+            "anchor_speed_upper_m_s": 0.35,
+            "anchor_time": 0.0,
+            "anchor_xy": [
+              0.02873910277805594,
+              0.9739662820171227
+            ],
+            "assumptions": [
+              "Dissipative zero-target braking; no sustained acceleration mismatch or external push.",
+              "Zero acknowledged and pending targets; unchanged map/calibration context.",
+              "Initial position and speed enclosures are engineering assumptions, not calibrated confidence.",
+              "Advisory only: never a position observation, stationarity proof, or motion/arrival authority."
+            ],
+            "braking_acceleration_lower_m_s2": 0.5,
+            "discrete_padding_m": 0.0017499999999999998,
+            "elapsed_seconds": 1.0,
+            "enabled": true,
+            "kind": "conditional_braking_region",
+            "max_tick_seconds": 0.005,
+            "motion_authority": false,
+            "observed": false,
+            "radius_limit_m": 0.19626039925202624,
+            "radius_m": 0.18669816897642297,
+            "reason": "complete_zero_command_history",
+            "response_time_upper_s": 0.35,
+            "speed_upper_m_s": 0.027713754188714367,
+            "status": "settling_conditional",
+            "valid": true
+          },
+          "commanded_goal": null,
+          "controller_status": "idle",
+          "generation": 0,
+          "goal": null,
+          "last_seen_age_s": 0.0,
+          "last_seen_pose": [
+            0.02870608167650776,
+            0.9739787904378641
+          ],
+          "last_seen_radius_m": 0.04138568485062212,
+          "localization_status": "measured",
+          "localization_valid": true,
+          "message": "Choose a clear goal or Demo.",
+          "phase": "idle",
+          "pose": [
+            0.02870608167650776,
+            0.9739787904378641
+          ],
+          "pose_source": "measured",
+          "position_radius": 0.04138568485062212,
+          "raw_pose": [
+            0.02870608167650776,
+            0.9739787904378641
+          ],
+          "raw_position_radius": 0.04138568485062212,
+          "raw_prediction_time": 1.0,
+          "raw_velocity": [
+            0.0,
+            0.0
+          ],
+          "raw_velocity_radius": 0.04712734843777582,
+          "reacquisition_samples": 0,
+          "recovery_anchor_pose": null,
+          "recovery_anchor_source": null,
+          "recovery_anchor_time": null,
+          "requires_new_goal": false,
+          "route": null,
+          "route_planning": null
+        }
+      },
+      {
+        "offset_seconds": 1.0,
+        "state": {
+          "braking_prediction": {
+            "anchor_radius_m": 0.041385399252026236,
+            "anchor_speed_upper_m_s": 0.35,
+            "anchor_time": 0.0,
+            "anchor_xy": [
+              0.02873910277805594,
+              0.9739662820171227
+            ],
+            "assumptions": [
+              "Dissipative zero-target braking; no sustained acceleration mismatch or external push.",
+              "Zero acknowledged and pending targets; unchanged map/calibration context.",
+              "Initial position and speed enclosures are engineering assumptions, not calibrated confidence.",
+              "Advisory only: never a position observation, stationarity proof, or motion/arrival authority."
+            ],
+            "braking_acceleration_lower_m_s2": 0.5,
+            "discrete_padding_m": 0.0017499999999999998,
+            "elapsed_seconds": 2.0,
+            "enabled": true,
+            "kind": "conditional_braking_region",
+            "max_tick_seconds": 0.005,
+            "motion_authority": false,
+            "observed": false,
+            "radius_limit_m": 0.19626039925202624,
+            "radius_m": 0.1957112153212582,
+            "reason": "complete_zero_command_history",
+            "response_time_upper_s": 0.35,
+            "speed_upper_m_s": 0.0015916734927967676,
+            "status": "settling_conditional",
+            "valid": true
+          },
+          "commanded_goal": null,
+          "controller_status": "localizing",
+          "generation": 0,
+          "goal": null,
+          "last_seen_age_s": 1.0,
+          "last_seen_pose": [
+            0.02870608167650776,
+            0.9739787904378641
+          ],
+          "last_seen_radius_m": 0.04138568485062212,
+          "localization_status": "predicted",
+          "localization_valid": true,
+          "message": "Waiting for a fresh RGB position.",
+          "phase": "localizing",
+          "pose": [
+            0.02870608167650776,
+            0.9739787904378641
+          ],
+          "pose_source": "predicted",
+          "position_radius": 0.07615765868283307,
+          "raw_pose": [
+            0.02870608167650776,
+            0.9739787904378641
+          ],
+          "raw_position_radius": 0.07615765868283307,
+          "raw_prediction_time": 2.0,
+          "raw_velocity": [
+            0.0,
+            0.0
+          ],
+          "raw_velocity_radius": 0.030609185315257786,
+          "reacquisition_samples": 0,
+          "recovery_anchor_pose": null,
+          "recovery_anchor_source": null,
+          "recovery_anchor_time": null,
+          "requires_new_goal": false,
+          "route": null,
+          "route_planning": null
+        }
+      },
+      {
+        "offset_seconds": 10.0,
+        "state": {
+          "braking_prediction": {
+            "anchor_radius_m": 0.041385399252026236,
+            "anchor_speed_upper_m_s": 0.35,
+            "anchor_time": 0.0,
+            "anchor_xy": [
+              0.02873910277805594,
+              0.9739662820171227
+            ],
+            "assumptions": [
+              "Dissipative zero-target braking; no sustained acceleration mismatch or external push.",
+              "Zero acknowledged and pending targets; unchanged map/calibration context.",
+              "Initial position and speed enclosures are engineering assumptions, not calibrated confidence.",
+              "Advisory only: never a position observation, stationarity proof, or motion/arrival authority."
+            ],
+            "braking_acceleration_lower_m_s2": 0.5,
+            "discrete_padding_m": 0.0017499999999999998,
+            "elapsed_seconds": 11.0,
+            "enabled": true,
+            "kind": "conditional_braking_region",
+            "max_tick_seconds": 0.005,
+            "motion_authority": false,
+            "observed": false,
+            "radius_limit_m": 0.19626039925202624,
+            "radius_m": 0.19626039925202246,
+            "reason": "complete_zero_command_history",
+            "response_time_upper_s": 0.35,
+            "speed_upper_m_s": 1.0821353689914483e-14,
+            "status": "settling_conditional",
+            "valid": true
+          },
+          "commanded_goal": null,
+          "controller_status": "localization_lost",
+          "generation": 1,
+          "goal": null,
+          "last_seen_age_s": 10.0,
+          "last_seen_pose": [
+            0.02870608167650776,
+            0.9739787904378641
+          ],
+          "last_seen_radius_m": 0.04138568485062212,
+          "localization_status": "lost",
+          "localization_valid": false,
+          "message": "Localization lost: the interval since the last visual fix exceeded the prediction limit. Goal cancelled; waiting for fresh visual observations.",
+          "phase": "localization_lost",
+          "pose": null,
+          "pose_source": "unavailable",
+          "position_radius": null,
+          "raw_pose": [
+            0.02870608167650776,
+            0.9739787904378641
+          ],
+          "raw_position_radius": 0.35164447798480514,
+          "raw_prediction_time": 11.0,
+          "raw_velocity": [
+            0.0,
+            0.0
+          ],
+          "raw_velocity_radius": 0.030300999993333542,
+          "reacquisition_samples": 0,
+          "recovery_anchor_pose": [
+            0.02870608167650776,
+            0.9739787904378641
+          ],
+          "recovery_anchor_source": "predicted",
+          "recovery_anchor_time": 2.0,
+          "requires_new_goal": true,
+          "route": null,
+          "route_planning": null
+        }
+      },
+      {
+        "offset_seconds": 60.0,
+        "state": {
+          "braking_prediction": {
+            "anchor_radius_m": 0.041385399252026236,
+            "anchor_speed_upper_m_s": 0.35,
+            "anchor_time": 0.0,
+            "anchor_xy": [
+              0.02873910277805594,
+              0.9739662820171227
+            ],
+            "assumptions": [
+              "Dissipative zero-target braking; no sustained acceleration mismatch or external push.",
+              "Zero acknowledged and pending targets; unchanged map/calibration context.",
+              "Initial position and speed enclosures are engineering assumptions, not calibrated confidence.",
+              "Advisory only: never a position observation, stationarity proof, or motion/arrival authority."
+            ],
+            "braking_acceleration_lower_m_s2": 0.5,
+            "discrete_padding_m": 0.0017499999999999998,
+            "elapsed_seconds": 61.0,
+            "enabled": true,
+            "kind": "conditional_braking_region",
+            "max_tick_seconds": 0.005,
+            "motion_authority": false,
+            "observed": false,
+            "radius_limit_m": 0.19626039925202624,
+            "radius_m": 0.19626039925202624,
+            "reason": "complete_zero_command_history",
+            "response_time_upper_s": 0.35,
+            "speed_upper_m_s": 9.822289914725464e-77,
+            "status": "settling_conditional",
+            "valid": true
+          },
+          "commanded_goal": null,
+          "controller_status": "localization_lost",
+          "generation": 1,
+          "goal": null,
+          "last_seen_age_s": 60.0,
+          "last_seen_pose": [
+            0.02870608167650776,
+            0.9739787904378641
+          ],
+          "last_seen_radius_m": 0.04138568485062212,
+          "localization_status": "lost",
+          "localization_valid": false,
+          "message": "Localization lost: the interval since the last visual fix exceeded the prediction limit. Goal cancelled; waiting for fresh visual observations.",
+          "phase": "localization_lost",
+          "pose": null,
+          "pose_source": "unavailable",
+          "position_radius": null,
+          "raw_pose": [
+            0.02870608167650776,
+            0.9739787904378641
+          ],
+          "raw_position_radius": 1.8816944776513334,
+          "raw_prediction_time": 61.0,
+          "raw_velocity": [
+            0.0,
+            0.0
+          ],
+          "raw_velocity_radius": 0.030300999993333418,
+          "reacquisition_samples": 0,
+          "recovery_anchor_pose": [
+            0.02870608167650776,
+            0.9739787904378641
+          ],
+          "recovery_anchor_source": "predicted",
+          "recovery_anchor_time": 2.0,
+          "requires_new_goal": true,
+          "route": null,
+          "route_planning": null
+        }
+      },
+      {
+        "offset_seconds": 120.0,
+        "state": {
+          "braking_prediction": {
+            "anchor_radius_m": 0.041385399252026236,
+            "anchor_speed_upper_m_s": 0.35,
+            "anchor_time": 0.0,
+            "anchor_xy": [
+              0.02873910277805594,
+              0.9739662820171227
+            ],
+            "assumptions": [
+              "Dissipative zero-target braking; no sustained acceleration mismatch or external push.",
+              "Zero acknowledged and pending targets; unchanged map/calibration context.",
+              "Initial position and speed enclosures are engineering assumptions, not calibrated confidence.",
+              "Advisory only: never a position observation, stationarity proof, or motion/arrival authority."
+            ],
+            "braking_acceleration_lower_m_s2": 0.5,
+            "discrete_padding_m": 0.0017499999999999998,
+            "elapsed_seconds": 121.0,
+            "enabled": true,
+            "kind": "conditional_braking_region",
+            "max_tick_seconds": 0.005,
+            "motion_authority": false,
+            "observed": false,
+            "radius_limit_m": 0.19626039925202624,
+            "radius_m": 0.19626039925202624,
+            "reason": "complete_zero_command_history",
+            "response_time_upper_s": 0.35,
+            "speed_upper_m_s": 3.4812093126019355e-151,
+            "status": "settling_conditional",
+            "valid": true
+          },
+          "commanded_goal": null,
+          "controller_status": "localization_lost",
+          "generation": 1,
+          "goal": null,
+          "last_seen_age_s": 120.0,
+          "last_seen_pose": [
+            0.02870608167650776,
+            0.9739787904378641
+          ],
+          "last_seen_radius_m": 0.04138568485062212,
+          "localization_status": "lost",
+          "localization_valid": false,
+          "message": "Localization lost: the interval since the last visual fix exceeded the prediction limit. Goal cancelled; waiting for fresh visual observations.",
+          "phase": "localization_lost",
+          "pose": null,
+          "pose_source": "unavailable",
+          "position_radius": null,
+          "raw_pose": [
+            0.02870608167650776,
+            0.9739787904378641
+          ],
+          "raw_position_radius": 3.717754477253659,
+          "raw_prediction_time": 121.0,
+          "raw_velocity": [
+            0.0,
+            0.0
+          ],
+          "raw_velocity_radius": 0.030300999993333414,
+          "reacquisition_samples": 0,
+          "recovery_anchor_pose": [
+            0.02870608167650776,
+            0.9739787904378641
+          ],
+          "recovery_anchor_source": "predicted",
+          "recovery_anchor_time": 2.0,
+          "requires_new_goal": true,
+          "route": null,
+          "route_planning": null
+        }
+      },
+      {
+        "offset_seconds": 240.0,
+        "state": {
+          "braking_prediction": {
+            "anchor_radius_m": 0.041385399252026236,
+            "anchor_speed_upper_m_s": 0.35,
+            "anchor_time": 0.0,
+            "anchor_xy": [
+              0.02873910277805594,
+              0.9739662820171227
+            ],
+            "assumptions": [
+              "Dissipative zero-target braking; no sustained acceleration mismatch or external push.",
+              "Zero acknowledged and pending targets; unchanged map/calibration context.",
+              "Initial position and speed enclosures are engineering assumptions, not calibrated confidence.",
+              "Advisory only: never a position observation, stationarity proof, or motion/arrival authority."
+            ],
+            "braking_acceleration_lower_m_s2": 0.5,
+            "discrete_padding_m": 0.0017499999999999998,
+            "elapsed_seconds": 241.0,
+            "enabled": true,
+            "kind": "conditional_braking_region",
+            "max_tick_seconds": 0.005,
+            "motion_authority": false,
+            "observed": false,
+            "radius_limit_m": 0.19626039925202624,
+            "radius_m": 0.19626039925202624,
+            "reason": "complete_zero_command_history",
+            "response_time_upper_s": 0.35,
+            "speed_upper_m_s": 4.372853347700413e-300,
+            "status": "settling_conditional",
+            "valid": true
+          },
+          "commanded_goal": null,
+          "controller_status": "localization_lost",
+          "generation": 1,
+          "goal": null,
+          "last_seen_age_s": 240.0,
+          "last_seen_pose": [
+            0.02870608167650776,
+            0.9739787904378641
+          ],
+          "last_seen_radius_m": 0.04138568485062212,
+          "localization_status": "lost",
+          "localization_valid": false,
+          "message": "Localization lost: the interval since the last visual fix exceeded the prediction limit. Goal cancelled; waiting for fresh visual observations.",
+          "phase": "localization_lost",
+          "pose": null,
+          "pose_source": "unavailable",
+          "position_radius": null,
+          "raw_pose": [
+            0.02870608167650776,
+            0.9739787904378641
+          ],
+          "raw_position_radius": 7.389874476458654,
+          "raw_prediction_time": 241.0,
+          "raw_velocity": [
+            0.0,
+            0.0
+          ],
+          "raw_velocity_radius": 0.030300999993333407,
+          "reacquisition_samples": 0,
+          "recovery_anchor_pose": [
+            0.02870608167650776,
+            0.9739787904378641
+          ],
+          "recovery_anchor_source": "predicted",
+          "recovery_anchor_time": 2.0,
+          "requires_new_goal": true,
+          "route": null,
+          "route_planning": null
+        }
+      }
+    ],
+    "scope": "Offline counterfactual bookkeeping after a native RGB/command prefix; NOT 240 seconds of native or physical observation.",
+    "status": "complete",
+    "stop_calls": 1,
+    "synthetic_frames": 4800
+  },
+  "report_sha256": "8a7daa757ff030dd97909fd96a4ed37adbdc2ac8ffe8b91b9cd39989765bafed"
+}

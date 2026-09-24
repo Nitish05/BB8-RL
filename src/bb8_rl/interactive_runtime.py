@@ -97,6 +97,7 @@ class ControlSession:
             raise ValueError("Heartbeat timeout must be finite and positive")
         self.policy, self.memory, self.stop = policy, memory, stop
         self.map_version, self.calibration_version = map_version, calibration_version
+        self.registered_versions = (map_version, calibration_version)
         self.demo_goal = _point(demo_goal)
         self.generation = int(generation)
         self.last_motion_generation = self.generation - 1
@@ -112,6 +113,23 @@ class ControlSession:
         self.parameters = parameters or OcclusionParameters()
         self.dynamics = CommandDynamics()
         self.idle_belief = CommandBelief(self.dynamics, self.parameters)
+        from .braking_prediction import ConditionalBrakingRegion
+
+        self.braking_prediction = ConditionalBrakingRegion(
+            braking_acceleration_lower=self.dynamics.braking_acceleration_lower,
+            response_time_upper=self.dynamics.response_time_upper,
+            max_interval_seconds=self.parameters.max_interval,
+        )
+        self.capture_time = None
+        self.localization_lost = False
+        self.localization_status = "uninitialized"
+        self.recovery_belief = None
+        self.recovery_started = None
+        self.last_seen_pose = self.last_seen_time = self.last_seen_radius = None
+        self.recovery_anchor_pose = self.recovery_anchor_time = None
+        self.recovery_anchor_source = None
+        self._loss_reference = None
+        self.requires_new_goal = False
         self.controller = None
         self.goal = self.pending_goal = None
         self.phase, self.message, self.status = (
@@ -246,6 +264,12 @@ class ControlSession:
                 record["outcome"] = "stale_generation"
                 continue
             self.generation = self.last_motion_generation = generation
+            if self.localization_lost:
+                record.update(
+                    outcome="rejected",
+                    reason="Localization lost; wait for visual reacquisition or reset.",
+                )
+                continue
             self.cancel("braking", "Braking before accepting a new target.")
             try:
                 goal = (
@@ -265,6 +289,7 @@ class ControlSession:
                 record["reason"] = self.message
                 continue
             self.pending_goal = self.goal = goal
+            self.requires_new_goal = False
             record["outcome"] = "accepted_pending_visible_route"
         return records
 
@@ -282,21 +307,231 @@ class ControlSession:
             return False
         return True
 
-    def decide(self, timestamp, measurement, applied, intervals, *, wall_time=None):
-        from .occluded_control import CommandBelief, OccludedController
+    def _lose_localization(self, reason):
+        if not self.localization_lost:
+            # Freeze the last usable observer prediction before cancellation.
+            # The robot may have moved during the permitted short blind period;
+            # a gate around its older visual fix would reject that known motion.
+            # This reference never follows the expanding expired prediction.
+            reference = self._loss_reference
+            if reference is not None:
+                anchor, when, source = reference
+                self.recovery_anchor_pose = anchor.copy()
+                self.recovery_anchor_time, self.recovery_anchor_source = when, source
+            self.cancel(
+                "localization_lost",
+                f"Localization lost: {reason} Goal cancelled; waiting for fresh visual observations.",
+            )
+            self.localization_lost = True
+            self.requires_new_goal = True
+            self.recovery_belief = None
+            self.recovery_started = None
+        self.localization_status = "lost"
 
-        self.heartbeat_guard(wall_time)
+    def _remember_visual(self, belief):
+        self.last_seen_pose = belief.xy.copy()
+        self.last_seen_time = belief.last_visual_time
+        self.last_seen_radius = belief.position_radius
+
+    def _capture_valid(self, timestamp, measurement, applied, intervals):
+        from .occluded_control import CommandBelief
+
         try:
+            if (
+                not np.isfinite(timestamp)
+                or timestamp < 0
+                or (self.map_version, self.calibration_version)
+                != self.registered_versions
+                or not np.isfinite(measurement.timestamp)
+                or abs(measurement.timestamp - timestamp) > 1e-9
+                or (
+                    measurement.status == "missing"
+                    and (
+                        measurement.xy is not None or measurement.covariance is not None
+                    )
+                )
+            ):
+                return False
+            checker = CommandBelief(self.dynamics, self.parameters)
+            checker.timestamp = self.capture_time
+            checker._validated_intervals(timestamp, applied, intervals)
+            return True
+        except (AttributeError, TypeError, ValueError):
+            return False
+
+    def _try_reacquire(self, timestamp, measurement, applied, intervals, valid):
+        """Fresh bounded RGB initialization; never resume the cancelled target."""
+        from .occluded_control import CommandBelief
+
+        p = self.parameters
+        try:
+            eligible = (
+                valid
+                and measurement.status == "visible"
+                and np.array_equal(applied, [0, 0])
+                and all(np.array_equal(item["command"], [0, 0]) for item in intervals)
+                and np.asarray(measurement.xy).shape == (2,)
+                and np.isfinite(measurement.xy).all()
+                and self.recovery_anchor_pose is not None
+                and np.linalg.norm(measurement.xy - self.recovery_anchor_pose)
+                <= p.max_reacquisition_distance
+                and self.memory.segment_free(
+                    measurement.xy, measurement.xy, p.robot_radius
+                )
+            )
+        except (TypeError, ValueError, KeyError, RuntimeError):
+            eligible = False
+        if not eligible:
+            self.recovery_belief = self.recovery_started = None
+            self.localization_status = "lost"
+            if self.phase == "reacquiring":
+                self.phase = self.status = "localization_lost"
+                self.message = "Localization lost; waiting for consistent fresh visual observations."
+            return False
+        if self.recovery_belief is None:
+            self.recovery_belief = CommandBelief(self.dynamics, p)
+            self.recovery_started = timestamp
+        candidate = self.recovery_belief
+        try:
+            candidate.predict(
+                timestamp,
+                applied,
+                applied_command_intervals=[]
+                if candidate.timestamp is None
+                else intervals,
+            )
+            accepted = candidate.observe(measurement)
+        except (TypeError, ValueError):
+            accepted = False
+        if not accepted:
+            self.recovery_belief = self.recovery_started = None
+            self.localization_status = "lost"
+            self.phase = self.status = "localization_lost"
+            self.message = (
+                "Localization lost; returning observation did not pass validation."
+            )
+            return False
+        self.localization_status = "reacquiring"
+        self.phase = self.status = "reacquiring"
+        self.message = "Reacquiring position from fresh RGB observations. Motion remains cancelled."
+        if (
+            candidate.samples >= p.minimum_visual_samples
+            and timestamp - self.recovery_started >= p.max_frame_age
+            and candidate.velocity_radius <= p.max_initial_velocity_radius
+        ):
+            self.idle_belief = candidate
+            self._remember_visual(candidate)
+            self.localization_lost = False
+            self.localization_status = "measured"
+            self.recovery_belief = self.recovery_started = None
+            self.phase = self.status = "stopped"
+            self.message = "Position reacquired; choose a new destination to resume."
+            return True
+        return False
+
+    def decide(self, timestamp, measurement, applied, intervals, *, wall_time=None):
+        from .occluded_control import OccludedController
+
+        # Capture only the PREVIOUS accepted state, before this frame can change
+        # the observer. A returning detection must not nominate its own gate.
+        b, p = self.idle_belief, self.parameters
+        if (
+            b.xy is not None
+            and b.timestamp == self.capture_time
+            and b.last_visual_time is not None
+            and b.timestamp - b.last_visual_time <= p.max_occlusion_seconds + 1e-9
+            and np.isfinite(b.position_radius)
+            and b.position_radius <= p.max_position_radius
+        ):
+            self._loss_reference = (
+                b.xy.copy(),
+                b.timestamp,
+                "measured" if b.measured else "predicted",
+            )
+        if (self.map_version, self.calibration_version) != self.registered_versions:
+            self._loss_reference = None
+            self.recovery_anchor_pose = self.recovery_anchor_time = None
+            self.recovery_anchor_source = None
+        self.heartbeat_guard(wall_time)
+        inputs_valid = self._capture_valid(timestamp, measurement, applied, intervals)
+        prior_visual_times = [self.last_seen_time]
+        if self.controller is not None:
+            prior_visual_times.append(self.controller.belief.last_visual_time)
+        if np.isfinite(timestamp) and any(
+            seen is not None
+            and timestamp - seen > self.parameters.max_occlusion_seconds + 1e-9
+            for seen in prior_visual_times
+        ):
+            # A returning frame cannot erase the loss interval before the old
+            # goal has been cancelled and a fresh recovery track is initialized.
+            self._lose_localization(
+                "the interval since the last visual fix exceeded the prediction limit."
+            )
+        previous = self.idle_belief
+        snapshot = {
+            "timestamp": previous.timestamp,
+            "xy": previous.xy,
+            "velocity": previous.velocity,
+            "position_radius": previous.position_radius,
+            "velocity_radius": previous.velocity_radius,
+            "map_version": self.map_version,
+            "calibration_version": self.calibration_version,
+        }
+        pending_nonzero = self.controller is not None and any(
+            entry[1] > timestamp and entry[2] > 0
+            for entry in self.controller.issued_history
+        )
+        self.braking_prediction.update(
+            previous_snapshot=snapshot,
+            timestamp=timestamp,
+            acknowledged_intervals=intervals,
+            endpoint_command=applied,
+            map_version=self.map_version,
+            calibration_version=self.calibration_version,
+            pending_nonzero=pending_nonzero,
+            inputs_valid=inputs_valid,
+        )
+        if np.isfinite(timestamp) and (
+            self.capture_time is None or timestamp > self.capture_time
+        ):
+            self.capture_time = float(timestamp)
+        try:
+            if not inputs_valid:
+                raise ValueError("Invalid capture or command timeline")
             history = [] if self.idle_belief.timestamp is None else intervals
             self.idle_belief.predict(
                 timestamp, applied, applied_command_intervals=history
             )
             self.idle_belief.observe(measurement)
         except (TypeError, ValueError):
-            # A monitoring reset is never an accepted motion initialization.
-            self.idle_belief = CommandBelief(self.dynamics, self.parameters)
-            self.idle_belief.predict(timestamp, applied, applied_command_intervals=[])
-            self.idle_belief.observe(measurement)
+            self.idle_belief.measured = False
+            if self.last_seen_time is not None:
+                self._lose_localization("invalid prediction input.")
+        belief = self.idle_belief
+        if self.last_seen_time is not None and (
+            not inputs_valid
+            or timestamp - belief.last_visual_time
+            > self.parameters.max_occlusion_seconds + 1e-9
+            or belief.position_radius > self.parameters.max_position_radius
+        ):
+            self._lose_localization("the visual prediction has expired.")
+        if self.localization_lost:
+            self._try_reacquire(
+                timestamp, measurement, applied, intervals, inputs_valid
+            )
+            return np.zeros(2, np.float32)
+        if not inputs_valid:
+            self.braking_prediction.invalidate("invalid_capture")
+            return np.zeros(2, np.float32)
+        self.localization_status = (
+            "measured"
+            if belief.measured
+            else "predicted"
+            if belief.xy is not None
+            else "uninitialized"
+        )
+        if belief.measured:
+            self._remember_visual(belief)
         fresh_visible = (
             measurement.status == "visible"
             and abs(measurement.timestamp - timestamp) <= 1e-9
@@ -369,6 +604,18 @@ class ControlSession:
             calibration_version=self.calibration_version,
             now=timestamp,
         )
+        active_belief = self.controller.belief
+        if active_belief.last_visual_time is not None and (
+            timestamp - active_belief.last_visual_time
+            > self.parameters.max_occlusion_seconds + 1e-9
+            or active_belief.position_radius > self.parameters.max_position_radius
+        ):
+            self._lose_localization(
+                "the active controller's position envelope expired."
+            )
+            return np.zeros(2, np.float32)
+        if np.any(action != 0):
+            self.braking_prediction.invalidate("new_nonzero_request")
         self.status = self.controller.status
         self.message = {
             "route_not_certified": (
@@ -403,17 +650,62 @@ class ControlSession:
         return action
 
     def state(self):
-        belief = (
-            self.controller.belief if self.controller is not None else self.idle_belief
+        # The persistent observer owns published pose, source and last-seen
+        # metadata. A newly created controller can accept different innovations
+        # during its separate velocity warm-up; its belief stays in diagnostics
+        # and its stricter expiry is still enforced in decide().
+        belief = self.idle_belief
+        valid = (
+            self.localization_status in ("measured", "predicted")
+            and not self.localization_lost
+            and belief.xy is not None
+            and belief.timestamp == self.capture_time
+            and belief.last_visual_time is not None
+            and self.capture_time - belief.last_visual_time
+            <= self.parameters.max_occlusion_seconds + 1e-9
+            and np.isfinite(belief.position_radius)
+            and belief.position_radius <= self.parameters.max_position_radius
         )
         return {
             "route_planning": self.route_planning_details,
             "phase": self.phase,
-            "pose": None if belief.xy is None else belief.xy.tolist(),
-            "position_radius": float(belief.position_radius)
+            "localization_status": self.localization_status,
+            "localization_valid": valid,
+            "requires_new_goal": self.requires_new_goal,
+            "last_seen_pose": None
+            if self.last_seen_pose is None
+            else self.last_seen_pose.tolist(),
+            "last_seen_age_s": None
+            if self.last_seen_time is None
+            else max(0.0, self.capture_time - self.last_seen_time),
+            "last_seen_radius_m": self.last_seen_radius,
+            "recovery_anchor_pose": None
+            if self.recovery_anchor_pose is None
+            else self.recovery_anchor_pose.tolist(),
+            "recovery_anchor_time": self.recovery_anchor_time,
+            "recovery_anchor_source": self.recovery_anchor_source,
+            "reacquisition_samples": 0
+            if self.recovery_belief is None
+            else self.recovery_belief.samples,
+            "raw_position_radius": float(belief.position_radius)
             if np.isfinite(belief.position_radius)
             else None,
-            "pose_source": "measured"
+            "raw_prediction_time": belief.timestamp,
+            "raw_pose": None if belief.xy is None else belief.xy.tolist(),
+            "raw_velocity": None
+            if belief.velocity is None
+            else belief.velocity.tolist(),
+            "raw_velocity_radius": float(belief.velocity_radius)
+            if np.isfinite(belief.velocity_radius)
+            else None,
+            "braking_prediction": self.braking_prediction.record,
+            "pose": None if not valid or belief.xy is None else belief.xy.tolist(),
+            "position_radius": float(belief.position_radius)
+            if valid and np.isfinite(belief.position_radius)
+            else None,
+            "pose_source": "unavailable"
+            if not valid
+            else "measured"
             if belief.measured
             else "predicted"
             if belief.xy is not None
@@ -528,6 +820,7 @@ def worker_main(config, command_queue, event_queue, stop_event):
         )
         sources = [
             Path(__file__),
+            Path(__file__).with_name("braking_prediction.py"),
             Path(__file__).with_name("occluded_control.py"),
             Path(__file__).with_name("control_profiles.py"),
             Path(__file__).with_name("camera.py"),
@@ -784,6 +1077,29 @@ def worker_main(config, command_queue, event_queue, stop_event):
                 "action": action,
                 "controller_status": session.status,
                 "route_planning": session.route_planning_details,
+                "localization": {
+                    key: state[key]
+                    for key in (
+                        "localization_status",
+                        "localization_valid",
+                        "pose",
+                        "position_radius",
+                        "last_seen_pose",
+                        "last_seen_age_s",
+                        "last_seen_radius_m",
+                        "recovery_anchor_pose",
+                        "recovery_anchor_time",
+                        "recovery_anchor_source",
+                        "raw_position_radius",
+                        "raw_prediction_time",
+                        "raw_pose",
+                        "raw_velocity",
+                        "raw_velocity_radius",
+                        "reacquisition_samples",
+                        "requires_new_goal",
+                        "braking_prediction",
+                    )
+                },
                 "controller_arrived": bool(
                     session.controller is not None and session.controller.arrived
                 ),

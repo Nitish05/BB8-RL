@@ -106,6 +106,8 @@ class Supervisor:
             "goal": None,
             "route": [],
             "position_radius": None,
+            "localization_status": "uninitialized",
+            "localization_valid": False,
             "controller_status": "initializing",
             "source_ids": [],
             "views": {},
@@ -197,6 +199,23 @@ class Supervisor:
                     source_ids=[],
                     views={},
                     frame_seq=0,
+                    localization_status="uninitialized",
+                    localization_valid=False,
+                    position_radius=None,
+                    last_seen_pose=None,
+                    last_seen_age_s=None,
+                    last_seen_radius_m=None,
+                    recovery_anchor_pose=None,
+                    recovery_anchor_time=None,
+                    recovery_anchor_source=None,
+                    raw_position_radius=None,
+                    raw_prediction_time=None,
+                    raw_pose=None,
+                    raw_velocity=None,
+                    raw_velocity_radius=None,
+                    reacquisition_samples=0,
+                    braking_prediction=None,
+                    requires_new_goal=False,
                 )
                 self.frames.clear()
                 self.restart_requested = True
@@ -211,6 +230,12 @@ class Supervisor:
             ):
                 raise ValueError(
                     "Wait for the camera estimate before choosing a destination"
+                )
+            if self.state.get("localization_valid") is False or self.state.get(
+                "localization_status"
+            ) in ("lost", "reacquiring"):
+                raise ValueError(
+                    "Localization lost; wait for visual reacquisition or reset."
                 )
             goal_cell(self.map, data["x"], data["y"])
             self.generation += 1

@@ -1,0 +1,1723 @@
+{
+  "schema": "bb8.m713-family-summary.v1",
+  "scope": "First complete native family; retained development failure, not the final result.",
+  "cases": 9,
+  "intended_passes": 8,
+  "collision_cases": 0,
+  "boundary_cases": 0,
+  "premature_arrival_captures": 0,
+  "startup_attempt_before_family": {
+    "exitcode": 0,
+    "errors": [
+      "Full"
+    ],
+    "last_state": null,
+    "issued_scheduled_commands": [],
+    "recovery_first_observed_s": null,
+    "wall_seconds": 11.670035874994937
+  },
+  "runs": [
+    {
+      "schema": "bb8.localization-recovery-audit.v1",
+      "case": "demo-mode1",
+      "scope": "Frozen M7.13 intent; separate from prior twelve-case family.",
+      "intended_pass": true,
+      "original_audit_pass": true,
+      "provenance": {
+        "protocol_hash": true,
+        "case_matches_protocol": true,
+        "harness_snapshot_hash": true,
+        "baseline_bundle_hash": true,
+        "map_unchanged": true,
+        "memory_unchanged": true,
+        "worker_completed": true,
+        "worker_config_matches_case": true,
+        "profile_frozen": true,
+        "mode_frozen": true,
+        "dropout_and_invalidation_frozen": true,
+        "images_complete": true,
+        "all_frozen_assets_unchanged": true,
+        "only_authored_demo_endpoints_changed": true
+      },
+      "valid_arrivals": 1,
+      "arrival_events": [
+        {
+          "time": 5.1000000000000005,
+          "goal": [
+            0.24745992166936648,
+            1.3086782891625797
+          ],
+          "distance_m": 0.03316278135806092,
+          "speed_m_s": 0.003557679509175608,
+          "true_dwell_at_capture_s": 0.7450000000000001,
+          "visible_fresh_rgb": true,
+          "passed": true
+        }
+      ],
+      "collision": false,
+      "boundary": false,
+      "premature_arrivals": 0,
+      "localization": {
+        "pass": true,
+        "failures": [],
+        "checks": {
+          "minimum_window_complete": true,
+          "valid_visible_arrival": true
+        },
+        "status_counts": {
+          "measured": 87,
+          "predicted": 16
+        },
+        "conditional_braking": {
+          "contract_pass": true,
+          "failures": [],
+          "capture_samples": 34,
+          "distinct_anchors": 2,
+          "position_covered_samples": 34,
+          "speed_covered_samples": 34,
+          "position_coverage_pass": true,
+          "speed_coverage_pass": true,
+          "maximum_position_excess_m": 0.0,
+          "maximum_speed_excess_m_s": 0.0,
+          "tail_assumptions": [
+            "Advisory only: never a position observation, stationarity proof, or motion/arrival authority.",
+            "Dissipative zero-target braking; no sustained acceleration mismatch or external push.",
+            "Initial position and speed enclosures are engineering assumptions, not calibrated confidence.",
+            "Zero acknowledged and pending targets; unchanged map/calibration context."
+          ],
+          "scope": "Post-decision capture-time scoring; assumption-dependent advisory only. No motion authority."
+        },
+        "conditional_coverage_is_separate": true
+      },
+      "frames": 103,
+      "physics_samples": 1030,
+      "recorded_simulation_s": 5.15,
+      "input_sha256": {
+        "case.json": "a546b8397151b67e9b644aa407e17528825ce99afe7bb270ddbfc430e2f44a42",
+        "protocol.json": "257d79888e889245d468790300efe0c4c3b79db5470ae627006737277709c02a",
+        "harness.json": "c57e538f834cfc6984cded4872bbeccd17f27a861f27f71f2cf2f18d0f401406",
+        "worker/manifest.json": "9b8f2771bcf2430fa901d5677e684a07ddfe344345de0952f5e4ea2647920bb8",
+        "worker/rows.jsonl": "79e992f86b46823a881af348c151a0b093079e9c21a98750eb2e6c03b57407f1",
+        "worker/commands.jsonl": "4502c40bbe7d55b5d42aa45715fce5ef2d8d42983eda2f97cf1c756003b8cd11",
+        "benchmark-source.py": "9ae7d79c1ea9737bf67563645af00ab129168d5c68187fcc26b173d13b26b8ed"
+      },
+      "original_audit_sha256": "e25b03b3812b4ae07d9417d16b6439f23a21fcbaf93ecda52aa573fafd3f4f6c",
+      "scorer_source_sha256": "9ae7d79c1ea9737bf67563645af00ab129168d5c68187fcc26b173d13b26b8ed"
+    },
+    {
+      "schema": "bb8.localization-recovery-audit.v1",
+      "case": "reported-mode1",
+      "scope": "Frozen M7.13 intent; separate from prior twelve-case family.",
+      "intended_pass": true,
+      "original_audit_pass": true,
+      "provenance": {
+        "protocol_hash": true,
+        "case_matches_protocol": true,
+        "harness_snapshot_hash": true,
+        "baseline_bundle_hash": true,
+        "map_unchanged": true,
+        "memory_unchanged": true,
+        "worker_completed": true,
+        "worker_config_matches_case": true,
+        "profile_frozen": true,
+        "mode_frozen": true,
+        "dropout_and_invalidation_frozen": true,
+        "images_complete": true,
+        "all_frozen_assets_unchanged": true,
+        "only_authored_demo_endpoints_changed": true
+      },
+      "valid_arrivals": 1,
+      "arrival_events": [
+        {
+          "time": 29.75,
+          "goal": [
+            1.3554502369668247,
+            -0.8446386255924172
+          ],
+          "distance_m": 0.031310427517291045,
+          "speed_m_s": 0.0036230172860085732,
+          "true_dwell_at_capture_s": 0.7399999999999984,
+          "visible_fresh_rgb": true,
+          "passed": true
+        }
+      ],
+      "collision": false,
+      "boundary": false,
+      "premature_arrivals": 0,
+      "localization": {
+        "pass": true,
+        "failures": [],
+        "checks": {
+          "minimum_window_complete": true,
+          "valid_visible_arrival": true
+        },
+        "status_counts": {
+          "measured": 596
+        },
+        "conditional_braking": {
+          "contract_pass": true,
+          "failures": [],
+          "capture_samples": 35,
+          "distinct_anchors": 3,
+          "position_covered_samples": 35,
+          "speed_covered_samples": 35,
+          "position_coverage_pass": true,
+          "speed_coverage_pass": true,
+          "maximum_position_excess_m": 0.0,
+          "maximum_speed_excess_m_s": 0.0,
+          "tail_assumptions": [
+            "Advisory only: never a position observation, stationarity proof, or motion/arrival authority.",
+            "Dissipative zero-target braking; no sustained acceleration mismatch or external push.",
+            "Initial position and speed enclosures are engineering assumptions, not calibrated confidence.",
+            "Zero acknowledged and pending targets; unchanged map/calibration context."
+          ],
+          "scope": "Post-decision capture-time scoring; assumption-dependent advisory only. No motion authority."
+        },
+        "conditional_coverage_is_separate": true
+      },
+      "frames": 596,
+      "physics_samples": 5960,
+      "recorded_simulation_s": 29.8,
+      "input_sha256": {
+        "case.json": "7740d14f2f4c4b246df328448f5a1c7f64f87f1420bdf65b56a9c000a2dee4f4",
+        "protocol.json": "257d79888e889245d468790300efe0c4c3b79db5470ae627006737277709c02a",
+        "harness.json": "56bfc332f3d56b77e03cdd237fee4b0642e541ae9a30986d7f214e2ef4ab3329",
+        "worker/manifest.json": "16fffe0f4516febdf34a5ab2af9867ba39577ff2715fb45311fd2310ee0b3fb6",
+        "worker/rows.jsonl": "4de16c1c4a35be06f843f3cb3628073abbb4128da8e36e50d9cbf590d2ac196e",
+        "worker/commands.jsonl": "7a22a51725bd4961bad56fd3fadabf91e7bd14a85f02658bd92d142287d298af",
+        "benchmark-source.py": "9ae7d79c1ea9737bf67563645af00ab129168d5c68187fcc26b173d13b26b8ed"
+      },
+      "original_audit_sha256": "06f508b08b66aca640e1affe629a951a5631cfbd8598d968619dcbd6e6bc2899",
+      "scorer_source_sha256": "9ae7d79c1ea9737bf67563645af00ab129168d5c68187fcc26b173d13b26b8ed"
+    },
+    {
+      "schema": "bb8.localization-recovery-audit.v1",
+      "case": "reported-mode2",
+      "scope": "Frozen M7.13 intent; separate from prior twelve-case family.",
+      "intended_pass": true,
+      "original_audit_pass": true,
+      "provenance": {
+        "protocol_hash": true,
+        "case_matches_protocol": true,
+        "harness_snapshot_hash": true,
+        "baseline_bundle_hash": true,
+        "map_unchanged": true,
+        "memory_unchanged": true,
+        "worker_completed": true,
+        "worker_config_matches_case": true,
+        "profile_frozen": true,
+        "mode_frozen": true,
+        "dropout_and_invalidation_frozen": true,
+        "images_complete": true,
+        "all_frozen_assets_unchanged": true,
+        "only_authored_demo_endpoints_changed": true
+      },
+      "valid_arrivals": 1,
+      "arrival_events": [
+        {
+          "time": 29.85,
+          "goal": [
+            1.3554502369668247,
+            -0.8446386255924172
+          ],
+          "distance_m": 0.029349721751870145,
+          "speed_m_s": 0.0035026888744415802,
+          "true_dwell_at_capture_s": 0.75,
+          "visible_fresh_rgb": true,
+          "passed": true
+        }
+      ],
+      "collision": false,
+      "boundary": false,
+      "premature_arrivals": 0,
+      "localization": {
+        "pass": true,
+        "failures": [],
+        "checks": {
+          "minimum_window_complete": true,
+          "valid_visible_arrival": true
+        },
+        "status_counts": {
+          "measured": 598
+        },
+        "conditional_braking": {
+          "contract_pass": true,
+          "failures": [],
+          "capture_samples": 35,
+          "distinct_anchors": 3,
+          "position_covered_samples": 35,
+          "speed_covered_samples": 35,
+          "position_coverage_pass": true,
+          "speed_coverage_pass": true,
+          "maximum_position_excess_m": 0.0,
+          "maximum_speed_excess_m_s": 0.0,
+          "tail_assumptions": [
+            "Advisory only: never a position observation, stationarity proof, or motion/arrival authority.",
+            "Dissipative zero-target braking; no sustained acceleration mismatch or external push.",
+            "Initial position and speed enclosures are engineering assumptions, not calibrated confidence.",
+            "Zero acknowledged and pending targets; unchanged map/calibration context."
+          ],
+          "scope": "Post-decision capture-time scoring; assumption-dependent advisory only. No motion authority."
+        },
+        "conditional_coverage_is_separate": true
+      },
+      "frames": 598,
+      "physics_samples": 5980,
+      "recorded_simulation_s": 29.900000000000002,
+      "input_sha256": {
+        "case.json": "ef6c6a273e3f183f9e7422086e8f22dabd5087192f868ffa195dee19c64897cd",
+        "protocol.json": "257d79888e889245d468790300efe0c4c3b79db5470ae627006737277709c02a",
+        "harness.json": "3f0568d5d885300216a06803af429958b106ca4d1a42330249dc3f1739e82d71",
+        "worker/manifest.json": "b8f0527bbd34f840748604afb1eaf7d2b2f37958980a4c3ae80019110c01cd06",
+        "worker/rows.jsonl": "17ac4c8265c7e47a4827c02a37d0f2b1d7c86589c137e8918769bb033aca9800",
+        "worker/commands.jsonl": "63b47d6a5ee9e77ebe5295b94f5e1a5bc8f4ccc343bfe3d1ab4e45db4c1c0be9",
+        "benchmark-source.py": "9ae7d79c1ea9737bf67563645af00ab129168d5c68187fcc26b173d13b26b8ed"
+      },
+      "original_audit_sha256": "4f8e600550da3d6f4b701a45b6fd35dc1c67bd07a2e7cfe655103631766fa009",
+      "scorer_source_sha256": "9ae7d79c1ea9737bf67563645af00ab129168d5c68187fcc26b173d13b26b8ed"
+    },
+    {
+      "schema": "bb8.localization-recovery-audit.v1",
+      "case": "reported-mode3",
+      "scope": "Frozen M7.13 intent; separate from prior twelve-case family.",
+      "intended_pass": true,
+      "original_audit_pass": true,
+      "provenance": {
+        "protocol_hash": true,
+        "case_matches_protocol": true,
+        "harness_snapshot_hash": true,
+        "baseline_bundle_hash": true,
+        "map_unchanged": true,
+        "memory_unchanged": true,
+        "worker_completed": true,
+        "worker_config_matches_case": true,
+        "profile_frozen": true,
+        "mode_frozen": true,
+        "dropout_and_invalidation_frozen": true,
+        "images_complete": true,
+        "all_frozen_assets_unchanged": true,
+        "only_authored_demo_endpoints_changed": true
+      },
+      "valid_arrivals": 1,
+      "arrival_events": [
+        {
+          "time": 30.150000000000002,
+          "goal": [
+            1.3554502369668247,
+            -0.8446386255924172
+          ],
+          "distance_m": 0.029318939771303332,
+          "speed_m_s": 0.003252736926330539,
+          "true_dwell_at_capture_s": 0.7750000000000021,
+          "visible_fresh_rgb": true,
+          "passed": true
+        }
+      ],
+      "collision": false,
+      "boundary": false,
+      "premature_arrivals": 0,
+      "localization": {
+        "pass": true,
+        "failures": [],
+        "checks": {
+          "minimum_window_complete": true,
+          "valid_visible_arrival": true
+        },
+        "status_counts": {
+          "measured": 604
+        },
+        "conditional_braking": {
+          "contract_pass": true,
+          "failures": [],
+          "capture_samples": 35,
+          "distinct_anchors": 2,
+          "position_covered_samples": 35,
+          "speed_covered_samples": 35,
+          "position_coverage_pass": true,
+          "speed_coverage_pass": true,
+          "maximum_position_excess_m": 0.0,
+          "maximum_speed_excess_m_s": 0.0,
+          "tail_assumptions": [
+            "Advisory only: never a position observation, stationarity proof, or motion/arrival authority.",
+            "Dissipative zero-target braking; no sustained acceleration mismatch or external push.",
+            "Initial position and speed enclosures are engineering assumptions, not calibrated confidence.",
+            "Zero acknowledged and pending targets; unchanged map/calibration context."
+          ],
+          "scope": "Post-decision capture-time scoring; assumption-dependent advisory only. No motion authority."
+        },
+        "conditional_coverage_is_separate": true
+      },
+      "frames": 604,
+      "physics_samples": 6040,
+      "recorded_simulation_s": 30.2,
+      "input_sha256": {
+        "case.json": "76d6da49ad858cc0f259653c00741f5b26557cca82c926d11382f59604d18432",
+        "protocol.json": "257d79888e889245d468790300efe0c4c3b79db5470ae627006737277709c02a",
+        "harness.json": "685363c164dcd5ada18ccd5bec8d1b5b0b1d15fe723d828b54ff2018d63016b3",
+        "worker/manifest.json": "489983bd174c64e4b50fbae0c36e88310d83393af408c4fb294aa0c33ee90349",
+        "worker/rows.jsonl": "fbebcdb76032f3916d8fa068578f7ef26a177ffdf1219d1a5f10bc31381c520b",
+        "worker/commands.jsonl": "56be941c31ca026f911f9da896b119f4a02979e466a6f347817525b549480078",
+        "benchmark-source.py": "9ae7d79c1ea9737bf67563645af00ab129168d5c68187fcc26b173d13b26b8ed"
+      },
+      "original_audit_sha256": "6775dba188be00755bd62dc49180a79879a619c41dce1775b85c28610ba61847",
+      "scorer_source_sha256": "9ae7d79c1ea9737bf67563645af00ab129168d5c68187fcc26b173d13b26b8ed"
+    },
+    {
+      "schema": "bb8.localization-recovery-audit.v1",
+      "case": "stop-mode1",
+      "scope": "Frozen M7.13 intent; separate from prior twelve-case family.",
+      "intended_pass": true,
+      "original_audit_pass": true,
+      "provenance": {
+        "protocol_hash": true,
+        "case_matches_protocol": true,
+        "harness_snapshot_hash": true,
+        "baseline_bundle_hash": true,
+        "map_unchanged": true,
+        "memory_unchanged": true,
+        "worker_completed": true,
+        "worker_config_matches_case": true,
+        "profile_frozen": true,
+        "mode_frozen": true,
+        "dropout_and_invalidation_frozen": true,
+        "images_complete": true,
+        "all_frozen_assets_unchanged": true,
+        "only_authored_demo_endpoints_changed": true
+      },
+      "valid_arrivals": 0,
+      "arrival_events": [],
+      "collision": false,
+      "boundary": false,
+      "premature_arrivals": 0,
+      "localization": {
+        "pass": true,
+        "failures": [],
+        "checks": {
+          "minimum_window_complete": true,
+          "motion_before_event": true,
+          "zero_after_event": true,
+          "stopped_physically": true
+        },
+        "status_counts": {
+          "measured": 63,
+          "predicted": 20,
+          "lost": 27
+        },
+        "conditional_braking": {
+          "contract_pass": true,
+          "failures": [],
+          "capture_samples": 87,
+          "distinct_anchors": 2,
+          "position_covered_samples": 87,
+          "speed_covered_samples": 87,
+          "position_coverage_pass": true,
+          "speed_coverage_pass": true,
+          "maximum_position_excess_m": 0.0,
+          "maximum_speed_excess_m_s": 0.0,
+          "tail_assumptions": [
+            "Advisory only: never a position observation, stationarity proof, or motion/arrival authority.",
+            "Dissipative zero-target braking; no sustained acceleration mismatch or external push.",
+            "Initial position and speed enclosures are engineering assumptions, not calibrated confidence.",
+            "Zero acknowledged and pending targets; unchanged map/calibration context."
+          ],
+          "scope": "Post-decision capture-time scoring; assumption-dependent advisory only. No motion authority."
+        },
+        "conditional_coverage_is_separate": true
+      },
+      "frames": 110,
+      "physics_samples": 1100,
+      "recorded_simulation_s": 5.5,
+      "input_sha256": {
+        "case.json": "341d97bbd321e68a7de4ca8f9e168fab692e62729a641e41ae0d03a13749a52c",
+        "protocol.json": "257d79888e889245d468790300efe0c4c3b79db5470ae627006737277709c02a",
+        "harness.json": "f22668872da88ae3a0280e56c01b5861df1f4f48167e14866b05a6843af3f8a2",
+        "worker/manifest.json": "e4e67f37bb8292bd43c1c94774bbb09c3237f963289a03dfb4ba4ffd64994b02",
+        "worker/rows.jsonl": "f3bb532c2378bc8f506e00e3459f72dca31ee6bc6f14b63b4d6633e3b6facded",
+        "worker/commands.jsonl": "ddf6d887842af82bcbdf7a910501e14dafd4f26cfd03273f6af54aa8e8ef5615",
+        "benchmark-source.py": "9ae7d79c1ea9737bf67563645af00ab129168d5c68187fcc26b173d13b26b8ed"
+      },
+      "original_audit_sha256": "ac9f9acdb5457e84189c6055122f195f487e632ef231111eebf1bc0cc12f3c72",
+      "scorer_source_sha256": "9ae7d79c1ea9737bf67563645af00ab129168d5c68187fcc26b173d13b26b8ed"
+    },
+    {
+      "schema": "bb8.localization-recovery-audit.v1",
+      "case": "invalid-memory-mode2",
+      "scope": "Frozen M7.13 intent; separate from prior twelve-case family.",
+      "intended_pass": true,
+      "original_audit_pass": true,
+      "provenance": {
+        "protocol_hash": true,
+        "case_matches_protocol": true,
+        "harness_snapshot_hash": true,
+        "baseline_bundle_hash": true,
+        "map_unchanged": true,
+        "memory_unchanged": true,
+        "worker_completed": true,
+        "worker_config_matches_case": true,
+        "profile_frozen": true,
+        "mode_frozen": true,
+        "dropout_and_invalidation_frozen": true,
+        "images_complete": true,
+        "all_frozen_assets_unchanged": true,
+        "only_authored_demo_endpoints_changed": true
+      },
+      "valid_arrivals": 0,
+      "arrival_events": [],
+      "collision": false,
+      "boundary": false,
+      "premature_arrivals": 0,
+      "localization": {
+        "pass": true,
+        "failures": [],
+        "checks": {
+          "minimum_window_complete": true,
+          "motion_before_event": true,
+          "zero_after_event": true,
+          "stopped_physically": true
+        },
+        "status_counts": {
+          "measured": 40,
+          "lost": 70
+        },
+        "conditional_braking": {
+          "contract_pass": true,
+          "failures": [],
+          "capture_samples": 19,
+          "distinct_anchors": 1,
+          "position_covered_samples": 19,
+          "speed_covered_samples": 19,
+          "position_coverage_pass": true,
+          "speed_coverage_pass": true,
+          "maximum_position_excess_m": 0.0,
+          "maximum_speed_excess_m_s": 0.0,
+          "tail_assumptions": [
+            "Advisory only: never a position observation, stationarity proof, or motion/arrival authority.",
+            "Dissipative zero-target braking; no sustained acceleration mismatch or external push.",
+            "Initial position and speed enclosures are engineering assumptions, not calibrated confidence.",
+            "Zero acknowledged and pending targets; unchanged map/calibration context."
+          ],
+          "scope": "Post-decision capture-time scoring; assumption-dependent advisory only. No motion authority."
+        },
+        "conditional_coverage_is_separate": true
+      },
+      "frames": 110,
+      "physics_samples": 1100,
+      "recorded_simulation_s": 5.5,
+      "input_sha256": {
+        "case.json": "5a8313cf54c411853277620bfc0b65bcbc7d6364876471ed9992405575028949",
+        "protocol.json": "257d79888e889245d468790300efe0c4c3b79db5470ae627006737277709c02a",
+        "harness.json": "74c6cac8b462946a019d50a8d293c850b5dadeceba754d46b92c92b25f6d5015",
+        "worker/manifest.json": "0dd68471097a50b98cd74968a203fc783d7afb7b1b51d9b9c8e0fcd57e2a6e57",
+        "worker/rows.jsonl": "7dc98fd4b8ad666bfd42ba4c6cc4e7b7c706dba94b06bcf5ddad3f0b60c8f9f2",
+        "worker/commands.jsonl": "780bef6710a0cc3e4991f2332b7c20a608e0db566ee4cc09db73089cd163d499",
+        "benchmark-source.py": "9ae7d79c1ea9737bf67563645af00ab129168d5c68187fcc26b173d13b26b8ed"
+      },
+      "original_audit_sha256": "d2807de78671a3789134acc37b158df4010591d7f7928dba11a8ae7565e8d303",
+      "scorer_source_sha256": "9ae7d79c1ea9737bf67563645af00ab129168d5c68187fcc26b173d13b26b8ed"
+    },
+    {
+      "schema": "bb8.localization-recovery-audit.v1",
+      "case": "short-all-lost-mode2",
+      "scope": "Frozen M7.13 intent; separate from prior twelve-case family.",
+      "intended_pass": true,
+      "original_audit_pass": true,
+      "provenance": {
+        "protocol_hash": true,
+        "case_matches_protocol": true,
+        "harness_snapshot_hash": true,
+        "baseline_bundle_hash": true,
+        "map_unchanged": true,
+        "memory_unchanged": true,
+        "worker_completed": true,
+        "worker_config_matches_case": true,
+        "profile_frozen": true,
+        "mode_frozen": true,
+        "dropout_and_invalidation_frozen": true,
+        "images_complete": true,
+        "all_frozen_assets_unchanged": true,
+        "only_authored_demo_endpoints_changed": true
+      },
+      "valid_arrivals": 1,
+      "arrival_events": [
+        {
+          "time": 5.1000000000000005,
+          "goal": [
+            0.24745992166936648,
+            1.3086782891625797
+          ],
+          "distance_m": 0.029051413818997368,
+          "speed_m_s": 0.003385725255834827,
+          "true_dwell_at_capture_s": 0.7600000000000007,
+          "visible_fresh_rgb": true,
+          "passed": true
+        }
+      ],
+      "collision": false,
+      "boundary": false,
+      "premature_arrivals": 0,
+      "localization": {
+        "pass": true,
+        "failures": [],
+        "checks": {
+          "minimum_window_complete": true,
+          "valid_visible_arrival": true,
+          "motion_before_event": true,
+          "full_dropout_observed": true,
+          "all_views_missing": true,
+          "short_loss_retains_goal": true
+        },
+        "status_counts": {
+          "measured": 97,
+          "predicted": 6
+        },
+        "conditional_braking": {
+          "contract_pass": true,
+          "failures": [],
+          "capture_samples": 35,
+          "distinct_anchors": 2,
+          "position_covered_samples": 35,
+          "speed_covered_samples": 35,
+          "position_coverage_pass": true,
+          "speed_coverage_pass": true,
+          "maximum_position_excess_m": 0.0,
+          "maximum_speed_excess_m_s": 0.0,
+          "tail_assumptions": [
+            "Advisory only: never a position observation, stationarity proof, or motion/arrival authority.",
+            "Dissipative zero-target braking; no sustained acceleration mismatch or external push.",
+            "Initial position and speed enclosures are engineering assumptions, not calibrated confidence.",
+            "Zero acknowledged and pending targets; unchanged map/calibration context."
+          ],
+          "scope": "Post-decision capture-time scoring; assumption-dependent advisory only. No motion authority."
+        },
+        "conditional_coverage_is_separate": true
+      },
+      "frames": 103,
+      "physics_samples": 1030,
+      "recorded_simulation_s": 5.15,
+      "input_sha256": {
+        "case.json": "ed6485ce11c76df7b974faa9db847e36d75b74d175859a700357afe7134e3044",
+        "protocol.json": "257d79888e889245d468790300efe0c4c3b79db5470ae627006737277709c02a",
+        "harness.json": "1472a4b7936c4650130ab8181f48715740fe7eae8700010f6d9b9caab8f098b6",
+        "worker/manifest.json": "15c697bdeaf77d52ccac3908e291856e7ea4e7d2fc7913734cc8e4e412cde411",
+        "worker/rows.jsonl": "75cb3daba5f149cf31532b37a6c4896a0c80ea2c2995ad04e911b399adda754d",
+        "worker/commands.jsonl": "15f4fbfe37bffa2b8121e647e9403f481373c6ff4b9176374314badd12f5d4f0",
+        "benchmark-source.py": "9ae7d79c1ea9737bf67563645af00ab129168d5c68187fcc26b173d13b26b8ed"
+      },
+      "original_audit_sha256": "75af07d99b1a0f22f7b66f8cd0bfbd1fc248b890633ac02aab7438e4ad18fe05",
+      "scorer_source_sha256": "9ae7d79c1ea9737bf67563645af00ab129168d5c68187fcc26b173d13b26b8ed"
+    },
+    {
+      "schema": "bb8.localization-recovery-audit.v1",
+      "case": "long-all-lost-mode2",
+      "scope": "Frozen M7.13 intent; separate from prior twelve-case family.",
+      "intended_pass": false,
+      "original_audit_pass": true,
+      "provenance": {
+        "protocol_hash": true,
+        "case_matches_protocol": true,
+        "harness_snapshot_hash": true,
+        "baseline_bundle_hash": true,
+        "map_unchanged": true,
+        "memory_unchanged": true,
+        "worker_completed": true,
+        "worker_config_matches_case": true,
+        "profile_frozen": true,
+        "mode_frozen": true,
+        "dropout_and_invalidation_frozen": true,
+        "images_complete": true,
+        "all_frozen_assets_unchanged": true,
+        "only_authored_demo_endpoints_changed": true
+      },
+      "valid_arrivals": 0,
+      "arrival_events": [],
+      "collision": false,
+      "boundary": false,
+      "premature_arrivals": 0,
+      "localization": {
+        "pass": false,
+        "failures": [],
+        "checks": {
+          "minimum_window_complete": true,
+          "valid_visible_arrival": false,
+          "motion_before_event": true,
+          "full_dropout_observed": true,
+          "all_views_missing": true,
+          "actual_loss": true,
+          "loss_goal_rejected": true,
+          "rejected_goal_in_loss_window": true,
+          "multiple_recovery_frames": false,
+          "stable_recovery": false,
+          "old_goal_never_resumed": true,
+          "explicit_new_generation": false,
+          "recovery_hold_complete": false,
+          "arrival_after_explicit_goal": false
+        },
+        "status_counts": {
+          "measured": 40,
+          "predicted": 20,
+          "lost": 540
+        },
+        "conditional_braking": {
+          "contract_pass": true,
+          "failures": [],
+          "capture_samples": 558,
+          "distinct_anchors": 2,
+          "position_covered_samples": 558,
+          "speed_covered_samples": 295,
+          "position_coverage_pass": true,
+          "speed_coverage_pass": false,
+          "maximum_position_excess_m": 0.0,
+          "maximum_speed_excess_m_s": 3.576697348164145e-09,
+          "tail_assumptions": [
+            "Advisory only: never a position observation, stationarity proof, or motion/arrival authority.",
+            "Dissipative zero-target braking; no sustained acceleration mismatch or external push.",
+            "Initial position and speed enclosures are engineering assumptions, not calibrated confidence.",
+            "Zero acknowledged and pending targets; unchanged map/calibration context."
+          ],
+          "scope": "Post-decision capture-time scoring; assumption-dependent advisory only. No motion authority."
+        },
+        "conditional_coverage_is_separate": true
+      },
+      "frames": 600,
+      "physics_samples": 6000,
+      "recorded_simulation_s": 30.0,
+      "input_sha256": {
+        "case.json": "97ec34e72363a4c84fdc2fe60a48083c6d5800ebd939788597afc5cc8e8ce067",
+        "protocol.json": "257d79888e889245d468790300efe0c4c3b79db5470ae627006737277709c02a",
+        "harness.json": "48c74e191753c9b3afb5075eb7e6529ffe1e64d436a06dca8d14a86e13bb53e5",
+        "worker/manifest.json": "16b8742293da662e7f2087e1ae3fd24e0b4a5337d0708963bbfc9a49411afc06",
+        "worker/rows.jsonl": "f7e645ee98b64e27777d083527b9323035528473d96ef71fe1e3f46fc69a4cb2",
+        "worker/commands.jsonl": "9c9c57310872914ec448fb776993bd134f18893b49c7017bc0c5595b6b20fe5e",
+        "benchmark-source.py": "9ae7d79c1ea9737bf67563645af00ab129168d5c68187fcc26b173d13b26b8ed"
+      },
+      "original_audit_sha256": "129febe999387160b513e47e4543e329dd7f57ef3e2522bce62490086b114733",
+      "scorer_source_sha256": "9ae7d79c1ea9737bf67563645af00ab129168d5c68187fcc26b173d13b26b8ed"
+    },
+    {
+      "schema": "bb8.localization-recovery-audit.v1",
+      "case": "one-camera-loss-mode2",
+      "scope": "Frozen M7.13 intent; separate from prior twelve-case family.",
+      "intended_pass": true,
+      "original_audit_pass": true,
+      "provenance": {
+        "protocol_hash": true,
+        "case_matches_protocol": true,
+        "harness_snapshot_hash": true,
+        "baseline_bundle_hash": true,
+        "map_unchanged": true,
+        "memory_unchanged": true,
+        "worker_completed": true,
+        "worker_config_matches_case": true,
+        "profile_frozen": true,
+        "mode_frozen": true,
+        "dropout_and_invalidation_frozen": true,
+        "images_complete": true,
+        "all_frozen_assets_unchanged": true,
+        "only_authored_demo_endpoints_changed": true
+      },
+      "valid_arrivals": 79,
+      "arrival_events": [
+        {
+          "time": 5.1000000000000005,
+          "goal": [
+            0.24745992166936648,
+            1.3086782891625797
+          ],
+          "distance_m": 0.027624017604813634,
+          "speed_m_s": 0.0033644077676231966,
+          "true_dwell_at_capture_s": 0.7650000000000006,
+          "visible_fresh_rgb": true,
+          "passed": true
+        },
+        {
+          "time": 5.15,
+          "goal": [
+            0.24745992166936648,
+            1.3086782891625797
+          ],
+          "distance_m": 0.02747117843960574,
+          "speed_m_s": 0.002914025080010935,
+          "true_dwell_at_capture_s": 0.8150000000000004,
+          "visible_fresh_rgb": true,
+          "passed": true
+        },
+        {
+          "time": 5.2,
+          "goal": [
+            0.24745992166936648,
+            1.3086782891625797
+          ],
+          "distance_m": 0.027338811329125984,
+          "speed_m_s": 0.0025239359376237943,
+          "true_dwell_at_capture_s": 0.8650000000000002,
+          "visible_fresh_rgb": true,
+          "passed": true
+        },
+        {
+          "time": 5.25,
+          "goal": [
+            0.24745992166936648,
+            1.3086782891625797
+          ],
+          "distance_m": 0.027224159895477083,
+          "speed_m_s": 0.002186065863053154,
+          "true_dwell_at_capture_s": 0.915,
+          "visible_fresh_rgb": true,
+          "passed": true
+        },
+        {
+          "time": 5.3,
+          "goal": [
+            0.24745992166936648,
+            1.3086782891625797
+          ],
+          "distance_m": 0.027124713646010646,
+          "speed_m_s": 0.0018934242092888997,
+          "true_dwell_at_capture_s": 0.9649999999999999,
+          "visible_fresh_rgb": true,
+          "passed": true
+        },
+        {
+          "time": 5.3500000000000005,
+          "goal": [
+            0.24745992166936648,
+            1.3086782891625797
+          ],
+          "distance_m": 0.027038739058615285,
+          "speed_m_s": 0.0016399578245938106,
+          "true_dwell_at_capture_s": 1.0150000000000006,
+          "visible_fresh_rgb": true,
+          "passed": true
+        },
+        {
+          "time": 5.4,
+          "goal": [
+            0.24745992166936648,
+            1.3086782891625797
+          ],
+          "distance_m": 0.02696432204967461,
+          "speed_m_s": 0.001420422375599334,
+          "true_dwell_at_capture_s": 1.0650000000000004,
+          "visible_fresh_rgb": true,
+          "passed": true
+        },
+        {
+          "time": 5.45,
+          "goal": [
+            0.24745992166936648,
+            1.3086782891625797
+          ],
+          "distance_m": 0.026899903718081458,
+          "speed_m_s": 0.001230275142865504,
+          "true_dwell_at_capture_s": 1.1150000000000002,
+          "visible_fresh_rgb": true,
+          "passed": true
+        },
+        {
+          "time": 5.5,
+          "goal": [
+            0.24745992166936648,
+            1.3086782891625797
+          ],
+          "distance_m": 0.026844014916902574,
+          "speed_m_s": 0.0010655803399833123,
+          "true_dwell_at_capture_s": 1.165,
+          "visible_fresh_rgb": true,
+          "passed": true
+        },
+        {
+          "time": 5.55,
+          "goal": [
+            0.24745992166936648,
+            1.3086782891625797
+          ],
+          "distance_m": 0.026795408353467956,
+          "speed_m_s": 0.0009229350780846196,
+          "true_dwell_at_capture_s": 1.2149999999999999,
+          "visible_fresh_rgb": true,
+          "passed": true
+        },
+        {
+          "time": 5.6000000000000005,
+          "goal": [
+            0.24745992166936648,
+            1.3086782891625797
+          ],
+          "distance_m": 0.026753540108353777,
+          "speed_m_s": 0.0007993859430233172,
+          "true_dwell_at_capture_s": 1.2650000000000006,
+          "visible_fresh_rgb": true,
+          "passed": true
+        },
+        {
+          "time": 5.65,
+          "goal": [
+            0.24745992166936648,
+            1.3086782891625797
+          ],
+          "distance_m": 0.026717235960574626,
+          "speed_m_s": 0.0006923730220887423,
+          "true_dwell_at_capture_s": 1.3150000000000004,
+          "visible_fresh_rgb": true,
+          "passed": true
+        },
+        {
+          "time": 5.7,
+          "goal": [
+            0.24745992166936648,
+            1.3086782891625797
+          ],
+          "distance_m": 0.02668592511334397,
+          "speed_m_s": 0.0005996884134399875,
+          "true_dwell_at_capture_s": 1.3650000000000002,
+          "visible_fresh_rgb": true,
+          "passed": true
+        },
+        {
+          "time": 5.75,
+          "goal": [
+            0.24745992166936648,
+            1.3086782891625797
+          ],
+          "distance_m": 0.026658682771757584,
+          "speed_m_s": 0.0005194093120952268,
+          "true_dwell_at_capture_s": 1.415,
+          "visible_fresh_rgb": true,
+          "passed": true
+        },
+        {
+          "time": 5.8,
+          "goal": [
+            0.24745992166936648,
+            1.3086782891625797
+          ],
+          "distance_m": 0.02663506027840315,
+          "speed_m_s": 0.00044987826480997524,
+          "true_dwell_at_capture_s": 1.4649999999999999,
+          "visible_fresh_rgb": true,
+          "passed": true
+        },
+        {
+          "time": 5.8500000000000005,
+          "goal": [
+            0.24745992166936648,
+            1.3086782891625797
+          ],
+          "distance_m": 0.026614620190276796,
+          "speed_m_s": 0.0003896546072210818,
+          "true_dwell_at_capture_s": 1.5150000000000006,
+          "visible_fresh_rgb": true,
+          "passed": true
+        },
+        {
+          "time": 5.9,
+          "goal": [
+            0.24745992166936648,
+            1.3086782891625797
+          ],
+          "distance_m": 0.026596952786143428,
+          "speed_m_s": 0.0003374940428162928,
+          "true_dwell_at_capture_s": 1.5650000000000004,
+          "visible_fresh_rgb": true,
+          "passed": true
+        },
+        {
+          "time": 5.95,
+          "goal": [
+            0.24745992166936648,
+            1.3086782891625797
+          ],
+          "distance_m": 0.02658165944565574,
+          "speed_m_s": 0.0002923144654802387,
+          "true_dwell_at_capture_s": 1.6150000000000002,
+          "visible_fresh_rgb": true,
+          "passed": true
+        },
+        {
+          "time": 6.0,
+          "goal": [
+            0.24745992166936648,
+            1.3086782891625797
+          ],
+          "distance_m": 0.026568441290375163,
+          "speed_m_s": 0.00025318407134017817,
+          "true_dwell_at_capture_s": 1.665,
+          "visible_fresh_rgb": true,
+          "passed": true
+        },
+        {
+          "time": 6.05,
+          "goal": [
+            0.24745992166936648,
+            1.3086782891625797
+          ],
+          "distance_m": 0.026556910828128687,
+          "speed_m_s": 0.0002192905653225152,
+          "true_dwell_at_capture_s": 1.7149999999999999,
+          "visible_fresh_rgb": true,
+          "passed": true
+        },
+        {
+          "time": 6.1000000000000005,
+          "goal": [
+            0.24745992166936648,
+            1.3086782891625797
+          ],
+          "distance_m": 0.02654691861569003,
+          "speed_m_s": 0.00018993513593002,
+          "true_dwell_at_capture_s": 1.7650000000000006,
+          "visible_fresh_rgb": true,
+          "passed": true
+        },
+        {
+          "time": 6.15,
+          "goal": [
+            0.24745992166936648,
+            1.3086782891625797
+          ],
+          "distance_m": 0.026538298693403573,
+          "speed_m_s": 0.00016450790390019608,
+          "true_dwell_at_capture_s": 1.8150000000000004,
+          "visible_fresh_rgb": true,
+          "passed": true
+        },
+        {
+          "time": 6.2,
+          "goal": [
+            0.24745992166936648,
+            1.3086782891625797
+          ],
+          "distance_m": 0.026530907188217774,
+          "speed_m_s": 0.00014248251814989927,
+          "true_dwell_at_capture_s": 1.8650000000000002,
+          "visible_fresh_rgb": true,
+          "passed": true
+        },
+        {
+          "time": 6.25,
+          "goal": [
+            0.24745992166936648,
+            1.3086782891625797
+          ],
+          "distance_m": 0.026524389766803394,
+          "speed_m_s": 0.00012340693489801643,
+          "true_dwell_at_capture_s": 1.915,
+          "visible_fresh_rgb": true,
+          "passed": true
+        },
+        {
+          "time": 6.3,
+          "goal": [
+            0.24745992166936648,
+            1.3086782891625797
+          ],
+          "distance_m": 0.026518824068311905,
+          "speed_m_s": 0.00010688634694213285,
+          "true_dwell_at_capture_s": 1.9649999999999999,
+          "visible_fresh_rgb": true,
+          "passed": true
+        },
+        {
+          "time": 6.3500000000000005,
+          "goal": [
+            0.24745992166936648,
+            1.3086782891625797
+          ],
+          "distance_m": 0.02651396100896799,
+          "speed_m_s": 9.257799931978822e-05,
+          "true_dwell_at_capture_s": 2.0150000000000006,
+          "visible_fresh_rgb": true,
+          "passed": true
+        },
+        {
+          "time": 6.4,
+          "goal": [
+            0.24745992166936648,
+            1.3086782891625797
+          ],
+          "distance_m": 0.026509778525505453,
+          "speed_m_s": 8.018405326740908e-05,
+          "true_dwell_at_capture_s": 2.0650000000000004,
+          "visible_fresh_rgb": true,
+          "passed": true
+        },
+        {
+          "time": 6.45,
+          "goal": [
+            0.24745992166936648,
+            1.3086782891625797
+          ],
+          "distance_m": 0.026505933318790316,
+          "speed_m_s": 6.94499601985571e-05,
+          "true_dwell_at_capture_s": 2.115,
+          "visible_fresh_rgb": true,
+          "passed": true
+        },
+        {
+          "time": 6.5,
+          "goal": [
+            0.24745992166936648,
+            1.3086782891625797
+          ],
+          "distance_m": 0.026503078891454233,
+          "speed_m_s": 6.0153490213815455e-05,
+          "true_dwell_at_capture_s": 2.165,
+          "visible_fresh_rgb": true,
+          "passed": true
+        },
+        {
+          "time": 6.55,
+          "goal": [
+            0.24745992166936648,
+            1.3086782891625797
+          ],
+          "distance_m": 0.026500307144720372,
+          "speed_m_s": 5.210137611912975e-05,
+          "true_dwell_at_capture_s": 2.215,
+          "visible_fresh_rgb": true,
+          "passed": true
+        },
+        {
+          "time": 6.6000000000000005,
+          "goal": [
+            0.24745992166936648,
+            1.3086782891625797
+          ],
+          "distance_m": 0.026497612555838546,
+          "speed_m_s": 4.5127390456851696e-05,
+          "true_dwell_at_capture_s": 2.2650000000000006,
+          "visible_fresh_rgb": true,
+          "passed": true
+        },
+        {
+          "time": 6.65,
+          "goal": [
+            0.24745992166936648,
+            1.3086782891625797
+          ],
+          "distance_m": 0.026495648648793623,
+          "speed_m_s": 3.9086847932331843e-05,
+          "true_dwell_at_capture_s": 2.3150000000000004,
+          "visible_fresh_rgb": true,
+          "passed": true
+        },
+        {
+          "time": 6.7,
+          "goal": [
+            0.24745992166936648,
+            1.3086782891625797
+          ],
+          "distance_m": 0.02649418288857136,
+          "speed_m_s": 3.3853939965314056e-05,
+          "true_dwell_at_capture_s": 2.365,
+          "visible_fresh_rgb": true,
+          "passed": true
+        },
+        {
+          "time": 6.75,
+          "goal": [
+            0.24745992166936648,
+            1.3086782891625797
+          ],
+          "distance_m": 0.02649276121578897,
+          "speed_m_s": 2.932052460746192e-05,
+          "true_dwell_at_capture_s": 2.415,
+          "visible_fresh_rgb": true,
+          "passed": true
+        },
+        {
+          "time": 6.8,
+          "goal": [
+            0.24745992166936648,
+            1.3086782891625797
+          ],
+          "distance_m": 0.02649137811624146,
+          "speed_m_s": 2.5393628411369184e-05,
+          "true_dwell_at_capture_s": 2.465,
+          "visible_fresh_rgb": true,
+          "passed": true
+        },
+        {
+          "time": 6.8500000000000005,
+          "goal": [
+            0.24745992166936648,
+            1.3086782891625797
+          ],
+          "distance_m": 0.026490044606688485,
+          "speed_m_s": 2.1994721104200145e-05,
+          "true_dwell_at_capture_s": 2.5150000000000006,
+          "visible_fresh_rgb": true,
+          "passed": true
+        },
+        {
+          "time": 6.9,
+          "goal": [
+            0.24745992166936648,
+            1.3086782891625797
+          ],
+          "distance_m": 0.02648872762687693,
+          "speed_m_s": 1.905056150640048e-05,
+          "true_dwell_at_capture_s": 2.5650000000000004,
+          "visible_fresh_rgb": true,
+          "passed": true
+        },
+        {
+          "time": 6.95,
+          "goal": [
+            0.24745992166936648,
+            1.3086782891625797
+          ],
+          "distance_m": 0.026487454724992046,
+          "speed_m_s": 1.649781295865792e-05,
+          "true_dwell_at_capture_s": 2.615,
+          "visible_fresh_rgb": true,
+          "passed": true
+        },
+        {
+          "time": 7.0,
+          "goal": [
+            0.24745992166936648,
+            1.3086782891625797
+          ],
+          "distance_m": 0.026486181823131567,
+          "speed_m_s": 1.428784524153108e-05,
+          "true_dwell_at_capture_s": 2.665,
+          "visible_fresh_rgb": true,
+          "passed": true
+        },
+        {
+          "time": 7.05,
+          "goal": [
+            0.24745992166936648,
+            1.3086782891625797
+          ],
+          "distance_m": 0.026486060610411446,
+          "speed_m_s": 1.2374676672661306e-05,
+          "true_dwell_at_capture_s": 2.715,
+          "visible_fresh_rgb": true,
+          "passed": true
+        },
+        {
+          "time": 7.1000000000000005,
+          "goal": [
+            0.24745992166936648,
+            1.3086782891625797
+          ],
+          "distance_m": 0.026485950420069206,
+          "speed_m_s": 1.071560549526741e-05,
+          "true_dwell_at_capture_s": 2.7650000000000006,
+          "visible_fresh_rgb": true,
+          "passed": true
+        },
+        {
+          "time": 7.15,
+          "goal": [
+            0.24745992166936648,
+            1.3086782891625797
+          ],
+          "distance_m": 0.026485840232621943,
+          "speed_m_s": 9.281858314570115e-06,
+          "true_dwell_at_capture_s": 2.8150000000000004,
+          "visible_fresh_rgb": true,
+          "passed": true
+        },
+        {
+          "time": 7.2,
+          "goal": [
+            0.24745992166936648,
+            1.3086782891625797
+          ],
+          "distance_m": 0.026485746575567973,
+          "speed_m_s": 8.038492042891384e-06,
+          "true_dwell_at_capture_s": 2.865,
+          "visible_fresh_rgb": true,
+          "passed": true
+        },
+        {
+          "time": 7.25,
+          "goal": [
+            0.24745992166936648,
+            1.3086782891625797
+          ],
+          "distance_m": 0.02648569148416036,
+          "speed_m_s": 6.9606162788830495e-06,
+          "true_dwell_at_capture_s": 2.915,
+          "visible_fresh_rgb": true,
+          "passed": true
+        },
+        {
+          "time": 7.3,
+          "goal": [
+            0.24745992166936648,
+            1.3086782891625797
+          ],
+          "distance_m": 0.026485636393476515,
+          "speed_m_s": 6.027814769957436e-06,
+          "true_dwell_at_capture_s": 2.965,
+          "visible_fresh_rgb": true,
+          "passed": true
+        },
+        {
+          "time": 7.3500000000000005,
+          "goal": [
+            0.24745992166936648,
+            1.3086782891625797
+          ],
+          "distance_m": 0.02648558130351644,
+          "speed_m_s": 5.220296940120922e-06,
+          "true_dwell_at_capture_s": 3.0150000000000006,
+          "visible_fresh_rgb": true,
+          "passed": true
+        },
+        {
+          "time": 7.4,
+          "goal": [
+            0.24745992166936648,
+            1.3086782891625797
+          ],
+          "distance_m": 0.026485526214280138,
+          "speed_m_s": 4.520372343465294e-06,
+          "true_dwell_at_capture_s": 3.0650000000000004,
+          "visible_fresh_rgb": true,
+          "passed": true
+        },
+        {
+          "time": 7.45,
+          "goal": [
+            0.24745992166936648,
+            1.3086782891625797
+          ],
+          "distance_m": 0.026485471125767615,
+          "speed_m_s": 3.914595997750285e-06,
+          "true_dwell_at_capture_s": 3.115,
+          "visible_fresh_rgb": true,
+          "passed": true
+        },
+        {
+          "time": 7.5,
+          "goal": [
+            0.24745992166936648,
+            1.3086782891625797
+          ],
+          "distance_m": 0.026485416037978878,
+          "speed_m_s": 3.391235715658873e-06,
+          "true_dwell_at_capture_s": 3.165,
+          "visible_fresh_rgb": true,
+          "passed": true
+        },
+        {
+          "time": 7.55,
+          "goal": [
+            0.24745992166936648,
+            1.3086782891625797
+          ],
+          "distance_m": 0.026485360950913927,
+          "speed_m_s": 2.9359133267519776e-06,
+          "true_dwell_at_capture_s": 3.215,
+          "visible_fresh_rgb": true,
+          "passed": true
+        },
+        {
+          "time": 7.6000000000000005,
+          "goal": [
+            0.24745992166936648,
+            1.3086782891625797
+          ],
+          "distance_m": 0.02648533891629061,
+          "speed_m_s": 2.542685971731222e-06,
+          "true_dwell_at_capture_s": 3.2650000000000006,
+          "visible_fresh_rgb": true,
+          "passed": true
+        },
+        {
+          "time": 7.65,
+          "goal": [
+            0.24745992166936648,
+            1.3086782891625797
+          ],
+          "distance_m": 0.02648533891629061,
+          "speed_m_s": 2.20099687716059e-06,
+          "true_dwell_at_capture_s": 3.3150000000000004,
+          "visible_fresh_rgb": true,
+          "passed": true
+        },
+        {
+          "time": 7.7,
+          "goal": [
+            0.24745992166936648,
+            1.3086782891625797
+          ],
+          "distance_m": 0.02648533891629061,
+          "speed_m_s": 1.907699095719171e-06,
+          "true_dwell_at_capture_s": 3.365,
+          "visible_fresh_rgb": true,
+          "passed": true
+        },
+        {
+          "time": 7.75,
+          "goal": [
+            0.24745992166936648,
+            1.3086782891625797
+          ],
+          "distance_m": 0.02648533891629061,
+          "speed_m_s": 1.6526672130320456e-06,
+          "true_dwell_at_capture_s": 3.415,
+          "visible_fresh_rgb": true,
+          "passed": true
+        },
+        {
+          "time": 7.8,
+          "goal": [
+            0.24745992166936648,
+            1.3086782891625797
+          ],
+          "distance_m": 0.02648533891629061,
+          "speed_m_s": 1.4294591396624737e-06,
+          "true_dwell_at_capture_s": 3.465,
+          "visible_fresh_rgb": true,
+          "passed": true
+        },
+        {
+          "time": 7.8500000000000005,
+          "goal": [
+            0.24745992166936648,
+            1.3086782891625797
+          ],
+          "distance_m": 0.02648533891629061,
+          "speed_m_s": 1.236606323132948e-06,
+          "true_dwell_at_capture_s": 3.5150000000000006,
+          "visible_fresh_rgb": true,
+          "passed": true
+        },
+        {
+          "time": 7.9,
+          "goal": [
+            0.24745992166936648,
+            1.3086782891625797
+          ],
+          "distance_m": 0.02648533891629061,
+          "speed_m_s": 1.0694594585378557e-06,
+          "true_dwell_at_capture_s": 3.5650000000000004,
+          "visible_fresh_rgb": true,
+          "passed": true
+        },
+        {
+          "time": 7.95,
+          "goal": [
+            0.24745992166936648,
+            1.3086782891625797
+          ],
+          "distance_m": 0.02648533891629061,
+          "speed_m_s": 9.256978535488356e-07,
+          "true_dwell_at_capture_s": 3.615,
+          "visible_fresh_rgb": true,
+          "passed": true
+        },
+        {
+          "time": 8.0,
+          "goal": [
+            0.24745992166936648,
+            1.3086782891625797
+          ],
+          "distance_m": 0.02648533891629061,
+          "speed_m_s": 8.032964296545026e-07,
+          "true_dwell_at_capture_s": 3.665,
+          "visible_fresh_rgb": true,
+          "passed": true
+        },
+        {
+          "time": 8.05,
+          "goal": [
+            0.24745992166936648,
+            1.3086782891625797
+          ],
+          "distance_m": 0.02648533891629061,
+          "speed_m_s": 6.972059029811763e-07,
+          "true_dwell_at_capture_s": 3.7150000000000007,
+          "visible_fresh_rgb": true,
+          "passed": true
+        },
+        {
+          "time": 8.1,
+          "goal": [
+            0.24745992166936648,
+            1.3086782891625797
+          ],
+          "distance_m": 0.02648533891629061,
+          "speed_m_s": 6.059305978610953e-07,
+          "true_dwell_at_capture_s": 3.7649999999999997,
+          "visible_fresh_rgb": true,
+          "passed": true
+        },
+        {
+          "time": 8.15,
+          "goal": [
+            0.24745992166936648,
+            1.3086782891625797
+          ],
+          "distance_m": 0.02648533891629061,
+          "speed_m_s": 5.260812577418484e-07,
+          "true_dwell_at_capture_s": 3.8150000000000004,
+          "visible_fresh_rgb": true,
+          "passed": true
+        },
+        {
+          "time": 8.2,
+          "goal": [
+            0.24745992166936648,
+            1.3086782891625797
+          ],
+          "distance_m": 0.02648533891629061,
+          "speed_m_s": 4.577111800078578e-07,
+          "true_dwell_at_capture_s": 3.8649999999999993,
+          "visible_fresh_rgb": true,
+          "passed": true
+        },
+        {
+          "time": 8.25,
+          "goal": [
+            0.24745992166936648,
+            1.3086782891625797
+          ],
+          "distance_m": 0.02648533891629061,
+          "speed_m_s": 3.973905459739045e-07,
+          "true_dwell_at_capture_s": 3.915,
+          "visible_fresh_rgb": true,
+          "passed": true
+        },
+        {
+          "time": 8.3,
+          "goal": [
+            0.24745992166936648,
+            1.3086782891625797
+          ],
+          "distance_m": 0.02648533891629061,
+          "speed_m_s": 3.46851608026188e-07,
+          "true_dwell_at_capture_s": 3.9650000000000007,
+          "visible_fresh_rgb": true,
+          "passed": true
+        },
+        {
+          "time": 8.35,
+          "goal": [
+            0.24745992166936648,
+            1.3086782891625797
+          ],
+          "distance_m": 0.02648533891629061,
+          "speed_m_s": 3.000807133086661e-07,
+          "true_dwell_at_capture_s": 4.015,
+          "visible_fresh_rgb": true,
+          "passed": true
+        },
+        {
+          "time": 8.4,
+          "goal": [
+            0.24745992166936648,
+            1.3086782891625797
+          ],
+          "distance_m": 0.02648533891629061,
+          "speed_m_s": 2.606572832315793e-07,
+          "true_dwell_at_capture_s": 4.065,
+          "visible_fresh_rgb": true,
+          "passed": true
+        },
+        {
+          "time": 8.45,
+          "goal": [
+            0.24745992166936648,
+            1.3086782891625797
+          ],
+          "distance_m": 0.02648533891629061,
+          "speed_m_s": 2.2532319876104956e-07,
+          "true_dwell_at_capture_s": 4.114999999999999,
+          "visible_fresh_rgb": true,
+          "passed": true
+        },
+        {
+          "time": 8.5,
+          "goal": [
+            0.24745992166936648,
+            1.3086782891625797
+          ],
+          "distance_m": 0.02648533891629061,
+          "speed_m_s": 1.9589580131918003e-07,
+          "true_dwell_at_capture_s": 4.165,
+          "visible_fresh_rgb": true,
+          "passed": true
+        },
+        {
+          "time": 8.55,
+          "goal": [
+            0.24745992166936648,
+            1.3086782891625797
+          ],
+          "distance_m": 0.02648533891629061,
+          "speed_m_s": 1.6958948897294029e-07,
+          "true_dwell_at_capture_s": 4.215000000000001,
+          "visible_fresh_rgb": true,
+          "passed": true
+        },
+        {
+          "time": 8.6,
+          "goal": [
+            0.24745992166936648,
+            1.3086782891625797
+          ],
+          "distance_m": 0.02648533891629061,
+          "speed_m_s": 1.4847543079614507e-07,
+          "true_dwell_at_capture_s": 4.265,
+          "visible_fresh_rgb": true,
+          "passed": true
+        },
+        {
+          "time": 8.65,
+          "goal": [
+            0.24745992166936648,
+            1.3086782891625797
+          ],
+          "distance_m": 0.02648533891629061,
+          "speed_m_s": 1.2869475849453587e-07,
+          "true_dwell_at_capture_s": 4.315,
+          "visible_fresh_rgb": true,
+          "passed": true
+        },
+        {
+          "time": 8.700000000000001,
+          "goal": [
+            0.24745992166936648,
+            1.3086782891625797
+          ],
+          "distance_m": 0.02648533891629061,
+          "speed_m_s": 1.1260135052558954e-07,
+          "true_dwell_at_capture_s": 4.365000000000001,
+          "visible_fresh_rgb": true,
+          "passed": true
+        },
+        {
+          "time": 8.75,
+          "goal": [
+            0.24745992166936648,
+            1.3086782891625797
+          ],
+          "distance_m": 0.02648533891629061,
+          "speed_m_s": 9.791474832249441e-08,
+          "true_dwell_at_capture_s": 4.415,
+          "visible_fresh_rgb": true,
+          "passed": true
+        },
+        {
+          "time": 8.8,
+          "goal": [
+            0.24745992166936648,
+            1.3086782891625797
+          ],
+          "distance_m": 0.02648533891629061,
+          "speed_m_s": 8.423415303810823e-08,
+          "true_dwell_at_capture_s": 4.465000000000001,
+          "visible_fresh_rgb": true,
+          "passed": true
+        },
+        {
+          "time": 8.85,
+          "goal": [
+            0.24745992166936648,
+            1.3086782891625797
+          ],
+          "distance_m": 0.02648533891629061,
+          "speed_m_s": 7.221882892241925e-08,
+          "true_dwell_at_capture_s": 4.515,
+          "visible_fresh_rgb": true,
+          "passed": true
+        },
+        {
+          "time": 8.9,
+          "goal": [
+            0.24745992166936648,
+            1.3086782891625797
+          ],
+          "distance_m": 0.02648533891629061,
+          "speed_m_s": 6.254057709437595e-08,
+          "true_dwell_at_capture_s": 4.565,
+          "visible_fresh_rgb": true,
+          "passed": true
+        },
+        {
+          "time": 8.950000000000001,
+          "goal": [
+            0.24745992166936648,
+            1.3086782891625797
+          ],
+          "distance_m": 0.02648533891629061,
+          "speed_m_s": 5.6015018723174266e-08,
+          "true_dwell_at_capture_s": 4.615000000000001,
+          "visible_fresh_rgb": true,
+          "passed": true
+        },
+        {
+          "time": 9.0,
+          "goal": [
+            0.24745992166936648,
+            1.3086782891625797
+          ],
+          "distance_m": 0.02648533891629061,
+          "speed_m_s": 4.969400522383603e-08,
+          "true_dwell_at_capture_s": 4.665,
+          "visible_fresh_rgb": true,
+          "passed": true
+        }
+      ],
+      "collision": false,
+      "boundary": false,
+      "premature_arrivals": 0,
+      "localization": {
+        "pass": true,
+        "failures": [],
+        "checks": {
+          "minimum_window_complete": true,
+          "valid_visible_arrival": true,
+          "motion_before_event": true,
+          "full_dropout_observed": true,
+          "unaffected_camera_contributes": true,
+          "no_unnecessary_loss": true
+        },
+        "status_counts": {
+          "measured": 181
+        },
+        "conditional_braking": {
+          "contract_pass": true,
+          "failures": [],
+          "capture_samples": 113,
+          "distinct_anchors": 2,
+          "position_covered_samples": 113,
+          "speed_covered_samples": 113,
+          "position_coverage_pass": true,
+          "speed_coverage_pass": true,
+          "maximum_position_excess_m": 0.0,
+          "maximum_speed_excess_m_s": 0.0,
+          "tail_assumptions": [
+            "Advisory only: never a position observation, stationarity proof, or motion/arrival authority.",
+            "Dissipative zero-target braking; no sustained acceleration mismatch or external push.",
+            "Initial position and speed enclosures are engineering assumptions, not calibrated confidence.",
+            "Zero acknowledged and pending targets; unchanged map/calibration context."
+          ],
+          "scope": "Post-decision capture-time scoring; assumption-dependent advisory only. No motion authority."
+        },
+        "conditional_coverage_is_separate": true
+      },
+      "frames": 181,
+      "physics_samples": 1810,
+      "recorded_simulation_s": 9.05,
+      "input_sha256": {
+        "case.json": "900b06ae4fa8a43fda9aa2625958b7357f511324db6a57890c092cdf6b00e7af",
+        "protocol.json": "257d79888e889245d468790300efe0c4c3b79db5470ae627006737277709c02a",
+        "harness.json": "939906c812d16796bcdb719a418b95e02b7cc2001d1da540a6b38e3e31e05870",
+        "worker/manifest.json": "170a8441e9e21f62f0003a95c86b6111578cc848756ffb721e5db7332f8d1d4e",
+        "worker/rows.jsonl": "88e03afc43c1ad61b13fb4e6a8c3529a02414eb49e8e7e67701f311403cd4aae",
+        "worker/commands.jsonl": "16c1843d63f1d7ebfd85918e47a4c3b9e56b697576c4675e0f7e9ae7a6558e24",
+        "benchmark-source.py": "9ae7d79c1ea9737bf67563645af00ab129168d5c68187fcc26b173d13b26b8ed"
+      },
+      "original_audit_sha256": "5653ea99b83ce921d1eb136ce3ac14bdea9e22112430ecfd12c35503b6680f0d",
+      "scorer_source_sha256": "9ae7d79c1ea9737bf67563645af00ab129168d5c68187fcc26b173d13b26b8ed"
+    }
+  ]
+}

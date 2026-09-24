@@ -29,7 +29,8 @@ evidence, route and uncertainty behind each motion request.
 | Camera modes | Choose one, two or three fixed cameras; mode changes reset the episode |
 | Live observation | Inspect native RGB feeds, accepted camera sources and measured/predicted position |
 | Scan memory | Reuse an RGB-derived map with explicit free, occupied and unknown space |
-| Occlusion handling | Predict position from acknowledged commands during brief visual loss; stop when evidence expires |
+| Occlusion handling | Use brief valid predictions; cancel the goal when localization expires and show a historical last-seen marker |
+| Visual recovery | Validate returning observations across multiple frames; stay stopped until a new destination is requested |
 | Stop and Reset | Cancel the goal, clear queued motion, or return to the demo start |
 | Reproducible evidence | Retain commands, model hashes and separate physics records for independent scoring |
 
@@ -38,6 +39,23 @@ that the robot footprint, route and stopping envelope are clear. Rejected goals
 stay rejected; unknown space is never silently treated as traversable.
 Route searches account for the current camera-position uncertainty, and every
 returned segment is independently checked against the saved map.
+
+Localization progresses through **uninitialized, measured, predicted, lost and
+reacquiring** states. A short prediction is usable only within the existing
+**one-second visual-loss limit** and **8 cm position-radius limit**, with valid
+command timing and route/stopping checks. When localization expires, the old
+goal is cancelled, current position and bound become unavailable, and a dashed
+last-seen marker shows elapsed simulation time. Returning visual observations
+must pass consistent multi-frame recovery checks; the robot then stays stopped
+until you choose a new destination.
+
+Recovery is local: observations must remain within **12 cm of the last valid
+prediction, frozen when localization is lost**. This accounts for valid motion
+after the last visual fix; the gray last-seen marker still shows that historical
+visual fix. The recovery reference does not follow the growing expired
+prediction. It is not global relocalization; use **Reset** if the robot is outside
+that gate. See the [localization guide](docs/GETTING_STARTED.md#localization-loss-and-recovery)
+and [M7.13 report](docs/M7_13_RESULTS.md) for behavior, evidence and limitations.
 
 The current scan uses **48 calibrated RGB views** and retains **25.2% more
 observed free cells** than the original bundle. Additional free space requires
@@ -135,6 +153,7 @@ This is a selected development route.*
 
 | Experiment | Recorded result | Scope |
 |---|---|---|
+| Localization loss and recovery | 9/9 fixed native outcomes; recovery after a five-second input outage; zero contacts or premature arrivals | M7.13; unchanged motion limits, explicit new goal after recovery |
 | Improved scan and reported destination | 25.2% more observed free space; one / two / three cameras arrive in 29.75 / 29.85 / 30.15 simulated seconds | M7.12; same room, unchanged control limits |
 | Revised-map regression | 12/12 intended outcomes: 10 valid arrivals and 2 braking controls; zero contacts or premature arrivals | Full second family; all 24 development attempts retained |
 | Interactive one / two / three cameras | All three modes reached the selected goal with independently valid arrival | M7.9; one shared development path |
@@ -176,6 +195,12 @@ requests from resuming after Stop or reset. Browser heartbeat loss cancels motio
 RGB estimates, map evidence and command acknowledgements feed control; simulator
 pose, velocity and renderer masks are isolated to scoring.
 
+The original raw prediction bound remains in diagnostics even after it becomes
+unusable and continues growing. A separate conditional braking region describes
+stopping under declared model assumptions; it cannot authorize motion or arrival,
+replace the current position estimate, or shrink that original bound. A zero
+command is not a measurement that the robot is stationary.
+
 Simulation runs in **lockstep**: physics pauses while perception runs. Fast
 inference measurements do not establish real-time physical robot performance.
 
@@ -184,6 +209,7 @@ inference measurements do not establish real-time physical robot performance.
 | Area | Documentation |
 |---|---|
 | Interactive application | [Plan](docs/M7_9_PLAN.md) · [Validation](docs/M7_9_VALIDATION.md) · [User guide](docs/GETTING_STARTED.md) |
+| Localization loss and recovery | [Plan](docs/M7_13_PLAN.md) · [Research decision](docs/M7_13_RESEARCH.md) · [Implementation and results](docs/M7_13_RESULTS.md) |
 | Scan coverage | [Reconstruction and route results](docs/M7_12_SCAN_COVERAGE.md) · [Plan](docs/M7_12_PLAN.md) |
 | Scan-once navigation | [Occlusion control](docs/M7_8.md) · [Map and registration refinement](docs/M7_7.md) |
 | Multi-camera perception | [Fusion and memory](docs/M7_5.md) · [Fast observation](docs/M7_6.md) |
@@ -207,8 +233,9 @@ work/            Local models, datasets and evidence — ignored by Git
 ```
 
 CI tests pure camera/control/application contracts without native graphics or
-model assets. The local non-native suite passed **516 tests**. Native and actual
-browser acceptance are documented in the [validation report](docs/M7_9_VALIDATION.md).
+model assets. The M7.13 local non-native suite passed **584 tests**. Current native
+and browser acceptance are documented in the [localization report](docs/M7_13_RESULTS.md);
+the earlier application checks remain in the [validation report](docs/M7_9_VALIDATION.md).
 The [route-clearance correction](docs/M7_10_ROUTE_FIX.md) documents the subsequent
 uncertainty-aware planner and arrival-settling regression.
 

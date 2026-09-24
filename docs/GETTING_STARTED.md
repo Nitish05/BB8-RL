@@ -55,6 +55,10 @@ The 48-view scan was prepared once. Launching or switching camera modes reuses i
 See the [scan-coverage report](M7_12_SCAN_COVERAGE.md) for reconstruction evidence
 and limitations.
 
+The M7.13 localization update changes application behavior only. If the pinned
+v2 assets are already installed, update the checkout and restart the app; no new
+scan or model download is needed for this update.
+
 ## Drive with the interface
 
 1. Wait for a current camera estimate. Use **Demo route** for the first run; it
@@ -72,6 +76,53 @@ and limitations.
 Unknown/occupied space stays blocked. The route can stop as uncertainty grows or
 visual evidence becomes stale. The interface distinguishes measured and predicted
 positions; it never displays simulator truth as the navigation estimate.
+
+## Localization loss and recovery
+
+| State | What the interface means | Navigation |
+|---|---|---|
+| Uninitialized | No usable position has been established yet | Wait for camera initialization |
+| Measured | A fresh camera position has passed validation | You may request a destination |
+| Predicted | A brief visual gap is covered by acknowledged-command prediction | Motion may continue only while the existing uncertainty, route and stopping checks pass |
+| Localization lost | The estimate has expired or its timing/evidence is invalid | Motion and the prior goal are cancelled; new goals are disabled |
+| Reacquiring position | Returning observations are being checked across multiple fresh frames | Stay stopped while recovery completes |
+
+A prediction can remain usable for at most **one simulated second** without an
+accepted visual observation and only while its position radius is at most
+**8 cm**. Route or braking checks may stop the robot sooner. One missing camera
+does not mean localization is lost if another compatible camera still supplies
+accepted observations.
+
+When localization is lost, **Position** and **Position bound** show
+**Unavailable**. The dashed gray **Last seen** marker is the last accepted visual
+position, not the robot's current position. Its age is measured in simulation
+seconds. The current-position circle and cancelled route disappear. Map clicks
+and coordinate submission remain disabled; **Stop**, **Reset**, camera-mode
+reset and **Demo route** remain available. Demo resets the episode before
+requesting its prepared route.
+
+Recovery requires a consistent sequence of fresh, finite visual observations
+while motion remains cancelled, together with the existing innovation and
+velocity-initialization checks. One returning detection or a repeated stale
+frame is insufficient. Accepted recovery remains within **12 cm of the last
+valid prediction, frozen when localization is lost**. That reference accounts
+for motion during the permitted short visual gap and stays fixed throughout
+loss; it does not follow the expanding expired prediction. The gray **Last
+seen** marker continues to show the historical visual fix, which may differ
+from the recovery reference. Recovery does not search globally for a displaced
+robot. Use **Reset** if the robot is outside the gate or valid recovery cannot be
+established. After recovery the interface says **Localized · choose a goal**:
+the previous destination stays cancelled until you explicitly choose a new one.
+
+The raw prediction bound remains logged and can continue growing during a long
+loss. Hiding an expired position does not clamp or reduce that bound. Logs also
+contain a separate, finite braking-region diagnostic under declared stopping
+assumptions. It has no authority to permit motion or arrival and is not a
+measurement of rest; commanded zero motion alone cannot establish actual rest.
+
+The [implementation plan](M7_13_PLAN.md), [research decision](M7_13_RESEARCH.md)
+and [results report](M7_13_RESULTS.md) describe the assumptions and validation.
+These are synthetic-room behaviors, not physical-robot guarantees.
 
 ## Launch options and evidence
 
@@ -104,6 +155,10 @@ The application binds only to loopback and never connects to robot hardware.
 | Missing demo assets | Run the explicit asset installer; confirm access to the private release |
 | Port already in use | Choose `--port 8766` or stop the earlier terminal session |
 | No current pose | Wait for initialization; inspect camera status; Reset if the worker reports an error |
+| Localization lost / gray last-seen marker | The marker is historical. Wait for consistent visual recovery, or Reset; goal commands remain disabled |
+| Reacquiring position persists | Recovery needs fresh consistent frames within 12 cm of the last valid prediction frozen at loss; Reset if outside that gate or recovery remains unsuccessful |
+| Localized, but the old route does not resume | Choose a new destination; prolonged loss deliberately cancelled the previous one |
+| Large raw uncertainty in diagnostic logs | An expired predictor is still being recorded honestly; it is not a usable current position or permission to move |
 | Destination rejected | Choose a point with more observed clearance; unknown cells cannot be overridden |
 | Route not certified | The complete route needs room for the robot, margin and current camera uncertainty. The planner searches with that radius; if no route passes, try a more open destination or another camera mode |
 | Motion cancelled after tab closes | Reopen the app and submit a new goal; heartbeat cancellation is intentional |

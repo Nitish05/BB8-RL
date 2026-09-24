@@ -3,6 +3,51 @@
   "use strict";
 
   const finitePoint = (point) => Array.isArray(point) && point.length === 2 && point.every(Number.isFinite);
+  const coordinates = (point) => finitePoint(point) ? `${point[0].toFixed(2)}, ${point[1].toFixed(2)} m` : "—";
+
+  function localizationView(state = {}) {
+    const explicit = Object.prototype.hasOwnProperty.call(state, "localization_status")
+      || Object.prototype.hasOwnProperty.call(state, "localization_valid");
+    const status = explicit ? String(state.localization_status || "uninitialized") : "legacy";
+    const validRadius = Number.isFinite(state.position_radius) && state.position_radius >= 0;
+    const usable = explicit ? state.localization_valid === true && ["measured", "predicted"].includes(status)
+      && finitePoint(state.pose) && validRadius : finitePoint(state.pose);
+    const currentPose = usable ? [...state.pose] : null;
+    const currentRadius = usable && validRadius ? state.position_radius : null;
+    const ghostPose = explicit && !usable && finitePoint(state.last_seen_pose) ? [...state.last_seen_pose] : null;
+    const age = Number.isFinite(state.last_seen_age_s) && state.last_seen_age_s >= 0 ? state.last_seen_age_s : null;
+    const ageText = age === null ? "time unavailable" : `${age.toFixed(1)} s ago (sim)`;
+    const requiresNewGoal = explicit && state.requires_new_goal === true;
+    const label = status === "lost" ? "Localization lost" : status === "reacquiring" ? "Reacquiring position"
+      : usable ? status === "predicted" ? "Predicted position" : "Position available" : "Waiting for position";
+    const message = status === "lost" ? "The current position is unavailable. The last-seen marker is historical. Wait for visual recovery, or reset the episode."
+      : status === "reacquiring" ? "Checking returning camera observations. Navigation stays disabled until position recovery is complete."
+        : requiresNewGoal && usable ? "Position recovered. BB-8 is stopped; choose a new destination to move again."
+          : explicit && !usable ? "Waiting for a usable camera position. Reset or Demo can start a new episode." : null;
+    return {
+      explicit, status, usable, currentPose, currentRadius, ghostPose, requiresNewGoal, label, message,
+      positionText: currentPose ? coordinates(currentPose) : explicit ? "Unavailable" : "Waiting for vision",
+      radiusText: currentRadius === null ? explicit ? "Unavailable" : "—" : `${(currentRadius * 100).toFixed(1)} cm`,
+      lastSeenText: ghostPose ? `${coordinates(ghostPose)} · ${ageText}` : null,
+      ghostLabel: ghostPose ? `Last seen · ${ageText}` : null,
+      showRoute: !explicit || usable && !requiresNewGoal,
+    };
+  }
+
+  function controlAvailability(state = {}, { connected = false, token = null, mapReady = false, pendingCommands = 0 } = {}) {
+    const sessionReady = connected && !!token;
+    const recoveryReady = sessionReady && state.asset_ready === true && pendingCommands === 0;
+    const phaseReady = !/error|failed|loading|starting|initializ|resetting|stopping|closed/.test(String(state.phase || "").toLowerCase());
+    const localization = localizationView(state);
+    return {
+      navigate: recoveryReady && mapReady && phaseReady && (!localization.explicit || localization.usable),
+      stop: sessionReady,
+      reset: recoveryReady,
+      mode: recoveryReady,
+      // The supervisor resets the episode before starting this prepared route.
+      demo: recoveryReady && phaseReady,
+    };
+  }
 
   function plotRect(bounds, width, height, padding = 0) {
     if (!Array.isArray(bounds) || bounds.length !== 4 || !bounds.every(Number.isFinite)
@@ -50,7 +95,7 @@
       && map.cells.every((row) => Array.isArray(row) && row.length === map.width && row.every((value) => value === 0 || value === 1 || value === 2));
   }
 
-  const helpers = Object.freeze({ plotRect, worldToCanvas, canvasToWorld, worldToCell, cellAtWorld, validMap });
+  const helpers = Object.freeze({ plotRect, worldToCanvas, canvasToWorld, worldToCell, cellAtWorld, validMap, localizationView, controlAvailability });
   if (typeof module !== "undefined" && module.exports) module.exports = helpers;
   if (typeof window === "undefined") return;
   window.BB8Map = helpers;
@@ -59,7 +104,6 @@
   const $ = (id) => document.getElementById(id);
   const text = (id, value) => { if ($(id).textContent !== String(value)) $(id).textContent = String(value); };
   const humanize = (value) => String(value || "Waiting").replace(/[_-]+/g, " ").replace(/^\w/, (letter) => letter.toUpperCase()).slice(0, 180);
-  const coordinates = (point) => finitePoint(point) ? `${point[0].toFixed(2)}, ${point[1].toFixed(2)} m` : "—";
   const ids = ["A", "B", "C"];
   const canvas = $("map-canvas");
   const context = canvas.getContext("2d");
@@ -102,20 +146,23 @@
   }
 
   function canNavigate() {
-    const phase = String(state?.phase || "").toLowerCase();
-    return connected && !!token && state?.asset_ready === true && !!map
-      && !/error|failed|loading|starting|initializ|resetting|stopping|closed/.test(phase) && pendingCommands === 0;
+    return availableControls().navigate;
+  }
+
+  function availableControls() {
+    return controlAvailability(state || {}, { connected, token, mapReady: !!map, pendingCommands });
   }
 
   function updateControls() {
-    const ready = canNavigate();
-    ["goal-x", "goal-y", "goal-button", "demo-button"].forEach((id) => { $(id).disabled = !ready; });
-    $("stop-button").disabled = !connected || !token;
+    const controls = availableControls();
+    ["goal-x", "goal-y", "goal-button"].forEach((id) => { $(id).disabled = !controls.navigate; });
+    $("demo-button").disabled = !controls.demo;
+    $("stop-button").disabled = !controls.stop;
     $("stop-button").title = connected ? "Cancel motion and the current route (Escape)" : "Stop is unavailable until the local app reconnects";
-    $("reset-button").disabled = !connected || !token || state?.asset_ready !== true || pendingCommands > 0;
-    modeButtons.forEach((button) => { button.disabled = !connected || !token || state?.asset_ready !== true || pendingCommands > 0; });
-    $("map-stage").dataset.enabled = String(ready);
-    canvas.setAttribute("aria-disabled", String(!ready));
+    $("reset-button").disabled = !controls.reset;
+    modeButtons.forEach((button) => { button.disabled = !controls.mode; });
+    $("map-stage").dataset.enabled = String(controls.navigate);
+    canvas.setAttribute("aria-disabled", String(!controls.navigate));
   }
 
   function setConnection(value) {
@@ -228,6 +275,15 @@
   }
 
   function renderState(previous) {
+    const localization = localizationView(state);
+    const localizationWarning = localization.explicit && !localization.usable;
+    const recovered = localization.usable && localization.requiresNewGoal;
+    if (localization.explicit && (!localization.usable || recovered)) {
+      selectedGoal = null;
+      text("map-selection", recovered ? "Choose a new destination" : "Navigation unavailable");
+    } else if (!selectedGoal) {
+      text("map-selection", finitePoint(state.goal) ? `Requested: ${coordinates(state.goal)}` : "No target selected");
+    }
     const mode = [1, 2, 3].includes(state.mode) ? state.mode : 1;
     if (previous && (previous.mode !== state.mode || (Number.isFinite(state.frame_seq) && state.frame_seq < previous.frame_seq))) frameEpoch += 1;
     modeButtons.forEach((button) => button.setAttribute("aria-pressed", String(Number(button.dataset.mode) === mode)));
@@ -241,26 +297,32 @@
       const status = typeof view === "string" ? view : view?.status;
       camera.status.textContent = humanize(status);
       camera.status.dataset.tone = /visible|tracking|active|ready|ok/i.test(status || "") ? "active" : /occlud|stale|lost|missing/i.test(status || "") ? "warning" : "neutral";
-      camera.source.textContent = sources.includes(id) ? "Contributing to estimate" : status ? "Not in current estimate" : "Awaiting observation";
+      camera.source.textContent = sources.includes(id) ? localizationWarning ? "Observation awaiting recovery" : "Contributing to estimate" : status ? "Not in current estimate" : "Awaiting observation";
       if (index < mode && state.asset_ready !== false) updateFrame(id, typeof state.frame_seq === "object" ? state.frame_seq?.[id] : state.frame_seq);
     });
     text("sim-time-value", Number.isFinite(state.sim_time) ? `${state.sim_time.toFixed(1)} s` : "—");
     text("processing-value", Number.isFinite(state.processing_ms) ? `${Math.round(state.processing_ms)} ms` : "—");
-    text("pose-value", finitePoint(state.pose) ? coordinates(state.pose) : "Waiting for vision");
-    text("radius-value", Number.isFinite(state.position_radius) && state.position_radius >= 0 ? `${(state.position_radius * 100).toFixed(1)} cm` : "—");
-    text("goal-value", finitePoint(state.goal) ? coordinates(state.goal) : "Not set");
-    text("controller-value", humanize(state.controller_status || state.phase));
+    text("pose-label", localization.status === "predicted" && localization.usable ? "Position (predicted)" : "Position");
+    text("pose-value", localization.positionText);
+    text("radius-value", localization.radiusText);
+    $("last-seen-row").hidden = !localization.ghostPose;
+    text("last-seen-value", localization.lastSeenText || "—");
+    $("last-seen-legend").hidden = !localization.ghostPose;
+    $("estimate-title").closest(".estimate-card").dataset.localization = localization.status;
+    text("goal-value", localization.showRoute && finitePoint(state.goal) ? coordinates(state.goal) : "Not set");
+    text("controller-value", localizationWarning ? localization.label : recovered ? "Stopped · choose a goal" : humanize(state.controller_status || state.phase));
+    text("map-instructions-text", localizationWarning ? localization.message : recovered ? "Position recovered. Choose a new destination." : "Click free space to request a destination.");
     const phase = String(state.phase || "waiting");
-    const tone = /error|fail/i.test(phase) ? "error" : /running|navigat|active/i.test(phase) ? "active" : /stop|reset|loading|initializ|missing/i.test(phase) ? "warning" : "neutral";
-    text("phase-text", humanize(phase));
+    const tone = /error|fail/i.test(phase) ? "error" : localizationWarning ? "warning" : recovered ? "neutral" : /running|navigat|active/i.test(phase) ? "active" : /stop|reset|loading|initializ|missing/i.test(phase) ? "warning" : "neutral";
+    text("phase-text", localizationWarning ? localization.label : recovered ? "Localized · choose a goal" : humanize(phase));
     $("phase-chip").dataset.tone = tone;
     $("asset-notice").hidden = state.asset_ready !== false;
     if (state.asset_ready === false) text("asset-message", state.message || "The local app has not loaded its map and policy bundle. Follow the asset setup instructions, then restart it.");
-    if (Date.now() >= toastUntil) {
+    if (localizationWarning || recovered || Date.now() >= toastUntil) {
       const defaultMessage = state.asset_ready === false ? "Navigation becomes available after the demo assets are loaded."
         : finitePoint(state.goal) ? "Following the requested destination using camera estimates and remembered free space."
           : "Choose a destination on the map, or start with the prepared demo route.";
-      activity(humanize(state.controller_status || state.phase || "Ready when you are"), state.message || defaultMessage, tone);
+      activity(localizationWarning ? localization.label : recovered ? "Position recovered" : humanize(state.controller_status || state.phase || "Ready when you are"), localization.message || state.message || defaultMessage, tone);
     }
     updateControls();
     scheduleDraw();
@@ -308,7 +370,11 @@
   }
 
   async function submitGoal(point) {
-    if (!canNavigate()) { activity("Navigation is not ready", "Wait for the camera runtime and map to become available.", "warning", true); return; }
+    if (!canNavigate()) {
+      const localization = localizationView(state || {});
+      activity(localization.message ? localization.label : "Navigation is not ready", localization.message || "Wait for the camera runtime and map to become available.", "warning", true);
+      return;
+    }
     if (!finitePoint(point)) { activity("Enter a destination", "Both X and Y must be finite coordinates in metres.", "warning", true); return; }
     const cell = cellAtWorld(point, map);
     selectedGoal = { point: [...point], status: cell === 1 ? "pending" : "rejected" };
@@ -344,6 +410,7 @@
   }
 
   function drawMap() {
+    const localization = localizationView(state || {});
     const size = canvas.getBoundingClientRect();
     if (size.width < 1 || size.height < 1 || !context) return;
     const ratio = window.devicePixelRatio || 1;
@@ -378,7 +445,7 @@
       const a = project([map.bounds[0], y]), b = project([map.bounds[2], y]);
       context.beginPath(); context.moveTo(...a); context.lineTo(...b); context.stroke();
     }
-    const route = Array.isArray(state?.route) ? state.route.filter(finitePoint) : [];
+    const route = localization.showRoute && Array.isArray(state?.route) ? state.route.filter(finitePoint) : [];
     if (route.length > 1) {
       context.beginPath(); route.forEach((point, index) => { const projected = project(point); if (index === 0) context.moveTo(...projected); else context.lineTo(...projected); });
       context.lineWidth = 2.5; context.strokeStyle = "#078e98"; context.lineJoin = "round"; context.lineCap = "round"; context.stroke();
@@ -390,15 +457,29 @@
       context.strokeStyle = "#486f7d90"; context.lineWidth = 1;
       context.beginPath(); context.moveTo(x - 7, y); context.lineTo(x + 7, y); context.moveTo(x, y - 7); context.lineTo(x, y + 7); context.stroke();
     }
-    if (finitePoint(state?.pose)) {
-      const point = project(state.pose);
-      if (Number.isFinite(state.position_radius) && state.position_radius >= 0) {
-        context.beginPath(); context.arc(...point, Math.max(0, state.position_radius * rect.scale), 0, Math.PI * 2);
+    if (localization.currentPose) {
+      const point = project(localization.currentPose);
+      if (localization.currentRadius !== null) {
+        context.beginPath(); context.arc(...point, Math.max(0, localization.currentRadius * rect.scale), 0, Math.PI * 2);
         context.fillStyle = "#e99d3930"; context.fill(); context.strokeStyle = "#bd792f"; context.lineWidth = 1; context.setLineDash([4, 3]); context.stroke(); context.setLineDash([]);
       }
       context.beginPath(); context.arc(...point, 7, 0, Math.PI * 2); context.fillStyle = "#f4b350"; context.fill(); context.lineWidth = 2; context.strokeStyle = "#fdf8eb"; context.stroke();
       context.beginPath(); context.arc(...point, 2.5, 0, Math.PI * 2); context.strokeStyle = "#72562c"; context.lineWidth = 1.2; context.stroke();
-      context.font = "600 9px system-ui, sans-serif"; context.lineWidth = 3; context.strokeStyle = "#f7f9f2"; context.strokeText("BB-8", point[0] + 11, point[1] - 9); context.fillStyle = "#344d50"; context.fillText("BB-8", point[0] + 11, point[1] - 9);
+      const label = localization.status === "predicted" ? "BB-8 · predicted" : "BB-8";
+      context.font = "600 9px system-ui, sans-serif"; context.lineWidth = 3; context.strokeStyle = "#f7f9f2"; context.strokeText(label, point[0] + 11, point[1] - 9); context.fillStyle = "#344d50"; context.fillText(label, point[0] + 11, point[1] - 9);
+    } else if (localization.ghostPose) {
+      // A historical point only: no uncertainty circle or braking region can
+      // imply a usable current position while localization is expired.
+      const point = project(localization.ghostPose);
+      context.strokeStyle = "#66777c"; context.lineWidth = 1.5; context.setLineDash([3, 3]);
+      context.beginPath(); context.arc(...point, 8, 0, Math.PI * 2); context.stroke(); context.setLineDash([]);
+      context.beginPath(); context.moveTo(point[0] - 3, point[1]); context.lineTo(point[0] + 3, point[1]); context.moveTo(point[0], point[1] - 3); context.lineTo(point[0], point[1] + 3); context.stroke();
+      context.font = "600 9px system-ui, sans-serif";
+      const labelWidth = context.measureText(localization.ghostLabel).width;
+      const labelX = Math.max(rect.x + 3, Math.min(point[0] + 12, rect.x + rect.width - labelWidth - 3));
+      const labelY = Math.max(rect.y + 12, point[1] - 12);
+      context.lineWidth = 3; context.strokeStyle = "#f7f9f2"; context.strokeText(localization.ghostLabel, labelX, labelY);
+      context.fillStyle = "#56696e"; context.fillText(localization.ghostLabel, labelX, labelY);
     }
     function targetMarker(point, color, dashed, rejected) {
       const [x, y] = project(point);
@@ -409,8 +490,8 @@
       else { context.moveTo(x - 4, y); context.lineTo(x + 4, y); context.moveTo(x, y - 4); context.lineTo(x, y + 4); }
       context.stroke();
     }
-    if (finitePoint(state?.goal)) targetMarker(state.goal, "#047c83", false, false);
-    if (selectedGoal && (!finitePoint(state?.goal) || Math.hypot(state.goal[0] - selectedGoal.point[0], state.goal[1] - selectedGoal.point[1]) > 0.005)) {
+    if (localization.showRoute && finitePoint(state?.goal)) targetMarker(state.goal, "#047c83", false, false);
+    if (localization.showRoute && selectedGoal && (!finitePoint(state?.goal) || Math.hypot(state.goal[0] - selectedGoal.point[0], state.goal[1] - selectedGoal.point[1]) > 0.005)) {
       targetMarker(selectedGoal.point, selectedGoal.status === "rejected" ? "#b6534d" : "#aa742f", true, selectedGoal.status === "rejected");
     }
     context.restore();
@@ -443,7 +524,7 @@
   canvas.addEventListener("click", (event) => { const point = eventPoint(event); if (point) void submitGoal(point); });
   canvas.addEventListener("focus", () => {
     canvasFocused = true;
-    if (map) keyboardPoint = selectedGoal?.point || (finitePoint(state?.pose) ? [...state.pose] : [(map.bounds[0] + map.bounds[2]) / 2, (map.bounds[1] + map.bounds[3]) / 2]);
+    if (map) keyboardPoint = selectedGoal?.point || localizationView(state || {}).currentPose || [(map.bounds[0] + map.bounds[2]) / 2, (map.bounds[1] + map.bounds[3]) / 2];
     showCoordinate(keyboardPoint); scheduleDraw();
   });
   canvas.addEventListener("blur", () => { canvasFocused = false; showCoordinate(hoverPoint); scheduleDraw(); });
@@ -462,10 +543,10 @@
   window.addEventListener("keydown", (event) => { if (event.key === "Escape" && connected && token) { event.preventDefault(); stop(); } });
   $("reset-button").addEventListener("click", () => { selectedGoal = null; text("map-selection", "No target selected"); frameEpoch += 1; void command({ action: "reset" }, "Reset requested", "The episode, position estimate and route will restart."); });
   $("demo-button").addEventListener("click", () => {
-    if (!canNavigate()) return;
+    if (!availableControls().demo) return;
     selectedGoal = finitePoint(map?.demo_goal) ? { point: [...map.demo_goal], status: "submitted" } : null;
     text("map-selection", selectedGoal ? `Demo target: ${coordinates(selectedGoal.point)}` : "Demo route requested");
-    void command({ action: "demo" }, "Demo route requested", "The local app is preparing the saved demonstration route.");
+    void command({ action: "demo" }, "Demo reset requested", "Resetting the episode before the saved demonstration route.");
   });
   modeButtons.forEach((button) => button.addEventListener("click", async () => {
     const mode = Number(button.dataset.mode);

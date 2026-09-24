@@ -85,6 +85,38 @@ def test_rejected_click_does_not_cancel_or_replace_valid_goal():
     assert supervisor.state["goal"] == [0.5, -0.5]
 
 
+@pytest.mark.parametrize("status", ["lost", "reacquiring", "uninitialized"])
+def test_localization_loss_rejects_goals_but_keeps_reset_available(status):
+    supervisor = fake_supervisor()
+    supervisor.state.update(
+        localization_status=status,
+        localization_valid=False,
+        last_seen_pose=[0.1, 0.2],
+        raw_position_radius=7.19,
+        raw_pose=[0.1, 0.2],
+        raw_velocity=[0.0, 0.0],
+        raw_velocity_radius=0.03,
+        raw_prediction_time=240.0,
+        reacquisition_samples=2,
+    )
+    with pytest.raises(ValueError, match="Localization lost"):
+        supervisor.command({"action": "goal", "x": 0.5, "y": -0.5})
+    assert supervisor.commands.empty()
+    supervisor.command({"action": "reset"})
+    assert supervisor.restart_requested
+    assert supervisor.state["localization_status"] == "uninitialized"
+    assert supervisor.state["last_seen_pose"] is None
+    assert supervisor.state["raw_position_radius"] is None
+    for name in (
+        "raw_pose",
+        "raw_velocity",
+        "raw_velocity_radius",
+        "raw_prediction_time",
+    ):
+        assert supervisor.state[name] is None
+    assert supervisor.state["reacquisition_samples"] == 0
+
+
 def test_saturated_command_channel_stops_worker():
     supervisor = fake_supervisor()
     for _ in range(32):
