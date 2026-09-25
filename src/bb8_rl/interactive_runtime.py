@@ -86,12 +86,16 @@ class ControlSession:
         planning_reserve=0.0,
         heartbeat_seconds=3.0,
         clock=time.monotonic,
+        agency_engine=None,
     ):
+        from .agency_runtime import AutonomyCoordinator
         from .occluded_control import (
             CommandBelief,
             CommandDynamics,
             OcclusionParameters,
         )
+
+        self.agency = AutonomyCoordinator(agency_engine)
 
         if heartbeat_seconds <= 0 or not np.isfinite(heartbeat_seconds):
             raise ValueError("Heartbeat timeout must be finite and positive")
@@ -237,6 +241,7 @@ class ControlSession:
             (message, record)
             for message, record in valid
             if message.get("action") == "stop"
+            or (message.get("action") == "autonomy" and message.get("enabled") is False)
         ]
         if stops:
             # A stop also invalidates every goal already in the drained batch.
@@ -245,17 +250,25 @@ class ControlSession:
             )
             self.last_motion_generation = self.generation
             self.cancel()
+            self.agency.disable(sim_time or 0.0, "Exploration paused by the user.")
             for message, record in valid:
                 record["outcome"] = (
                     "accepted"
                     if message.get("action") == "stop"
+                    or (
+                        message.get("action") == "autonomy"
+                        and message.get("enabled") is False
+                    )
                     else "cancelled_by_stop"
                 )
             return records
         for message, record in valid:
             action, generation = message.get("action"), message["generation"]
-            if action not in ("goal", "demo"):
+            if action not in ("goal", "demo", "autonomy"):
                 record["outcome"] = "unsupported_worker_command"
+                continue
+            if action == "autonomy" and type(message.get("enabled")) is not bool:
+                record["outcome"] = "invalid_command"
                 continue
             if (
                 generation < self.generation
@@ -264,6 +277,21 @@ class ControlSession:
                 record["outcome"] = "stale_generation"
                 continue
             self.generation = self.last_motion_generation = generation
+            if action == "autonomy":
+                if not self.agency.available or not self.state()["localization_valid"]:
+                    record.update(
+                        outcome="rejected",
+                        reason="Wait for available memory and localization.",
+                    )
+                    continue
+                self.cancel("idle", "Autonomous exploration enabled.")
+                self.agency.disable(sim_time or 0.0)
+                try:
+                    self.agency.enable(sim_time or 0.0)
+                    record["outcome"] = "accepted"
+                except ValueError as error:
+                    record.update(outcome="rejected", reason=str(error))
+                continue
             if self.localization_lost:
                 record.update(
                     outcome="rejected",
@@ -271,6 +299,7 @@ class ControlSession:
                 )
                 continue
             self.cancel("braking", "Braking before accepting a new target.")
+            self.agency.disable(sim_time or 0.0, "Manual destination selected.")
             try:
                 goal = (
                     self.demo_goal.copy()
@@ -304,6 +333,9 @@ class ControlSession:
                     "heartbeat_expired",
                     "Connection heartbeat expired; motion cancelled.",
                 )
+                self.agency.disable(
+                    self.capture_time or 0.0, "Connection lost; exploration paused."
+                )
             return False
         return True
 
@@ -321,6 +353,11 @@ class ControlSession:
             self.cancel(
                 "localization_lost",
                 f"Localization lost: {reason} Goal cancelled; waiting for fresh visual observations.",
+            )
+            self.agency.disable(
+                self.capture_time or 0.0,
+                "Localization lost; exploration paused.",
+                "localization_lost",
             )
             self.localization_lost = True
             self.requires_new_goal = True
@@ -430,6 +467,18 @@ class ControlSession:
         return False
 
     def decide(self, timestamp, measurement, applied, intervals, *, wall_time=None):
+        action = self._decide(
+            timestamp, measurement, applied, intervals, wall_time=wall_time
+        )
+        if (self.map_version, self.calibration_version) != self.registered_versions:
+            self.agency.disable(
+                timestamp, "Map or calibration changed; exploration paused."
+            )
+        if self.agency.tick(self, timestamp):
+            return np.zeros(2)
+        return action
+
+    def _decide(self, timestamp, measurement, applied, intervals, *, wall_time=None):
         from .occluded_control import OccludedController
 
         # Capture only the PREVIOUS accepted state, before this frame can change
@@ -667,6 +716,7 @@ class ControlSession:
             and belief.position_radius <= self.parameters.max_position_radius
         )
         return {
+            "agency": self.agency.snapshot(),
             "route_planning": self.route_planning_details,
             "phase": self.phase,
             "localization_status": self.localization_status,
@@ -734,17 +784,20 @@ def worker_main(config, command_queue, event_queue, stop_event):
     """Multiprocessing spawn entry; all native/model imports and lifetime live here.
 
     Required config: asset_dir, mode (1/2/3), run_dir. Optional generation,
-    max_steps, task_path, save_frames, scoring_labels, jpeg_width, jpeg_quality,
+    max_steps, task_path, save_frames, save_every, scoring_labels, jpeg_width, jpeg_quality,
     camera_dropouts ({ID:[[sim_start,sim_end],...]}), invalidate_memory_at.
     The last two are explicit test interventions, never geometric oracle input.
     """
-    env = session = None
+    env = session = agency_store = None
     manifest = None
     run_dir = None
     try:
         mode = config.get("mode", 1)
         if isinstance(mode, bool) or mode not in (1, 2, 3):
             raise ValueError("Camera mode must be 1, 2 or 3")
+        save_every = config.get("save_every", 1)
+        if type(save_every) is not int or save_every < 1:
+            raise ValueError("save_every must be a positive integer")
         asset_dir, run_dir = (
             Path(config["asset_dir"]).resolve(),
             Path(config["run_dir"]).resolve(),
@@ -786,6 +839,32 @@ def worker_main(config, command_queue, event_queue, stop_event):
         cv2.setNumThreads(2)
         memory = ScanFreeMemory.load(asset("memory"))
         map_version = _digest(asset("memory") / "manifest.json")
+        import sqlite3
+
+        from .agency import AgencyEngine, AgencyStore
+
+        agency_engine = None
+        agency_error = None
+        if config.get("agency_memory"):
+            try:
+                # Scope experience to all checked map bytes, including raster
+                # changes that do not alter descriptive manifest fields.
+                agency_map_version = hashlib.sha256(
+                    json.dumps(
+                        {
+                            name: digest
+                            for name, digest in bundle["sha256"].items()
+                            if name.startswith(demo["memory"].rstrip("/") + "/")
+                        },
+                        sort_keys=True,
+                    ).encode()
+                ).hexdigest()
+                agency_store = AgencyStore(
+                    config["agency_memory"], map_version=agency_map_version
+                )
+                agency_engine = AgencyEngine(agency_store)
+            except (OSError, ValueError, RuntimeError, sqlite3.Error) as error:
+                agency_error = str(error)
         camera_ids = tuple("ABC"[:mode])
         cameras = demo["cameras"]
         calibration_version = (
@@ -820,6 +899,8 @@ def worker_main(config, command_queue, event_queue, stop_event):
         )
         sources = [
             Path(__file__),
+            Path(__file__).with_name("agency.py"),
+            Path(__file__).with_name("agency_runtime.py"),
             Path(__file__).with_name("braking_prediction.py"),
             Path(__file__).with_name("occluded_control.py"),
             Path(__file__).with_name("control_profiles.py"),
@@ -844,6 +925,7 @@ def worker_main(config, command_queue, event_queue, stop_event):
                 "RGB-estimated fixed calibrations",
                 "frozen scan evidence",
                 "user goal",
+                "optional persistent place-choice learner, from navigation outcomes only",
                 "command acknowledgements and times",
                 "heartbeat/generation/stop",
             ],
@@ -915,7 +997,10 @@ def worker_main(config, command_queue, event_queue, stop_event):
             planning_radius=demo.get("planning_radius", 0.10),
             parameters=profile.parameters(),
             planning_reserve=profile.planning_reserve_m,
+            agency_engine=agency_engine,
         )
+        if agency_error:
+            session.agency.message = f"Memory unavailable: {agency_error}"
         command_trace, physics_trace, pending = [], [], []
         original_advance, original_step = env.world.backend.advance, env.world.step
 
@@ -1040,7 +1125,7 @@ def worker_main(config, command_queue, event_queue, stop_event):
                     else None
                 )
                 head_counts[name] = None if mask is None else int(mask.sum())
-                if save_frames:
+                if save_frames and step % save_every == 0:
                     rgb_path = run_dir / f"frame-{step:06d}-{name}-rgb.png"
                     cv2.imwrite(
                         str(rgb_path), cv2.cvtColor(rgbs[name], cv2.COLOR_RGB2BGR)
@@ -1077,6 +1162,7 @@ def worker_main(config, command_queue, event_queue, stop_event):
                 "action": action,
                 "controller_status": session.status,
                 "route_planning": session.route_planning_details,
+                "agency": state["agency"],
                 "localization": {
                     key: state[key]
                     for key in (
@@ -1182,6 +1268,9 @@ def worker_main(config, command_queue, event_queue, stop_event):
             if session is not None:
                 if session.phase not in ("error", "finished"):
                     session.cancel("stopped", "Worker stopped.")
+                session.agency.disable(
+                    env.world.time, "Session ended; exploration paused."
+                )
                 publish_latest(
                     event_queue,
                     {
@@ -1194,6 +1283,8 @@ def worker_main(config, command_queue, event_queue, stop_event):
                     },
                 )
             env.close()
+        if agency_store is not None:
+            agency_store.close()
         if manifest is not None and run_dir is not None:
             manifest["source_files_unchanged"] = all(
                 _digest(

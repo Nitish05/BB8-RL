@@ -49,6 +49,38 @@
     };
   }
 
+  function agencyView(state = {}, session = {}) {
+    const agency = state.agency && typeof state.agency === "object" && !Array.isArray(state.agency) ? state.agency : null;
+    const cleanText = (value, fallback = "", limit = 260) => typeof value === "string" && value.trim() ? value.trim().slice(0, limit) : fallback;
+    const available = agency?.available === true;
+    const enabled = agency?.enabled === true;
+    const connected = session.connected === true;
+    const localization = localizationView(state);
+    const hasPosition = !localization.explicit || localization.usable;
+    const canToggle = connected && !!session.token && (session.pendingCommands || 0) === 0
+      && (enabled || available && controlAvailability(state, session).navigate);
+    const episodes = Number.isSafeInteger(agency?.episodes) && agency.episodes >= 0 ? agency.episodes : 0;
+    const recentExperience = cleanText(agency?.recent_experience?.summary) || null;
+    const intention = connected && enabled && hasPosition && agency?.intention && finitePoint(agency.intention.goal) ? {
+      label: cleanText(agency.intention.label, "Visit a selected place", 100),
+      explanation: cleanText(agency.intention.explanation),
+    } : null;
+    const preferences = (Array.isArray(agency?.preferences) ? agency.preferences : [])
+      .filter((item) => item && Number.isFinite(item.value) && Number.isSafeInteger(item.visits) && item.visits > 0)
+      .slice().sort((left, right) => right.value - left.value).slice(0, 5)
+      .map((item) => ({ label: cleanText(item.label, "Remembered place", 100), visits: item.visits }));
+    const status = !connected ? "Waiting for connection" : !agency ? "Unavailable in this session"
+      : !hasPosition ? localization.label : enabled ? "Exploring" : available ? "Exploration paused" : "Exploration unavailable";
+    const message = !connected ? "Exploration controls will return when the local app reconnects."
+      : !agency ? "This session does not provide autonomous exploration. You can still choose a destination."
+        : !hasPosition ? localization.message
+          : cleanText(agency.message, enabled ? "Selecting destinations from remembered visit outcomes." : available ? "Start exploring to let BB-8 choose its next destination." : "Exploration is not ready in this session.");
+    return { available, enabled, canToggle, status, message, intention, preferences, recentExperience,
+      buttonText: enabled ? "Pause exploration" : "Start exploring",
+      experienceText: `${episodes} ${episodes === 1 ? "experience" : "experiences"} remembered`,
+    };
+  }
+
   function plotRect(bounds, width, height, padding = 0) {
     if (!Array.isArray(bounds) || bounds.length !== 4 || !bounds.every(Number.isFinite)
       || bounds[2] <= bounds[0] || bounds[3] <= bounds[1]
@@ -95,7 +127,7 @@
       && map.cells.every((row) => Array.isArray(row) && row.length === map.width && row.every((value) => value === 0 || value === 1 || value === 2));
   }
 
-  const helpers = Object.freeze({ plotRect, worldToCanvas, canvasToWorld, worldToCell, cellAtWorld, validMap, localizationView, controlAvailability });
+  const helpers = Object.freeze({ plotRect, worldToCanvas, canvasToWorld, worldToCell, cellAtWorld, validMap, localizationView, controlAvailability, agencyView });
   if (typeof module !== "undefined" && module.exports) module.exports = helpers;
   if (typeof window === "undefined") return;
   window.BB8Map = helpers;
@@ -127,6 +159,7 @@
   let toastUntil = 0;
   let drawRequested = false;
   let heartbeatBusy = false;
+  let preferenceSignature = null;
   const cameras = new Map(ids.map((id) => [id, {
     card: document.querySelector(`[data-camera="${id}"]`),
     image: document.querySelector(`[data-camera-image="${id}"]`),
@@ -153,6 +186,37 @@
     return controlAvailability(state || {}, { connected, token, mapReady: !!map, pendingCommands });
   }
 
+  function renderAgency() {
+    const agency = agencyView(state || {}, { connected, token, mapReady: !!map, pendingCommands });
+    const button = $("autonomy-button");
+    button.disabled = !agency.canToggle;
+    button.setAttribute("aria-pressed", String(agency.enabled));
+    text("autonomy-button", agency.buttonText);
+    $("agency-panel").dataset.enabled = String(connected && agency.enabled);
+    text("agency-status", agency.status);
+    text("agency-message", agency.message);
+    $("agency-intention").hidden = !agency.intention;
+    text("agency-intention-label", agency.intention?.label || "—");
+    text("agency-intention-explanation", agency.intention?.explanation || "");
+    $("agency-recent").hidden = !agency.recentExperience;
+    text("agency-recent-summary", agency.recentExperience || "");
+    text("agency-experiences", agency.experienceText);
+    $("agency-preferences").hidden = agency.preferences.length === 0;
+    const signature = JSON.stringify(agency.preferences);
+    if (signature !== preferenceSignature) {
+      preferenceSignature = signature;
+      $("agency-preference-list").replaceChildren(...agency.preferences.map((preference) => {
+        const item = document.createElement("li");
+        const label = document.createElement("span");
+        const visits = document.createElement("span");
+        label.textContent = preference.label;
+        visits.textContent = `${preference.visits} ${preference.visits === 1 ? "outcome" : "outcomes"}`;
+        item.append(label, visits);
+        return item;
+      }));
+    }
+  }
+
   function updateControls() {
     const controls = availableControls();
     ["goal-x", "goal-y", "goal-button"].forEach((id) => { $(id).disabled = !controls.navigate; });
@@ -163,6 +227,7 @@
     modeButtons.forEach((button) => { button.disabled = !controls.mode; });
     $("map-stage").dataset.enabled = String(controls.navigate);
     canvas.setAttribute("aria-disabled", String(!controls.navigate));
+    renderAgency();
   }
 
   function setConnection(value) {
@@ -540,6 +605,14 @@
   });
   $("goal-form").addEventListener("submit", (event) => { event.preventDefault(); void submitGoal([$("goal-x").valueAsNumber, $("goal-y").valueAsNumber]); });
   $("stop-button").addEventListener("click", stop);
+  $("autonomy-button").addEventListener("click", () => {
+    const agency = agencyView(state || {}, { connected, token, mapReady: !!map, pendingCommands });
+    if (!agency.canToggle) return;
+    const enabled = !agency.enabled;
+    if (enabled) { selectedGoal = null; text("map-selection", "Autonomous exploration requested"); }
+    void command({ action: "autonomy", enabled }, enabled ? "Exploration requested" : "Pause requested",
+      enabled ? "BB-8 will choose destinations using remembered visit outcomes." : "Waiting for the controller to pause exploration and stop motion.");
+  });
   window.addEventListener("keydown", (event) => { if (event.key === "Escape" && connected && token) { event.preventDefault(); stop(); } });
   $("reset-button").addEventListener("click", () => { selectedGoal = null; text("map-selection", "No target selected"); frameEpoch += 1; void command({ action: "reset" }, "Reset requested", "The episode, position estimate and route will restart."); });
   $("demo-button").addEventListener("click", () => {

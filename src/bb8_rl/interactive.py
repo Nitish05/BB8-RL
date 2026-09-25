@@ -18,7 +18,7 @@ from .demo_assets import checked_path, validate_assets
 
 ROOT = Path(__file__).resolve().parents[2]
 WEB = Path(__file__).with_name("web")
-ACTIONS = {"goal", "stop", "reset", "mode", "demo", "heartbeat"}
+ACTIONS = {"goal", "stop", "reset", "mode", "demo", "heartbeat", "autonomy"}
 
 
 def validate_command(data):
@@ -26,7 +26,13 @@ def validate_command(data):
         raise ValueError("Unknown command")
     action = data["action"]
     allowed = {"action"} | (
-        {"x", "y"} if action == "goal" else {"mode"} if action == "mode" else set()
+        {"x", "y"}
+        if action == "goal"
+        else {"mode"}
+        if action == "mode"
+        else {"enabled"}
+        if action == "autonomy"
+        else set()
     )
     if set(data) != allowed:
         raise ValueError("Unexpected or missing command fields")
@@ -38,6 +44,8 @@ def validate_command(data):
         type(data["mode"]) is not int or data["mode"] not in (1, 2, 3)
     ):
         raise ValueError("Camera mode must be 1, 2 or 3")
+    if action == "autonomy" and type(data["enabled"]) is not bool:
+        raise ValueError("Exploration enabled must be true or false")
     return dict(data)
 
 
@@ -78,11 +86,21 @@ def goal_cell(map_data, x, y):
 
 class Supervisor:
     def __init__(
-        self, asset_dir, run_dir, *, mode=1, worker_target=None, control_profile=None
+        self,
+        asset_dir,
+        run_dir,
+        *,
+        mode=1,
+        worker_target=None,
+        control_profile=None,
+        agency_memory=None,
     ):
         from .control_profiles import get_profile
 
         self.control_profile = get_profile(control_profile).name
+        self.agency_memory = Path(
+            agency_memory or ROOT / "work/agency/bb8.sqlite3"
+        ).resolve()
         self.asset_dir, self.run_dir = (
             Path(asset_dir).resolve(),
             Path(run_dir).resolve(),
@@ -116,6 +134,15 @@ class Supervisor:
             "message": "Loading checked demo assets…",
             "asset_ready": False,
             "generation": 0,
+            "agency": {
+                "enabled": False,
+                "available": False,
+                "status": "starting",
+                "intention": None,
+                "episodes": 0,
+                "preferences": [],
+                "message": "Loading persistent exploration memory…",
+            },
         }
         try:
             self.demo = validate_assets(self.asset_dir)
@@ -154,11 +181,22 @@ class Supervisor:
             if data["action"] == "heartbeat":
                 return False
             self.worker_stop.set()
+            self._pause_agency("Command channel unavailable.")
             self.state.update(
                 phase="error",
                 message="Command queue full; simulation stopped. Reset to resume.",
             )
             return False
+
+    def _pause_agency(self, message="Exploration paused."):
+        if "agency" in self.state:
+            self.state["agency"] = {
+                **self.state["agency"],
+                "enabled": False,
+                "intention": None,
+                "status": "paused",
+                "message": message,
+            }
 
     def command(self, data):
         data = validate_command(data)
@@ -167,9 +205,10 @@ class Supervisor:
             if action == "heartbeat":
                 self._send(data)
                 return {"accepted": True}
-            if action == "stop":
+            if action == "stop" or (action == "autonomy" and not data["enabled"]):
                 self.generation += 1
                 self.pending_demo = False
+                self._pause_agency()
                 sent = self._send(data)
                 self.state.update(goal=None, route=[])
                 if sent:
@@ -188,6 +227,9 @@ class Supervisor:
             if action in ("reset", "mode", "demo"):
                 self.generation += 1
                 self.pending_demo = action == "demo"
+                self._pause_agency(
+                    "Session reset; memory retained, exploration paused."
+                )
                 if action == "mode":
                     self.state["mode"] = data["mode"]
                 self.state.update(
@@ -237,8 +279,24 @@ class Supervisor:
                 raise ValueError(
                     "Localization lost; wait for visual reacquisition or reset."
                 )
+            if action == "autonomy":
+                if not self.state.get("agency", {}).get("available"):
+                    raise ValueError("Persistent exploration memory is unavailable")
+                self.generation += 1
+                if not self._send(data):
+                    raise ValueError(
+                        "Command channel unavailable; reset the simulation"
+                    )
+                self.state.update(
+                    phase="braking",
+                    goal=None,
+                    route=[],
+                    message="Enabling exploration and checking candidate routes…",
+                )
+                return {"accepted": True, "generation": self.generation}
             goal_cell(self.map, data["x"], data["y"])
             self.generation += 1
+            self._pause_agency("Manual destination selected.")
             if not self._send(data):
                 raise ValueError("Command channel unavailable; reset the simulation")
             self.state.update(
@@ -298,6 +356,9 @@ class Supervisor:
                 "mode": self.state["mode"],
                 "generation": self.generation,
                 "control_profile": getattr(self, "control_profile", None),
+                "agency_memory": str(
+                    getattr(self, "agency_memory", ROOT / "work/agency/bb8.sqlite3")
+                ),
             }
             self.process = self.context.Process(
                 target=target,
@@ -334,6 +395,7 @@ class Supervisor:
                 if event.get("generation", self.generation) != self.generation:
                     return False
                 self.state.update(phase="error", message=event["message"])
+                self._pause_agency("Simulation failed; exploration paused.")
             else:
                 return False
             return True
@@ -363,6 +425,7 @@ class Supervisor:
                                 phase="error",
                                 message="Simulation worker exited. Reset to start a new session.",
                             )
+                            self._pause_agency("Worker exited; exploration paused.")
         except Exception as error:  # noqa: BLE001 — process boundary must expose failure in the UI
             with self.lock:
                 self.state.update(
@@ -487,6 +550,12 @@ def main(argv=None):
     parser.add_argument("--port", type=int, default=8765)
     parser.add_argument("--no-browser", action="store_true")
     parser.add_argument("--control-profile", choices=tuple(PROFILES))
+    parser.add_argument(
+        "--agency-memory",
+        type=Path,
+        default=ROOT / "work/agency/bb8.sqlite3",
+        help="Persistent exploration memory; never enables motion on launch",
+    )
     args = parser.parse_args(argv)
     if not 0 <= args.port <= 65535:
         parser.error("Port must be 0–65535")
@@ -494,7 +563,11 @@ def main(argv=None):
     if run_dir.exists():
         parser.error("Choose a fresh output directory")
     supervisor = Supervisor(
-        args.assets, run_dir, mode=args.mode, control_profile=args.control_profile
+        args.assets,
+        run_dir,
+        mode=args.mode,
+        control_profile=args.control_profile,
+        agency_memory=args.agency_memory,
     )
     try:
         server = ThreadingHTTPServer(("127.0.0.1", args.port), make_handler(supervisor))

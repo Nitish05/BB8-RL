@@ -22,6 +22,7 @@ jobs:
         run: >-
           pytest -q tests/test_interactive.py tests/test_demo_assets.py
           tests/test_control_profiles.py tests/test_control_calibration.py
+          tests/test_agency.py tests/test_agency_review.py tests/test_agency_runtime.py tests/test_semantic_proposals.py
           tests/test_control_benchmark_summary.py
           tests/test_scan_free_space.py tests/test_grounded_column_memory.py
           tests/test_map_improvement_audit.py
@@ -37,3 +38,4 @@ jobs:
           node --check src/bb8_rl/web/app.js
           node tests/test_web_coordinates.js
           node tests/test_web_localization.js
+          node tests/test_web_agency.js

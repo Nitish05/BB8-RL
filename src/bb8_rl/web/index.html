@@ -68,6 +68,18 @@
       <div id="asset-notice" class="notice asset-notice" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 10 18H2Z"/><path d="M12 9v5m0 3v1"/></svg><div><strong>Demo assets needed</strong><p id="asset-message">The local app has not loaded its map and policy bundle.</p></div></div>
       <div id="connection-notice" class="notice connection-notice" hidden><strong>Connection interrupted</strong><p>Controls are unavailable. Waiting for the local app to reconnect.</p></div>
 
+      <section id="agency-panel" class="agency-panel panel" aria-labelledby="agency-title" data-enabled="false">
+        <div class="agency-heading">
+          <div><p class="agency-caption">Experimental · learned place preferences</p><h2 id="agency-title">Autonomous exploration</h2><p class="agency-description">BB-8 chooses destinations and learns from each visit.</p></div>
+          <button id="autonomy-button" class="button secondary-button" type="button" disabled aria-pressed="false" aria-describedby="agency-help">Start exploring</button>
+        </div>
+        <div class="agency-state" role="status" aria-live="polite" aria-atomic="true"><strong id="agency-status">Waiting for the local app</strong><p id="agency-message">Exploration starts only when you choose it.</p></div>
+        <div id="agency-intention" class="agency-intention" hidden><span>Current intention</span><strong id="agency-intention-label">—</strong><p id="agency-intention-explanation"></p></div>
+        <p id="agency-recent" class="agency-recent" hidden><span>Latest outcome</span> <span id="agency-recent-summary"></span></p>
+        <div class="agency-memory"><span id="agency-experiences">0 experiences remembered</span><details id="agency-preferences" hidden><summary>Places with experience</summary><ol id="agency-preference-list"></ol></details></div>
+        <p id="agency-help" class="agency-help">Stop or a manual destination pauses exploration. Learned preferences stay after Reset.</p>
+      </section>
+
       <div class="workspace-grid">
         <section class="map-panel panel" aria-labelledby="map-title">
           <div class="panel-heading"><div><h2 id="map-title">Remembered room</h2><p id="map-subtitle">Waiting for the saved scan map</p></div><span class="panel-tag">MAP VIEW</span></div>
