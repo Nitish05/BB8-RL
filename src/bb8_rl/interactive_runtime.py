@@ -87,6 +87,7 @@ class ControlSession:
         heartbeat_seconds=3.0,
         clock=time.monotonic,
         agency_engine=None,
+        agency_coordinator=None,
     ):
         from .agency_runtime import AutonomyCoordinator
         from .occluded_control import (
@@ -95,7 +96,7 @@ class ControlSession:
             OcclusionParameters,
         )
 
-        self.agency = AutonomyCoordinator(agency_engine)
+        self.agency = agency_coordinator or AutonomyCoordinator(agency_engine)
 
         if heartbeat_seconds <= 0 or not np.isfinite(heartbeat_seconds):
             raise ValueError("Heartbeat timeout must be finite and positive")
@@ -250,7 +251,7 @@ class ControlSession:
             )
             self.last_motion_generation = self.generation
             self.cancel()
-            self.agency.disable(sim_time or 0.0, "Exploration paused by the user.")
+            self.agency.disable(sim_time or 0.0, "Autonomy paused by the user.")
             for message, record in valid:
                 record["outcome"] = (
                     "accepted"
@@ -284,7 +285,7 @@ class ControlSession:
                         reason="Wait for available memory and localization.",
                     )
                     continue
-                self.cancel("idle", "Autonomous exploration enabled.")
+                self.cancel("idle", "Autonomy enabled.")
                 self.agency.disable(sim_time or 0.0)
                 try:
                     self.agency.enable(sim_time or 0.0)
@@ -842,7 +843,16 @@ def worker_main(config, command_queue, event_queue, stop_event):
         import sqlite3
 
         from .agency import AgencyEngine, AgencyStore
+        from .interaction_environment import DEFAULT_STATIONS, InteractionEnvironment
+        from .purpose import PurposeEngine, PurposeStore
+        from .purpose_runtime import PurposeCoordinator
 
+        agency_mode = config.get("agency_mode", "purpose")
+        if agency_mode not in ("purpose", "coverage"):
+            raise ValueError("Agency mode must be purpose or coverage")
+        interaction_environment = (
+            InteractionEnvironment() if agency_mode == "purpose" else None
+        )
         agency_engine = None
         agency_error = None
         if config.get("agency_memory"):
@@ -859,10 +869,23 @@ def worker_main(config, command_queue, event_queue, stop_event):
                         sort_keys=True,
                     ).encode()
                 ).hexdigest()
-                agency_store = AgencyStore(
-                    config["agency_memory"], map_version=agency_map_version
-                )
-                agency_engine = AgencyEngine(agency_store)
+                if agency_mode == "purpose":
+                    # Fixture identities/coordinates also scope outcome memory.
+                    agency_map_version += (
+                        ":stations-v1:"
+                        + hashlib.sha256(
+                            repr([(s.id, s.xy) for s in DEFAULT_STATIONS]).encode()
+                        ).hexdigest()
+                    )
+                    agency_store = PurposeStore(
+                        config["agency_memory"], map_version=agency_map_version
+                    )
+                    agency_engine = PurposeEngine(agency_store)
+                else:
+                    agency_store = AgencyStore(
+                        config["agency_memory"], map_version=agency_map_version
+                    )
+                    agency_engine = AgencyEngine(agency_store)
             except (OSError, ValueError, RuntimeError, sqlite3.Error) as error:
                 agency_error = str(error)
         camera_ids = tuple("ABC"[:mode])
@@ -901,6 +924,9 @@ def worker_main(config, command_queue, event_queue, stop_event):
             Path(__file__),
             Path(__file__).with_name("agency.py"),
             Path(__file__).with_name("agency_runtime.py"),
+            Path(__file__).with_name("purpose.py"),
+            Path(__file__).with_name("purpose_runtime.py"),
+            Path(__file__).with_name("interaction_environment.py"),
             Path(__file__).with_name("braking_prediction.py"),
             Path(__file__).with_name("occluded_control.py"),
             Path(__file__).with_name("control_profiles.py"),
@@ -925,7 +951,8 @@ def worker_main(config, command_queue, event_queue, stop_event):
                 "RGB-estimated fixed calibrations",
                 "frozen scan evidence",
                 "user goal",
-                "optional persistent place-choice learner, from navigation outcomes only",
+                "optional learned station-outcome chooser (coverage diagnostic available)",
+                "explicit simulated resource and station-response telemetry in purpose mode",
                 "command acknowledgements and times",
                 "heartbeat/generation/stop",
             ],
@@ -949,6 +976,19 @@ def worker_main(config, command_queue, event_queue, stop_event):
             "generation": int(config.get("generation", 0)),
             "goal": demo["goal"],
             "completed_steps": 0,
+            "agency_mode": agency_mode,
+            "interaction_fixture": {
+                "scope": "Virtual task zones; not RGB-recognized objects or rendered station responses",
+                "stations": [{"id": s.id, "xy": s.xy} for s in DEFAULT_STATIONS],
+                "radius_m": 0.14,
+                "dwell_s": 1.0,
+                "speed_limit_m_s": 0.03,
+                "initial_resource": 0.35,
+                "target_resource": 0.8,
+                "source": "simulated_station_telemetry",
+            }
+            if interaction_environment is not None
+            else None,
         }
         (run_dir / "manifest.json").write_text(
             json.dumps(jsonable(manifest), indent=2) + "\n"
@@ -998,9 +1038,22 @@ def worker_main(config, command_queue, event_queue, stop_event):
             parameters=profile.parameters(),
             planning_reserve=profile.planning_reserve_m,
             agency_engine=agency_engine,
+            agency_coordinator=PurposeCoordinator(agency_engine, DEFAULT_STATIONS)
+            if agency_mode == "purpose"
+            else None,
         )
         if agency_error:
             session.agency.message = f"Memory unavailable: {agency_error}"
+        # World-side mechanics produce a resource sensor observation. Kinematics
+        # are never passed to the chooser; its navigation pose comes from RGB.
+        interaction_observation = None
+        if interaction_environment is not None:
+            interaction_observation = interaction_environment.advance(
+                now=env.world.time,
+                position=env.state.position[:2],
+                velocity=env.state.velocity[:2],
+                request=None,
+            )
         command_trace, physics_trace, pending = [], [], []
         original_advance, original_step = env.world.backend.advance, env.world.step
 
@@ -1015,10 +1068,20 @@ def worker_main(config, command_queue, event_queue, stop_event):
             )
             return result
 
-        def scoring_step(*args, **kwargs):
+        interaction_request = None
+
+        def mechanics_and_scoring_step(*args, **kwargs):
+            nonlocal interaction_observation
             before = list(env.world.backend.applied_request)
             pending.clear()
             state = original_step(*args, **kwargs)
+            if interaction_environment is not None:
+                interaction_observation = interaction_environment.advance(
+                    now=env.world.time,
+                    position=state.position[:2],
+                    velocity=state.velocity[:2],
+                    request=interaction_request,
+                )
             command_trace.extend(pending)
             physics_trace.append(
                 {
@@ -1033,7 +1096,10 @@ def worker_main(config, command_queue, event_queue, stop_event):
             )
             return state
 
-        env.world.backend.advance, env.world.step = acknowledged_advance, scoring_step
+        env.world.backend.advance, env.world.step = (
+            acknowledged_advance,
+            mechanics_and_scoring_step,
+        )
         labels = env.world.scene.visualizer.segmentation_idx_dict
         head_ids = [
             key
@@ -1099,6 +1165,8 @@ def worker_main(config, command_queue, event_queue, stop_event):
                 session.map_version = map_version + ":invalidated"
                 session.cancel("guarded_stop", "Map validity changed; reset required.")
             applied = np.asarray(env.world.backend.applied_request)
+            if interaction_observation is not None:
+                session.agency.observe(interaction_observation)
             action = session.decide(timestamp, measurement, applied, intervals)
             decision_finished = time.monotonic()
             diagnostics = (
@@ -1163,6 +1231,7 @@ def worker_main(config, command_queue, event_queue, stop_event):
                 "controller_status": session.status,
                 "route_planning": session.route_planning_details,
                 "agency": state["agency"],
+                "interaction_telemetry": interaction_observation,
                 "localization": {
                     key: state[key]
                     for key in (
@@ -1202,6 +1271,11 @@ def worker_main(config, command_queue, event_queue, stop_event):
             }
             command_trace.clear()
             physics_trace.clear()
+            interaction_request = (
+                session.agency.interaction_request()
+                if interaction_environment is not None
+                else None
+            )
             _, _, terminal, truncated, info = env.step(action)
             intervals = list(command_trace)
             row["after_step"] = {
@@ -1213,6 +1287,7 @@ def worker_main(config, command_queue, event_queue, stop_event):
                 "collision_scoring_only": info["collision"],
                 "boundary_scoring_only": info["boundary_failure"],
                 "physics_trace_scoring_only": list(physics_trace),
+                "interaction_telemetry": interaction_observation,
             }
             _append(run_dir / "rows.jsonl", row)
             manifest["completed_steps"] = step + 1

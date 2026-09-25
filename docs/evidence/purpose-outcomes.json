@@ -1,0 +1,74 @@
+{
+  "evidence": "SYNTHETIC action-contingent resource outcomes; no Genesis, RGB, people, or personality evaluated",
+  "limitations": [
+    "The resource objective, priors, costs, station affordances and change-detection thresholds are designed.",
+    "The learned model predicts consequences; this benchmark does not establish personality or social cognition.",
+    "No navigation distance, occlusion, telemetry delay, or perception errors are modeled here.",
+    "All baselines know when resource is satisfied; only learned_outcomes uses past outcomes in its choices."
+  ],
+  "seed_start": 100,
+  "seeds": 20,
+  "episodes_per_phase": 24,
+  "designed_parameters": {
+    "resource_target": 0.8,
+    "meaningful_gain": 0.04,
+    "evidence_window": 12,
+    "initial_probes": 4,
+    "prior_conditional_gain": 0.35,
+    "interaction_cost": 0.005,
+    "distance_cost_per_metre": 0.015,
+    "maximum_information_value": 0.03
+  },
+  "summary": {
+    "learned_outcomes": {
+      "acquisition": {
+        "restoration_rate": 1,
+        "mean_interactions": 1.0208333333333335,
+        "late_first_choice_useful_rate": 1
+      },
+      "reversal": {
+        "restoration_rate": 1,
+        "mean_interactions": 1.1666666666666667,
+        "late_first_choice_useful_rate": 1
+      }
+    },
+    "random": {
+      "acquisition": {
+        "restoration_rate": 0.9958333333333333,
+        "mean_interactions": 1.9822916666666668,
+        "late_first_choice_useful_rate": 0.5145833333333334
+      },
+      "reversal": {
+        "restoration_rate": 0.99375,
+        "mean_interactions": 1.9708333333333334,
+        "late_first_choice_useful_rate": 0.5104166666666666
+      }
+    },
+    "no_memory_nearest": {
+      "acquisition": {
+        "restoration_rate": 0.5,
+        "mean_interactions": 4.5,
+        "late_first_choice_useful_rate": 0.5
+      },
+      "reversal": {
+        "restoration_rate": 0.5,
+        "mean_interactions": 4.5,
+        "late_first_choice_useful_rate": 0.5
+      }
+    }
+  },
+  "checks": {
+    "all_outcomes_deduplicated": true,
+    "all_restarts_exact": true,
+    "learned_restores_in_all_synthetic_episodes": true,
+    "learned_late_choices_follow_reversed_outcomes": true,
+    "learned_uses_fewer_interactions_than_random": true,
+    "learned_beats_no_memory_late_choice": true,
+    "sensor_noise_exhausts_finite_probe_budget": true
+  },
+  "passed": true,
+  "source_sha256": {
+    "src/bb8_rl/purpose.py": "0086275c982c2f317f2f1daeba8f4811b5509ad2cc3d7c28b1dbff4ca8f9a075",
+    "scripts/benchmark-purpose.py": "d7ddf7582b9ce45e07e74491faa3382878273d02ff9be66e3181fa7e4f6dbae3"
+  }
+}

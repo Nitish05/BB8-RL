@@ -70,3 +70,15 @@ for (const episodes of [-1, 1.5, Infinity, "2"]) {
 }
 assert.equal(agencyView({ ...state, agency: { ...state.agency, episodes: 1 } }, session).experienceText, "1 experience remembered");
 console.log("Agency UI tests passed: explicit start, session readiness, cancellation, missing-server fallback, historical experience and stale-intention suppression.");
+
+const purposeState = {...state, agency: {...state.agency, selection_policy: "learned_station_outcomes", resource: .76, target: .8, status: "paused", preferences: [{label: "Station B", value: .3, visits: 2, response_probability: .75}]}};
+assert.equal(agencyView(purposeState, session).buttonText, "Start learning");
+assert.equal(agencyView(purposeState, session).resource, .76);
+assert.equal(agencyView(purposeState, session).preferences[0].response, "75% predicted response");
+assert.equal(agencyView({...purposeState, agency: {...purposeState.agency, enabled: true, status: "satisfied"}}, session).status, "Need satisfied · waiting");
+assert.equal(agencyView({...purposeState, agency: {...purposeState.agency, enabled: true, status: "interacting"}}, session).status, "Testing a station response");
+for (const resource of [NaN, Infinity, -1, 2, ".8"]) {
+  assert.equal(agencyView({...purposeState, agency: {...purposeState.agency, resource}}, session).resource, null);
+}
+assert.equal(agencyView({...purposeState, localization_status: "lost", localization_valid: false, agency: {...purposeState.agency, enabled: true}}, session).canToggle, true);
+console.log("Purpose UI tests passed: explicit start, simulated resource, learned predictions, satisfied idle and loss-safe pause.");

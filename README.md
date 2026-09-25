@@ -32,7 +32,7 @@ evidence, route and uncertainty behind each motion request.
 | Occlusion handling | Use brief valid predictions; cancel the goal when localization expires and show a historical last-seen marker |
 | Visual recovery | Validate returning observations across multiple frames; stay stopped until a new destination is requested |
 | Stop and Reset | Cancel the goal, clear queued motion, or return to the demo start |
-| Experimental exploration | Visit reachable map targets not yet completed by exploration; retain completion across sessions and pause when no new target is reachable |
+| Purposeful interaction experiment | Learn station response probabilities from simulated resource changes; choose useful interactions, retain outcomes and wait when the need is satisfied |
 | Reproducible evidence | Retain commands, model hashes and separate physics records for independent scoring |
 
 **Destinations depend on map coverage.** A clear cell alone does not establish
@@ -144,30 +144,40 @@ reports rejections and stops; it does not promise every click is reachable.
 the run arrives in 29.85 simulated seconds. One- and three-camera runs are
 recorded separately in the [scan-coverage report](docs/M7_12_SCAN_COVERAGE.md).*
 
-**Let BB-8 choose a destination**
+**Give movement a testable purpose**
 
-Select **Start exploring** in the experimental exploration panel after the camera
-position is ready. BB-8 considers estimated-map targets without a completed
-autonomous visit, checks their routes, then uses the existing guarded SAC
-controller. Completed targets are excluded using saved history before limiting
-planner work. Farther candidates are checked in bounded batches. When no new
-target is reachable, exploration pauses instead of starting another lap.
-Manual destinations remain available, including places already visited.
+Select **Start learning** under **A reason to move** after camera localization is
+ready. In this experiment, BB-8 starts with a simulated resource at 35% and a
+target of 80%. It learns which of two virtual station zones restores that
+resource. The choice model predicts each station's response from remembered
+interactions and compares useful gain, information and cost with waiting.
 
-**Pause exploration**, **Stop**, a manual destination, Reset, a camera-mode
-change, a lost browser heartbeat or expired localization cancels exploration.
-Memory remains, but movement never starts automatically after a restart or
-visual recovery. The default SQLite file is `work/agency/bb8.sqlite3`; use
-`--agency-memory /path/to/memory.sqlite3` to select another file.
+Arrival earns nothing. A separately requested, stationary one-second interaction
+produces a resource reading; an ineffective response is remembered too. Movement
+consumes a small amount of resource. Idle does not drain it to force another trip.
+The panel shows the question, predicted response, actual result and current need.
+The same SAC controller and camera-based route checks handle every approach.
 
-This is a **map-target coverage baseline**, not learned social personality.
-The no-repeat rule is prescribed; stored value scores reflect navigation outcomes
-and can rank unfinished candidates. Choosing meaningful activities from semantic
-experience remains separate work. A
-separate compact Qwen vision-language trial can rank offered visual-attention
-IDs, but is **not connected to live movement**. See the
-[implementation plan](docs/AGENCY_PLAN.md), [controlled comparisons](docs/AGENCY_EXPERIMENT.md)
-and [local model trial](docs/SEMANTIC_TRIAL.md).
+**Pause learning**, **Stop**, a manual destination, Reset, a camera-mode change,
+lost browser heartbeat or expired localization cancels autonomy. Restart and
+visual recovery never resume it automatically. Reset starts a fresh resource
+episode while retaining learned effects. The SQLite file defaults to
+`work/agency/bb8.sqlite3`; override it with `--agency-memory /path/to/memory.sqlite3`.
+New outcome tables are separate from the earlier arrival-reward experiment.
+
+The resource and station effects are **explicitly simulated telemetry**, not a
+real battery, RGB-recognized objects or camera-observed charging. The two marked
+zones are declared task locations. This is learned action consequence prediction
+under an engineered motivation; it does not establish personality or social
+understanding. See the [implementation plan](docs/PURPOSE_PLAN.md) and
+[results](docs/PURPOSE_RESULTS.md).
+
+The earlier finite map-coverage diagnostic is available with
+`--agency-mode coverage`; it uses **Start exploring**, excludes completed targets
+and pauses when none is reachable. A separate compact Qwen vision-language trial
+can rank offered visual-attention IDs but is not connected to live movement. See
+the [coverage correction](docs/AGENCY_COVERAGE_FIX.md) and
+[local model trial](docs/SEMANTIC_TRIAL.md).
 
 ![Actual three-camera autonomous exploration replay](docs/media/agency-exploration.gif)
 
@@ -186,6 +196,8 @@ This is a selected development route.*
 
 | Experiment | Recorded result | Scope |
 |---|---|---|
+| Purposeful station interactions | One- and three-camera runs each learned 3 station outcomes, restored the simulated resource and idled; Stop and durable disabled restart passed | Revised shared virtual-station fixture; [results and original single-camera failure](docs/PURPOSE_RESULTS.md) |
+| Outcome-model comparison | 1.021 interactions per need during acquisition and 1.167 after reversal, versus random 1.982 / 1.971 | 120 designed synthetic cases plus 20 noise cases; not personality evidence |
 | Corrected map-target exploration | 3 independently valid arrivals at 3 distinct targets; no successful revisits or contacts | One three-camera synthetic-room run; [full results](docs/AGENCY_COVERAGE_FIX.md) |
 | Original autonomous prototype | 3 valid trips at only 2 places; repeated shuttling fails the revised exploration criterion | Historical failure retained; [coverage correction](docs/AGENCY_COVERAGE_FIX.md) |
 | Localization loss and recovery | 9/9 fixed native outcomes; recovery after a five-second input outage; zero contacts or premature arrivals | M7.13; unchanged motion limits, explicit new goal after recovery |
@@ -220,6 +232,10 @@ flowchart LR
     Guard --> Adapter[Existing Genesis actuator]
     Adapter --> World[Genesis World]
     World --> RGB
+    World --> Sensors[Simulated resource and station telemetry]
+    Sensors --> Choice[Learned station outcome model]
+    Experience[Persistent interaction evidence] --> Choice
+    Choice -->|certified task destination| Guard
     World -. scoring only .-> Audit[Independent physics / visibility audit]
     Worker -->|frames / estimate / route| UI
 ```
@@ -227,8 +243,11 @@ flowchart LR
 The server binds only to loopback. A spawned process owns Genesis and the models,
 keeping the interface responsive during rendering. Goal generations prevent stale
 requests from resuming after Stop or reset. Browser heartbeat loss cancels motion.
-RGB estimates, map evidence and command acknowledgements feed control; simulator
-pose, velocity and renderer masks are isolated to scoring.
+RGB estimates, map evidence and command acknowledgements feed navigation.
+Simulator pose and velocity also drive world-side virtual station mechanics;
+only resource telemetry crosses into the high-level chooser. True pose, velocity
+and renderer masks never replace the navigation estimate. Independent audit uses
+the separate physics and visibility records.
 
 The original raw prediction bound remains in diagnostics even after it becomes
 unusable and continues growing. A separate conditional braking region describes

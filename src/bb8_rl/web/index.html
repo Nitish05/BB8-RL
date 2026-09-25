@@ -70,14 +70,15 @@
 
       <section id="agency-panel" class="agency-panel panel" aria-labelledby="agency-title" data-enabled="false">
         <div class="agency-heading">
-          <div><p class="agency-caption">Experimental · map target coverage</p><h2 id="agency-title">Autonomous exploration</h2><p class="agency-description">Visits targets not previously reached, then pauses when none are reachable.</p></div>
-          <button id="autonomy-button" class="button secondary-button" type="button" disabled aria-pressed="false" aria-describedby="agency-help">Start exploring</button>
+          <div><p id="agency-caption" class="agency-caption">Experimental · learned interaction outcomes</p><h2 id="agency-title">A reason to move</h2><p id="agency-description" class="agency-description">Learn which station restores a depleted resource, then wait when the need is satisfied.</p></div>
+          <button id="autonomy-button" class="button secondary-button" type="button" disabled aria-pressed="false" aria-describedby="agency-help">Start learning</button>
         </div>
         <div class="agency-state" role="status" aria-live="polite" aria-atomic="true"><strong id="agency-status">Waiting for the local app</strong><p id="agency-message">Exploration starts only when you choose it.</p></div>
+        <div id="purpose-resource" class="purpose-resource" hidden><label for="resource-meter">Simulated resource <strong id="resource-value">—</strong></label><progress id="resource-meter" max="1" value="0"></progress><p>Target: 80%. Station zones are virtual task fixtures. Effects come from simulation telemetry; camera feeds locate BB-8.</p></div>
         <div id="agency-intention" class="agency-intention" hidden><span>Current intention</span><strong id="agency-intention-label">—</strong><p id="agency-intention-explanation"></p></div>
         <p id="agency-recent" class="agency-recent" hidden><span>Latest outcome</span> <span id="agency-recent-summary"></span></p>
-        <div class="agency-memory"><span id="agency-experiences">0 experiences remembered</span><details id="agency-preferences" hidden><summary>Places with experience</summary><ol id="agency-preference-list"></ol></details></div>
-        <p id="agency-help" class="agency-help">Stop or a manual destination pauses exploration. Completed targets stay remembered after Reset.</p>
+        <div class="agency-memory"><span id="agency-experiences">0 experiences remembered</span><details id="agency-preferences" hidden><summary id="agency-preference-title">Learned station responses</summary><ol id="agency-preference-list"></ol></details></div>
+        <p id="agency-help" class="agency-help">Stop or a manual destination pauses learning. Reset starts a new resource episode and keeps learned outcomes. This is an engineered motivation experiment, not a personality claim.</p>
       </section>
 
       <div class="workspace-grid">

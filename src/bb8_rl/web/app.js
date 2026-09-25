@@ -53,6 +53,8 @@
     const agency = state.agency && typeof state.agency === "object" && !Array.isArray(state.agency) ? state.agency : null;
     const cleanText = (value, fallback = "", limit = 260) => typeof value === "string" && value.trim() ? value.trim().slice(0, limit) : fallback;
     const available = agency?.available === true;
+    const purpose = agency?.selection_policy === "learned_station_outcomes";
+    const resource = purpose && Number.isFinite(agency.resource) && agency.resource >= 0 && agency.resource <= 1 ? agency.resource : null;
     const enabled = agency?.enabled === true;
     const connected = session.connected === true;
     const localization = localizationView(state);
@@ -63,21 +65,24 @@
     const recentExperience = cleanText(agency?.recent_experience?.summary) || null;
     const intention = connected && enabled && hasPosition && agency?.intention && finitePoint(agency.intention.goal) ? {
       label: cleanText(agency.intention.label, "Visit a selected place", 100),
-      explanation: cleanText(agency.intention.explanation),
+      explanation: [cleanText(agency.intention.question), cleanText(agency.intention.explanation)].filter(Boolean).join(" "),
     } : null;
     const preferences = (Array.isArray(agency?.preferences) ? agency.preferences : [])
       .filter((item) => item && Number.isFinite(item.value) && Number.isSafeInteger(item.visits) && item.visits > 0)
       .slice().sort((left, right) => right.value - left.value).slice(0, 5)
-      .map((item) => ({ label: cleanText(item.label, "Remembered place", 100), visits: item.visits }));
+      .map((item) => ({ label: cleanText(item.label, "Remembered place", 100), visits: item.visits,
+        ...(purpose && Number.isFinite(item.response_probability) && item.response_probability >= 0 && item.response_probability <= 1 ? {response: `${Math.round(item.response_probability * 100)}% predicted response`} : {}),
+      }));
     const status = !connected ? "Waiting for connection" : !agency ? "Unavailable in this session"
       : !hasPosition ? localization.label : agency.status === "exhausted" ? "No new reachable target"
-        : enabled ? (agency.status === "checking" ? "Checking routes" : "Exploring") : available ? "Exploration paused" : "Exploration unavailable";
+        : purpose ? (enabled ? ({choosing: "Comparing possible outcomes", travelling: "Approaching a station", interacting: "Testing a station response", remembering: "Remembering the outcome", satisfied: "Need satisfied · waiting", idle: "No useful action · waiting", waiting: "Waiting for an observation"}[agency.status] || "Learning") : available ? "Learning paused" : "Learning unavailable")
+          : enabled ? (agency.status === "checking" ? "Checking routes" : "Exploring") : available ? "Exploration paused" : "Exploration unavailable";
     const message = !connected ? "Exploration controls will return when the local app reconnects."
       : !agency ? "This session does not provide autonomous exploration. You can still choose a destination."
         : !hasPosition ? localization.message
           : cleanText(agency.message, enabled ? "Selecting map targets without a completed exploration visit." : available ? "Start exploring to let BB-8 choose its next destination." : "Exploration is not ready in this session.");
-    return { available, enabled, canToggle, status, message, intention, preferences, recentExperience,
-      buttonText: enabled ? "Pause exploration" : "Start exploring",
+    return { available, enabled, canToggle, status, message, intention, preferences, recentExperience, purpose, resource,
+      buttonText: purpose ? enabled ? "Pause learning" : "Start learning" : enabled ? "Pause exploration" : "Start exploring",
       experienceText: `${episodes} ${episodes === 1 ? "experience" : "experiences"} remembered`,
     };
   }
@@ -196,6 +201,14 @@
     $("agency-panel").dataset.enabled = String(connected && agency.enabled);
     text("agency-status", agency.status);
     text("agency-message", agency.message);
+    text("agency-caption", agency.purpose ? "Experimental · learned interaction outcomes" : "Diagnostic · map target coverage");
+    text("agency-title", agency.purpose ? "A reason to move" : "Autonomous exploration");
+    text("agency-description", agency.purpose ? "Learn which station restores a depleted resource, then wait when the need is satisfied." : "Visit reachable targets not previously completed, then pause.");
+    text("agency-preference-title", agency.purpose ? "Learned station responses" : "Places with experience");
+    text("agency-help", agency.purpose ? "Stop or a manual destination pauses learning. Reset starts a new resource episode and keeps learned outcomes. This is an engineered motivation experiment, not a personality claim." : "Stop or a manual destination pauses exploration. Completed targets stay remembered after Reset.");
+    $("purpose-resource").hidden = !agency.purpose;
+    text("resource-value", agency.resource === null ? "Awaiting telemetry" : `${Math.round(agency.resource * 100)}%`);
+    $("resource-meter").value = agency.resource ?? 0;
     $("agency-intention").hidden = !agency.intention;
     text("agency-intention-label", agency.intention?.label || "—");
     text("agency-intention-explanation", agency.intention?.explanation || "");
@@ -211,7 +224,7 @@
         const label = document.createElement("span");
         const visits = document.createElement("span");
         label.textContent = preference.label;
-        visits.textContent = `${preference.visits} ${preference.visits === 1 ? "outcome" : "outcomes"}`;
+        visits.textContent = `${preference.visits} ${preference.visits === 1 ? "outcome" : "outcomes"}${preference.response ? ` · ${preference.response}` : ""}`;
         item.append(label, visits);
         return item;
       }));
@@ -511,6 +524,17 @@
       const a = project([map.bounds[0], y]), b = project([map.bounds[2], y]);
       context.beginPath(); context.moveTo(...a); context.lineTo(...b); context.stroke();
     }
+    // Declared virtual task zones, not camera-recognized objects or map occupancy.
+    const stations = Array.isArray(state?.agency?.stations) ? state.agency.stations.slice(0, 8) : [];
+    for (const station of stations) {
+      if (!finitePoint(station.goal)) continue;
+      const [sx, sy] = project(station.goal);
+      context.beginPath(); context.arc(sx, sy, 0.14 * rect.scale, 0, Math.PI * 2);
+      context.fillStyle = "#8566bb20"; context.fill(); context.strokeStyle = "#76589f"; context.lineWidth = 1.3;
+      context.setLineDash([3, 3]); context.stroke(); context.setLineDash([]);
+      context.font = "600 10px system-ui, sans-serif"; context.fillStyle = "#604782";
+      context.fillText(typeof station.label === "string" ? station.label.slice(0, 40) : "Station", sx - 24, sy - 0.14 * rect.scale - 5);
+    }
     const route = localization.showRoute && Array.isArray(state?.route) ? state.route.filter(finitePoint) : [];
     if (route.length > 1) {
       context.beginPath(); route.forEach((point, index) => { const projected = project(point); if (index === 0) context.moveTo(...projected); else context.lineTo(...projected); });
@@ -610,9 +634,9 @@
     const agency = agencyView(state || {}, { connected, token, mapReady: !!map, pendingCommands });
     if (!agency.canToggle) return;
     const enabled = !agency.enabled;
-    if (enabled) { selectedGoal = null; text("map-selection", "Autonomous exploration requested"); }
-    void command({ action: "autonomy", enabled }, enabled ? "Exploration requested" : "Pause requested",
-      enabled ? "BB-8 will choose map targets without a completed exploration visit." : "Waiting for the controller to pause exploration and stop motion.");
+    if (enabled) { selectedGoal = null; text("map-selection", agency.purpose ? "Purposeful interaction requested" : "Autonomous exploration requested"); }
+    void command({ action: "autonomy", enabled }, enabled ? agency.purpose ? "Learning requested" : "Exploration requested" : "Pause requested",
+      enabled ? agency.purpose ? "BB-8 will compare station outcomes with its current simulated resource need." : "BB-8 will choose map targets without a completed exploration visit." : "Waiting for the controller to pause autonomy and stop motion.");
   });
   window.addEventListener("keydown", (event) => { if (event.key === "Escape" && connected && token) { event.preventDefault(); stop(); } });
   $("reset-button").addEventListener("click", () => { selectedGoal = null; text("map-selection", "No target selected"); frameEpoch += 1; void command({ action: "reset" }, "Reset requested", "The episode, position estimate and route will restart."); });

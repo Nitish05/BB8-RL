@@ -191,6 +191,7 @@ def run_mode(args, mode):
         "mode": mode,
         "run_dir": str(output / "worker"),
         "agency_memory": str(memory),
+        "agency_mode": "coverage",
         "generation": 0,
         "max_steps": 3000,
         "save_frames": True,

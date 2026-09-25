@@ -126,6 +126,22 @@ These are synthetic-room behaviors, not physical-robot guarantees.
 
 ## Launch options and evidence
 
+The default **A reason to move** panel runs a purposeful interaction experiment.
+Choose **Start learning** to let BB-8 learn which marked virtual station restores
+its explicitly simulated resource. The target is 80%; only a completed stationary
+interaction provides an outcome. Arrival gives no reward. BB-8 waits when the
+need is satisfied or no available interaction offers useful benefit.
+
+The zones are task coordinates on the map, and resource changes are simulation
+telemetry. They are not objects recognized from RGB or real charging equipment.
+Camera-based localization, SAC navigation and route guards still handle movement.
+Stop, manual destinations and localization expiry cancel learning. Reset creates
+a new resource episode at 35% and retains station knowledge; nothing resumes
+automatically. Use `--agency-memory /path/to/memory.sqlite3` for separate memory.
+See the [plan](PURPOSE_PLAN.md) and [results](PURPOSE_RESULTS.md).
+
+For the older finite map-coverage diagnostic, launch with `--agency-mode coverage`.
+
 ```bash
 ./scripts/launch-control-room.sh --mode 2
 ./scripts/launch-control-room.sh --mode 3 --port 8766

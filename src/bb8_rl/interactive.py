@@ -94,10 +94,14 @@ class Supervisor:
         worker_target=None,
         control_profile=None,
         agency_memory=None,
+        agency_mode="purpose",
     ):
         from .control_profiles import get_profile
 
         self.control_profile = get_profile(control_profile).name
+        if agency_mode not in ("purpose", "coverage"):
+            raise ValueError("Agency mode must be purpose or coverage")
+        self.agency_mode = agency_mode
         self.agency_memory = Path(
             agency_memory or ROOT / "work/agency/bb8.sqlite3"
         ).resolve()
@@ -141,7 +145,10 @@ class Supervisor:
                 "intention": None,
                 "episodes": 0,
                 "preferences": [],
-                "message": "Loading persistent exploration memory…",
+                "message": "Loading persistent outcome memory…",
+                "selection_policy": "learned_station_outcomes"
+                if self.agency_mode == "purpose"
+                else "unvisited_map_targets",
             },
         }
         try:
@@ -166,6 +173,7 @@ class Supervisor:
                 "token": self.token,
                 "generation": self.generation,
                 "control_profile": getattr(self, "control_profile", None),
+                "agency_mode": getattr(self, "agency_mode", "purpose"),
                 "scope": "Synthetic room · lockstep simulation · estimated map",
             }
 
@@ -356,6 +364,7 @@ class Supervisor:
                 "mode": self.state["mode"],
                 "generation": self.generation,
                 "control_profile": getattr(self, "control_profile", None),
+                "agency_mode": getattr(self, "agency_mode", "purpose"),
                 "agency_memory": str(
                     getattr(self, "agency_memory", ROOT / "work/agency/bb8.sqlite3")
                 ),
@@ -554,7 +563,13 @@ def main(argv=None):
         "--agency-memory",
         type=Path,
         default=ROOT / "work/agency/bb8.sqlite3",
-        help="Persistent exploration memory; never enables motion on launch",
+        help="Persistent outcome memory; never enables motion on launch",
+    )
+    parser.add_argument(
+        "--agency-mode",
+        choices=("purpose", "coverage"),
+        default="purpose",
+        help="Learn station effects, or run the legacy map-coverage diagnostic",
     )
     args = parser.parse_args(argv)
     if not 0 <= args.port <= 65535:
@@ -568,6 +583,7 @@ def main(argv=None):
         mode=args.mode,
         control_profile=args.control_profile,
         agency_memory=args.agency_memory,
+        agency_mode=args.agency_mode,
     )
     try:
         server = ThreadingHTTPServer(("127.0.0.1", args.port), make_handler(supervisor))

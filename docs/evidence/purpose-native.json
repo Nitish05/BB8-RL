@@ -1,0 +1,180 @@
+{
+  "scope": "Synthetic virtual-station experiment in a revised common fixture; original single-camera approach failure retained separately.",
+  "stations": {
+    "station-a": [
+      0,
+      1
+    ],
+    "station-b": [
+      -0.5,
+      1
+    ]
+  },
+  "all_passed": true,
+  "runs": [
+    {
+      "mode": 1,
+      "passed": true,
+      "checks": {
+        "learning_physics_and_stop": true,
+        "station_effects_independently_valid": true,
+        "learned_from_consequences_not_arrivals": true,
+        "resource_need_satisfied_and_idle": true,
+        "restart_physics_and_stop": true,
+        "outcomes_durable_restart_disabled": true
+      },
+      "frames": 321,
+      "simulation_seconds": 16.05,
+      "collision": false,
+      "boundary": false,
+      "invalid_arrival_frames": 0,
+      "effects": [
+        {
+          "request_id": "cad33c324cc24f5dbdf4e47b3ab5e346",
+          "station_id": "station-a",
+          "before": 0.35,
+          "after": 0.35,
+          "timestamp": 2.805,
+          "source": "simulated_station_telemetry"
+        },
+        {
+          "request_id": "a19ecfce30ef40eeb391944bdbef5436",
+          "station_id": "station-b",
+          "before": 0.33754868708126007,
+          "after": 0.78754868708126,
+          "timestamp": 10.855,
+          "source": "simulated_station_telemetry"
+        },
+        {
+          "request_id": "178c0142e0a448f390255e7b901686aa",
+          "station_id": "station-b",
+          "before": 0.7875469952848938,
+          "after": 1.0,
+          "timestamp": 12.905000000000001,
+          "source": "simulated_station_telemetry"
+        }
+      ],
+      "learning": {
+        "episodes": 3,
+        "initial_episodes": 0,
+        "observed_effects_by_station": {
+          "station-a": 1,
+          "station-b": 2
+        },
+        "counts_match_unique_effects": true,
+        "ineffective_station_observed": true,
+        "useful_station_observed": true,
+        "useful_station_has_higher_learned_expected_gain": true,
+        "no_learning_before_effect_telemetry": true,
+        "errors": [],
+        "passed": true
+      },
+      "satisfied": {
+        "observed_sim_seconds": 1.049999999999999,
+        "resource": 1.0,
+        "no_goal_or_motion": true,
+        "passed": true
+      },
+      "stop": {
+        "accepted_sim_time": 15.0,
+        "observed_sim_seconds": 1.0500000000000007,
+        "requested_actions_zero": true,
+        "agency_disabled": true,
+        "final_half_second_max_physics_speed_m_s": 4.473827524541891e-09,
+        "passed": true
+      },
+      "durability": {
+        "persistent_outcomes_preferences_exact": true,
+        "episode_resource_reset_to_035": true,
+        "disabled_no_goal_request_or_action": true,
+        "no_enable_command_sent": true,
+        "pre_stop_observation_seconds": 1.05,
+        "pre_stop_max_physics_speed_m_s": 1.817865149443429e-15,
+        "passed": true
+      },
+      "source_files_unchanged": true
+    },
+    {
+      "mode": 3,
+      "passed": true,
+      "checks": {
+        "learning_physics_and_stop": true,
+        "station_effects_independently_valid": true,
+        "learned_from_consequences_not_arrivals": true,
+        "resource_need_satisfied_and_idle": true,
+        "restart_physics_and_stop": true,
+        "outcomes_durable_restart_disabled": true
+      },
+      "frames": 322,
+      "simulation_seconds": 16.1,
+      "collision": false,
+      "boundary": false,
+      "invalid_arrival_frames": 0,
+      "effects": [
+        {
+          "request_id": "376c7a2c9c7643e289c9f32d0dc37774",
+          "station_id": "station-a",
+          "before": 0.35,
+          "after": 0.35,
+          "timestamp": 2.805,
+          "source": "simulated_station_telemetry"
+        },
+        {
+          "request_id": "881273bc93344eeaa83c18789c72d0f3",
+          "station_id": "station-b",
+          "before": 0.3374402915239287,
+          "after": 0.7874402915239287,
+          "timestamp": 10.905,
+          "source": "simulated_station_telemetry"
+        },
+        {
+          "request_id": "5bb5010200924b019c621f975f77c329",
+          "station_id": "station-b",
+          "before": 0.7874386350609902,
+          "after": 1.0,
+          "timestamp": 12.955,
+          "source": "simulated_station_telemetry"
+        }
+      ],
+      "learning": {
+        "episodes": 3,
+        "initial_episodes": 0,
+        "observed_effects_by_station": {
+          "station-a": 1,
+          "station-b": 2
+        },
+        "counts_match_unique_effects": true,
+        "ineffective_station_observed": true,
+        "useful_station_observed": true,
+        "useful_station_has_higher_learned_expected_gain": true,
+        "no_learning_before_effect_telemetry": true,
+        "errors": [],
+        "passed": true
+      },
+      "satisfied": {
+        "observed_sim_seconds": 1.0500000000000007,
+        "resource": 1.0,
+        "no_goal_or_motion": true,
+        "passed": true
+      },
+      "stop": {
+        "accepted_sim_time": 15.05,
+        "observed_sim_seconds": 1.0500000000000007,
+        "requested_actions_zero": true,
+        "agency_disabled": true,
+        "final_half_second_max_physics_speed_m_s": 2.6705621280495045e-09,
+        "passed": true
+      },
+      "durability": {
+        "persistent_outcomes_preferences_exact": true,
+        "episode_resource_reset_to_035": true,
+        "disabled_no_goal_request_or_action": true,
+        "no_enable_command_sent": true,
+        "pre_stop_observation_seconds": 1.05,
+        "pre_stop_max_physics_speed_m_s": 1.817865149443429e-15,
+        "passed": true
+      },
+      "source_files_unchanged": true
+    }
+  ]
+}
