@@ -32,7 +32,7 @@ evidence, route and uncertainty behind each motion request.
 | Occlusion handling | Use brief valid predictions; cancel the goal when localization expires and show a historical last-seen marker |
 | Visual recovery | Validate returning observations across multiple frames; stay stopped until a new destination is requested |
 | Stop and Reset | Cancel the goal, clear queued motion, or return to the demo start |
-| Experimental exploration | Explicitly enable self-selected reachable places; remember outcomes and update place preferences across sessions |
+| Experimental exploration | Visit reachable map targets not yet completed by exploration; retain completion across sessions and pause when no new target is reachable |
 | Reproducible evidence | Retain commands, model hashes and separate physics records for independent scoring |
 
 **Destinations depend on map coverage.** A clear cell alone does not establish
@@ -147,10 +147,12 @@ recorded separately in the [scan-coverage report](docs/M7_12_SCAN_COVERAGE.md).*
 **Let BB-8 choose a destination**
 
 Select **Start exploring** in the experimental exploration panel after the camera
-position is ready. BB-8 chooses among estimated-map places with certified routes,
-then uses the existing guarded SAC controller to reach the selected place. The
-panel explains the intention and shows remembered outcomes. Successful and
-rejected routes update a small learned value model; proposals alone do not.
+position is ready. BB-8 considers estimated-map targets without a completed
+autonomous visit, checks their routes, then uses the existing guarded SAC
+controller. Completed targets are excluded using saved history before limiting
+planner work. Farther candidates are checked in bounded batches. When no new
+target is reachable, exploration pauses instead of starting another lap.
+Manual destinations remain available, including places already visited.
 
 **Pause exploration**, **Stop**, a manual destination, Reset, a camera-mode
 change, a lost browser heartbeat or expired localization cancels exploration.
@@ -158,8 +160,10 @@ Memory remains, but movement never starts automatically after a restart or
 visual recovery. The default SQLite file is `work/agency/bb8.sqlite3`; use
 `--agency-memory /path/to/memory.sqlite3` to select another file.
 
-This is an initial **learned place-choice experiment**, not a completed social
-personality. Its designed utility currently measures navigation outcomes. A
+This is a **map-target coverage baseline**, not learned social personality.
+The no-repeat rule is prescribed; stored value scores reflect navigation outcomes
+and can rank unfinished candidates. Choosing meaningful activities from semantic
+experience remains separate work. A
 separate compact Qwen vision-language trial can rank offered visual-attention
 IDs, but is **not connected to live movement**. See the
 [implementation plan](docs/AGENCY_PLAN.md), [controlled comparisons](docs/AGENCY_EXPERIMENT.md)
@@ -167,9 +171,10 @@ and [local model trial](docs/SEMANTIC_TRIAL.md).
 
 ![Actual three-camera autonomous exploration replay](docs/media/agency-exploration.gif)
 
-*Recorded Genesis RGB, with self-selected places. Three-camera validation reached
-three goals across two distinct places. The one-camera attempt stopped after
-localization loss; both outcomes are retained in the [native report](docs/AGENCY_NATIVE_RESULTS.md).*
+*Historical prototype replay: three arrivals at only two places. This exposed
+the repeated-shuttling defect and does **not** pass the revised exploration test.
+The [original native report](docs/AGENCY_NATIVE_RESULTS.md) retains the evidence;
+the [coverage fix](docs/AGENCY_COVERAGE_FIX.md) documents the correction.*
 
 ## Measured evidence
 
@@ -181,7 +186,8 @@ This is a selected development route.*
 
 | Experiment | Recorded result | Scope |
 |---|---|---|
-| Autonomous place choice | Three-camera run: 3 valid trips; one-camera run: 0 arrivals, localization-loss stop | One synthetic room, two distinct reached places; [full results](docs/AGENCY_NATIVE_RESULTS.md) |
+| Corrected map-target exploration | 3 independently valid arrivals at 3 distinct targets; no successful revisits or contacts | One three-camera synthetic-room run; [full results](docs/AGENCY_COVERAGE_FIX.md) |
+| Original autonomous prototype | 3 valid trips at only 2 places; repeated shuttling fails the revised exploration criterion | Historical failure retained; [coverage correction](docs/AGENCY_COVERAGE_FIX.md) |
 | Localization loss and recovery | 9/9 fixed native outcomes; recovery after a five-second input outage; zero contacts or premature arrivals | M7.13; unchanged motion limits, explicit new goal after recovery |
 | Improved scan and reported destination | 25.2% more observed free space; one / two / three cameras arrive in 29.75 / 29.85 / 30.15 simulated seconds | M7.12; same room, unchanged control limits |
 | Revised-map regression | 12/12 intended outcomes: 10 valid arrivals and 2 braking controls; zero contacts or premature arrivals | Full second family; all 24 development attempts retained |

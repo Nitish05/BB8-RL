@@ -26,6 +26,11 @@ The first four steps are implemented in `bb8_rl.agency`, its tests and
 `scripts/audit-agency.py`. The live runtime integration is separate so the same
 chooser can be tested independently of physics and perception.
 
+The live [coverage correction](AGENCY_COVERAGE_FIX.md) now excludes completed
+map targets before invoking this selector. Its no-repeat rule is prescribed and
+separate from this synthetic value-learning comparison. A synthetic reversal
+score does not measure exploration quality or detect repeated navigation loops.
+
 ## What is learned
 
 The learned strategy is a **nonstationary activity-value learner**, a simple

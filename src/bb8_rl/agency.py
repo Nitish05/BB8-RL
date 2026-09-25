@@ -410,6 +410,8 @@ class AgencyEngine:
                     "goal": [row["x"], row["y"]],
                     "value": row["value"],
                     "visits": row["visits"],
+                    "arrivals": row["arrivals"],
+                    "rejections": row["rejections"],
                     "proposals": row["proposals"],
                     "learning_progress": row["learning_progress"],
                     "competence": row["arrivals"] / attempted if attempted else None,

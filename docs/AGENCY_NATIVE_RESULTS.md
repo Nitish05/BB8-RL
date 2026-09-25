@@ -1,5 +1,10 @@
 # Native autonomous navigation: first integration results
 
+**Historical result, corrected interpretation:** the original three-arrival
+criterion accepted a two-point shuttle. These logs pass movement checks but
+**fail the revised exploration criterion** of three distinct verified targets
+with no successful revisit. See the [coverage correction](AGENCY_COVERAGE_FIX.md).
+
 Recorded 24 September 2026 on Apple M5 Pro, 48 GB unified memory. Three-camera
 exploration completed **three independently verified arrivals**. The single-camera
 case lost localization during its first self-selected trip and remained paused;

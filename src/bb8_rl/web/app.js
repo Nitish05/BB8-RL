@@ -70,11 +70,12 @@
       .slice().sort((left, right) => right.value - left.value).slice(0, 5)
       .map((item) => ({ label: cleanText(item.label, "Remembered place", 100), visits: item.visits }));
     const status = !connected ? "Waiting for connection" : !agency ? "Unavailable in this session"
-      : !hasPosition ? localization.label : enabled ? "Exploring" : available ? "Exploration paused" : "Exploration unavailable";
+      : !hasPosition ? localization.label : agency.status === "exhausted" ? "No new reachable target"
+        : enabled ? (agency.status === "checking" ? "Checking routes" : "Exploring") : available ? "Exploration paused" : "Exploration unavailable";
     const message = !connected ? "Exploration controls will return when the local app reconnects."
       : !agency ? "This session does not provide autonomous exploration. You can still choose a destination."
         : !hasPosition ? localization.message
-          : cleanText(agency.message, enabled ? "Selecting destinations from remembered visit outcomes." : available ? "Start exploring to let BB-8 choose its next destination." : "Exploration is not ready in this session.");
+          : cleanText(agency.message, enabled ? "Selecting map targets without a completed exploration visit." : available ? "Start exploring to let BB-8 choose its next destination." : "Exploration is not ready in this session.");
     return { available, enabled, canToggle, status, message, intention, preferences, recentExperience,
       buttonText: enabled ? "Pause exploration" : "Start exploring",
       experienceText: `${episodes} ${episodes === 1 ? "experience" : "experiences"} remembered`,
@@ -611,7 +612,7 @@
     const enabled = !agency.enabled;
     if (enabled) { selectedGoal = null; text("map-selection", "Autonomous exploration requested"); }
     void command({ action: "autonomy", enabled }, enabled ? "Exploration requested" : "Pause requested",
-      enabled ? "BB-8 will choose destinations using remembered visit outcomes." : "Waiting for the controller to pause exploration and stop motion.");
+      enabled ? "BB-8 will choose map targets without a completed exploration visit." : "Waiting for the controller to pause exploration and stop motion.");
   });
   window.addEventListener("keydown", (event) => { if (event.key === "Escape" && connected && token) { event.preventDefault(); stop(); } });
   $("reset-button").addEventListener("click", () => { selectedGoal = null; text("map-selection", "No target selected"); frameEpoch += 1; void command({ action: "reset" }, "Reset requested", "The episode, position estimate and route will restart."); });

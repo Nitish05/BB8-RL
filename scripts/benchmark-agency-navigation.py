@@ -44,7 +44,30 @@ def read_jsonl(path):
     )
 
 
-def score_completed(output):
+def score_exploration(arrivals, required_distinct):
+    """Score destination diversity after independent arrival verification.
+
+    Arrival episodes and unique intention IDs alone do not establish exploration:
+    A -> B -> A must fail even though it contains three successful trips.
+    """
+    successful = [arrival for arrival in arrivals if arrival["independently_valid"]]
+    seen, repeated = set(), []
+    for arrival in successful:
+        destination = tuple(arrival["goal"])
+        if destination in seen:
+            repeated.append(arrival)
+        seen.add(destination)
+    return {
+        "valid_arrival_episodes": len(successful),
+        "distinct_valid_destinations": len(seen),
+        "distinct_valid_destination_goals": [list(goal) for goal in sorted(seen)],
+        "repeated_successful_destinations": repeated,
+        "required_distinct_destinations": required_distinct,
+        "exploration_passed": len(seen) >= required_distinct and not repeated,
+    }
+
+
+def score_completed(output, required_distinct=3):
     """Read privileged records only after the native worker has ended."""
     spec = importlib.util.spec_from_file_location(
         "independent_interactive_audit", ROOT / "scripts/audit-interactive.py"
@@ -134,7 +157,7 @@ def score_completed(output):
             {v["candidate_id"] for v in intentions.values()}
         ),
         "arrival_episodes": arrivals,
-        "valid_arrival_episodes": sum(a["independently_valid"] for a in arrivals),
+        **score_exploration(arrivals, required_distinct),
         "independent_valid_arrival_frames": report["valid_arrivals"],
         "premature_or_unobservable_arrival_frames": report[
             "premature_or_unobservable_arrivals"
@@ -186,6 +209,7 @@ def run_mode(args, mode):
     enabled_at = stopped_at = stop_sent_wall = None
     enabled_sent = stop_sent = False
     arrival_count, previous_arrival = 0, None
+    reported_destinations = set()
     errors, state = [], None
     ending = None
     try:
@@ -233,18 +257,20 @@ def run_mode(args, mode):
             )
             if arrival is not None and arrival != previous_arrival:
                 arrival_count += 1
+                if goal is not None:
+                    reported_destinations.add(goal)
             previous_arrival = arrival
             if (
                 not stop_sent
                 and enabled_sent
                 and (
-                    arrival_count >= args.arrivals
+                    len(reported_destinations) >= args.arrivals
                     or sim - enabled_at >= args.sim_seconds
                 )
             ):
                 ending = (
-                    "arrival_limit"
-                    if arrival_count >= args.arrivals
+                    "distinct_destination_limit"
+                    if len(reported_destinations) >= args.arrivals
                     else "simulation_limit"
                 )
                 if send(commands, {"action": "stop", "generation": 2}):
@@ -264,6 +290,7 @@ def run_mode(args, mode):
                             "sim_s": round(sim, 2),
                             "phase": state.get("phase"),
                             "arrivals_seen": arrival_count,
+                            "distinct_destinations_seen": len(reported_destinations),
                             "agency": state.get("agency", {}).get("status"),
                         }
                     ),
@@ -299,12 +326,16 @@ def run_mode(args, mode):
         "stop_sent": stop_sent,
         "ending": ending,
         "supervised_arrival_episodes": arrival_count,
+        "supervised_distinct_reported_destinations": len(reported_destinations),
+        "supervised_reported_destination_goals": [
+            list(goal) for goal in sorted(reported_destinations)
+        ],
         "wall_seconds": time.monotonic() - started,
         "last_state": state,
     }
     write_json(output / "harness.json", harness)
     try:
-        summary = score_completed(output)
+        summary = score_completed(output, required_distinct=args.arrivals)
     except Exception as exc:  # noqa: BLE001 — retain native failures in denominator
         summary = {"scoring_failed": f"{type(exc).__name__}: {exc}"}
         write_json(output / "summary.json", summary)
@@ -314,7 +345,7 @@ def run_mode(args, mode):
         and process.exitcode == 0
         and summary.get("integrity_pass")
         and summary.get("source_files_unchanged")
-        and summary.get("valid_arrival_episodes", 0) >= args.arrivals
+        and summary.get("exploration_passed")
         and summary.get("stop", {}).get("passed")
     )
     write_json(output / "summary.json", summary)
@@ -324,6 +355,12 @@ def run_mode(args, mode):
                 "mode": mode,
                 "passed": summary["passed"],
                 "valid_arrivals": summary.get("valid_arrival_episodes"),
+                "distinct_valid_destinations": summary.get(
+                    "distinct_valid_destinations"
+                ),
+                "repeated_successful_destinations": len(
+                    summary.get("repeated_successful_destinations", [])
+                ),
                 "collision": summary.get("collision"),
                 "errors": errors,
             }
@@ -338,7 +375,12 @@ def main():
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--assets", type=Path, default=ROOT / "work/interactive-assets")
     parser.add_argument("--modes", type=int, nargs="+", choices=(1, 3), default=[1, 3])
-    parser.add_argument("--arrivals", type=int, default=3)
+    parser.add_argument(
+        "--arrivals",
+        type=int,
+        default=3,
+        help="Required distinct independently verified destinations, with no successful revisits.",
+    )
     parser.add_argument("--sim-seconds", type=float, default=120.0)
     parser.add_argument("--wall-seconds", type=float, default=600.0)
     args = parser.parse_args()
@@ -349,7 +391,7 @@ def main():
         or len(set(args.modes)) != len(args.modes)
     ):
         parser.error(
-            "Require ≤3 arrivals, ≤120 simulation seconds, ≤600 wall seconds, unique modes"
+            "Require ≤3 distinct destinations, ≤120 simulation seconds, ≤600 wall seconds, unique modes"
         )
     args.output = args.output.resolve()
     args.output.mkdir(parents=True, exist_ok=False)
@@ -358,7 +400,9 @@ def main():
         args.output / "protocol.json",
         {
             "modes": args.modes,
-            "maximum_arrivals": args.arrivals,
+            "required_distinct_verified_destinations": args.arrivals,
+            "supervision_stop_after_distinct_reported_destinations": args.arrivals,
+            "successful_revisits_allowed": False,
             "maximum_active_sim_seconds": args.sim_seconds,
             "maximum_worker_wall_seconds_before_stop": args.wall_seconds,
             "stop_observation_sim_seconds": 1.0,

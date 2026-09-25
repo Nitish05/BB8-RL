@@ -13,13 +13,16 @@ class AutonomyCoordinator:
         self.available = engine is not None
         self.intention = None
         self.recent_experience = None
-        self.message = "Start exploring to learn from visits."
+        self.message = "Start exploring to visit map targets not previously reached."
         self.status = "paused" if self.available else "unavailable"
         self.next_choice = 0.0
         self.active_since = 0.0
         self.guarded_since = None
         self.cooldowns = {}
         self.failures = 0
+        self.search_tried = set()
+        self.search_pending = False
+        self.cooldown_pending = False
         self._memory = {}
         if engine:
             try:
@@ -40,6 +43,10 @@ class AutonomyCoordinator:
             "message": self.message,
             "intention": self.intention,
             "recent_experience": self.recent_experience,
+            "selection_policy": "unvisited_map_targets",
+            "completed_targets": sum(
+                p.get("arrivals", 0) > 0 for p in self._memory.get("preferences", [])
+            ),
         }
 
     def _finish(self, now, outcome):
@@ -79,8 +86,12 @@ class AutonomyCoordinator:
         if not self.available:
             raise ValueError("Persistent exploration memory is unavailable")
         self.enabled = True
-        self.status, self.message = "choosing", "Choosing among certified places."
+        self.status, self.message = (
+            "choosing",
+            "Checking routes to unvisited map targets.",
+        )
         self.next_choice, self.failures = float(now), 0
+        self.search_tried.clear()
 
     def _candidates(self, session, state, now):
         # Stable half-metre anchors: IDs remain meaningful across restarts of
@@ -95,6 +106,12 @@ class AutonomyCoordinator:
             + state["position_radius"],
         )
         anchors = []
+        completed = {
+            p["candidate_id"]
+            for p in self._memory.get("preferences", [])
+            if p.get("arrivals", 0) > 0
+        }
+        self.search_pending = self.cooldown_pending = False
         for ix in range(-n + 1, n):
             for iy in range(-n + 1, n):
                 xy = (ix / 2, iy / 2)
@@ -103,15 +120,21 @@ class AutonomyCoordinator:
                 if (
                     max(abs(xy[0]), abs(xy[1])) >= extent - radius
                     or distance < 0.55
-                    or self.cooldowns.get(identifier, -1) > now
+                    or identifier in completed
                     or not session.memory.segment_free(xy, xy, radius)
                 ):
+                    continue
+                if self.cooldowns.get(identifier, -1) > now:
+                    self.cooldown_pending = True
+                    continue
+                if identifier in self.search_tried:
                     continue
                 anchors.append((distance, identifier, xy))
         accepted = []
         # Bounded planner work per decision. Each accepted route is independently
         # checked again by ControlSession when it starts moving on a later frame.
         for _, identifier, xy in sorted(anchors)[:12]:
+            self.search_tried.add(identifier)
             try:
                 session.route_with_clearance(pose, xy, radius)
             except ValueError:
@@ -119,6 +142,9 @@ class AutonomyCoordinator:
             accepted.append(Candidate(identifier, xy, f"Place ({xy[0]:g}, {xy[1]:g})"))
             if len(accepted) >= 5:
                 break
+        self.search_pending = any(
+            identifier not in self.search_tried for _, identifier, _ in anchors
+        )
         return accepted
 
     def tick(self, session, now):
@@ -143,11 +169,12 @@ class AutonomyCoordinator:
             if self.intention:
                 if state["phase"] == "arrived":
                     self._finish(now, "arrived")
+                    self.search_tried.clear()
                     self.failures = 0
                     self.next_choice = now + 1.0
                     self.status, self.message = (
                         "remembering",
-                        "Arrival remembered. Choosing again shortly.",
+                        "Target reached and recorded. It will not be selected again in this map.",
                     )
                     return (
                         False  # Preserve the arrived controller for independent audit.
@@ -170,6 +197,7 @@ class AutonomyCoordinator:
                         "idle", "Exploration route ended; selecting another place."
                     )
                     self._finish(now, "rejected")
+                    self.search_tried.clear()
                     self.failures += 1
                     self.next_choice = now + 1.0
                     if self.failures >= 3:
@@ -195,10 +223,23 @@ class AutonomyCoordinator:
             self._memory = self.engine.snapshot()
             self.next_choice = now + 2.0
             if choice is None:
-                self.status, self.message = (
-                    "waiting",
-                    "No reachable exploration place at current clearance.",
-                )
+                if self.search_pending:
+                    self.next_choice = now + 0.05
+                    self.status, self.message = (
+                        "checking",
+                        "Checking farther unvisited targets.",
+                    )
+                elif self.cooldown_pending:
+                    self.status, self.message = (
+                        "waiting",
+                        "Remaining unvisited targets are waiting for a route retry.",
+                    )
+                else:
+                    message = "No reachable unvisited map target is available from here. Exploration paused."
+                    session.cancel("idle", message)
+                    self.disable(now, message)
+                    self.status = "exhausted"
+                    return True
                 return False
             candidate = next(c for c in candidates if c.id == choice["candidate_id"])
             session.cancel("braking", "Checking the selected exploration route.")
@@ -210,12 +251,13 @@ class AutonomyCoordinator:
             session.requires_new_goal = False
             self.intention = {
                 **choice,
+                "explanation": "This map target has no completed visit. Previously reached targets are excluded.",
                 "goal": list(candidate.xy),
                 "label": candidate.label,
                 "event_id": uuid.uuid4().hex,
             }
             self.active_since, self.guarded_since = now, None
-            self.status, self.message = "exploring", choice["explanation"]
+            self.status, self.message = "exploring", self.intention["explanation"]
             return True
         except Exception as error:  # noqa: BLE001 — optional agency cannot bypass control
             session.cancel(
