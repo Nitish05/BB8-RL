@@ -24,12 +24,15 @@ TARGET_RESOURCE = RESOURCE_TARGET
 MEANINGFUL_GAIN = 0.04
 EVIDENCE_WINDOW = 12
 INITIAL_PROBES = 4
+EARLY_CHANGE_RESPONSES = 2
+CHANGE_FAILURES = 3
+STABLE_RESPONSES = 6
 PRIOR_GAIN = 0.35
 INTERACTION_COST = 0.005
 DISTANCE_COST = 0.015
 MAX_INFORMATION_VALUE = 0.03
 APPROVED_SOURCES = frozenset(
-    {"simulated_station_telemetry", "synthetic_outcome_benchmark"}
+    {"simulated_station_telemetry", "synthetic_outcome_benchmark", "native_scene_rgb"}
 )
 
 
@@ -164,11 +167,15 @@ class PurposeEngine:
     the preferred interaction at the current resource deficit. Its contribution
     is capped; raw surprise and merely collecting observations earn nothing.
 
-    Four consecutive ineffective completed trials suppress a station. Six
-    consecutive useful outcomes establish stable efficacy; three subsequent
-    failures then reopen one trial of suppressed alternatives. A fresh successful
-    outcome restores the ordinary probe allowance. No wall-clock timer renews
-    curiosity, so a static useless/noisy room eventually produces idle.
+    Four consecutive ineffective completed trials suppress a station. Two
+    consecutive useful outcomes followed by three ineffective outcomes provide
+    an early change hypothesis. Six consecutive useful outcomes establish stable
+    efficacy, retaining that hypothesis through intermittent failures. Either
+    hypothesis reopens one trial of suppressed alternatives at the third failure,
+    once per failure run. A fresh successful outcome restores the ordinary probe
+    allowance. No wall-clock timer renews curiosity, so a static useless room or
+    sub-threshold sensor noise eventually produces idle. Apparent meaningful
+    gains cannot be distinguished from real gains by this telemetry-only model.
 
     The current stations have zero or positive designed effects. Negative resource
     deltas count as ineffective; this model does not estimate harm magnitude and
@@ -209,6 +216,66 @@ class PurposeEngine:
                     (*self.store.scope, station.id, *station.xy, station.label),
                 )
 
+    def _reopen_alternatives(self, station_id: str) -> None:
+        """Consume one change hypothesis inside the caller's transaction."""
+        db, scope = self.store.db, self.store.scope
+        db.execute(
+            "UPDATE purpose_scopes SET change_epoch=change_epoch+1 "
+            "WHERE agent=? AND map=?",
+            scope,
+        )
+        epoch = db.execute(
+            "SELECT change_epoch FROM purpose_scopes WHERE agent=? AND map=?", scope
+        ).fetchone()[0]
+        db.execute(
+            "UPDATE purpose_stations SET probes_remaining=1,last_change_epoch=? "
+            "WHERE agent=? AND map=? AND id<>? AND probes_remaining=0",
+            (epoch, *scope, station_id),
+        )
+
+    @_serialized
+    def reconsider_outcomes(self, *, resource: float) -> bool:
+        """Recover one provably unconsumed early change from legacy memory.
+
+        Call only when explicitly considering autonomy, never during startup or
+        snapshot. The old detector could leave two useful receipts then four
+        failures permanently suppressed. Epoch zero proves it never consumed a
+        change hypothesis; use that existing ledger to apply one bounded catch-up
+        without altering receipts or granting motion authority. Nonzero legacy
+        epochs are ambiguous and are conservatively left unchanged.
+        """
+        resource = _number(resource, "resource", unit=True)
+        if RESOURCE_TARGET - resource <= 1e-9:
+            return False
+        db, scope = self.store.db, self.store.scope
+        with db:
+            db.execute("BEGIN IMMEDIATE")
+            epoch = db.execute(
+                "SELECT change_epoch FROM purpose_scopes WHERE agent=? AND map=?",
+                scope,
+            ).fetchone()[0]
+            if epoch:
+                return False
+            rows = self._rows()
+            for row in rows:
+                if row["failure_streak"] < CHANGE_FAILURES or not any(
+                    other["id"] != row["id"] and other["probes_remaining"] == 0
+                    for other in rows
+                ):
+                    continue
+                preceding = db.execute(
+                    "SELECT response FROM purpose_events "
+                    "WHERE agent=? AND map=? AND station=? "
+                    "ORDER BY sequence DESC LIMIT ? OFFSET ?",
+                    (*scope, row["id"], EARLY_CHANGE_RESPONSES, row["failure_streak"]),
+                ).fetchall()
+                if len(preceding) == EARLY_CHANGE_RESPONSES and all(
+                    outcome["response"] for outcome in preceding
+                ):
+                    self._reopen_alternatives(row["id"])
+                    return True
+        return False
+
     @_serialized
     def select(
         self,
@@ -227,6 +294,7 @@ class PurposeEngine:
         deficit = max(0.0, RESOURCE_TARGET - resource)
         if deficit <= 1e-9:
             return None
+        self.reconsider_outcomes(resource=resource)
         rows = {row["id"]: row for row in self._rows()}
         ranked = []
         for station in stations:
@@ -326,6 +394,7 @@ class PurposeEngine:
         after: float,
         now: float,
         source: str = "simulated_station_telemetry",
+        visual_evidence: dict | None = None,
     ) -> bool:
         """Atomically save one completed before/after observation and update belief.
 
@@ -342,6 +411,30 @@ class PurposeEngine:
             raise ValueError("now must be nonnegative")
         if source not in APPROVED_SOURCES:
             raise ValueError("An approved explicit observation source is required")
+        evidence_payload = {}
+        if source == "native_scene_rgb":
+            from .visual_interaction import validate_visual_outcome
+
+            evidence = validate_visual_outcome(visual_evidence)
+            if (
+                evidence["request_id"] != event_id
+                or evidence["entity_id"] != station_id
+                or evidence["map_version"] != self.store.map_version
+                or any(
+                    not math.isclose(evidence[key], value, rel_tol=0, abs_tol=1e-12)
+                    for key, value in (
+                        ("before", before),
+                        ("after", after),
+                        ("timestamp", now),
+                    )
+                )
+            ):
+                raise ValueError("Visual evidence does not match the recorded outcome")
+            evidence_payload["visual_evidence"] = evidence
+        elif visual_evidence is not None:
+            raise ValueError(
+                "Visual evidence requires the native RGB observation source"
+            )
         payload = json.dumps(
             {
                 "station_id": station_id,
@@ -349,6 +442,7 @@ class PurposeEngine:
                 "after": after,
                 "now": now,
                 "source": source,
+                **evidence_payload,
             },
             sort_keys=True,
             separators=(",", ":"),
@@ -372,6 +466,31 @@ class PurposeEngine:
             ).fetchone()
             if row is None:
                 raise ValueError("Station is not registered")
+            if source == "native_scene_rgb":
+                entity = db.execute(
+                    "SELECT * FROM visual_entities WHERE agent=? AND map=? AND entity=?",
+                    (*scope, station_id),
+                ).fetchone()
+                from .visual_interaction import INTERACTION_OFFSET
+
+                if (
+                    entity is None
+                    or entity["calibration"] != evidence["calibration_version"]
+                    or entity["marker"] != evidence["marker_id"]
+                    or [entity["x"], entity["y"]] != evidence["anchor_xy"]
+                    or entity["radius"] != evidence["anchor_radius_m"]
+                    or any(
+                        not math.isclose(
+                            row[key], entity[key] + offset, rel_tol=0, abs_tol=1e-12
+                        )
+                        for key, offset in zip(
+                            ("x", "y"), INTERACTION_OFFSET, strict=True
+                        )
+                    )
+                ):
+                    raise ValueError(
+                        "Visual outcome differs from the persistent entity binding"
+                    )
             existing_source = db.execute(
                 "SELECT source FROM purpose_scopes WHERE agent=? AND map=?", scope
             ).fetchone()[0]
@@ -402,24 +521,22 @@ class PurposeEngine:
             success_streak = row["success_streak"] + 1 if response else 0
             failure_streak = 0 if response else row["failure_streak"] + 1
             probes = INITIAL_PROBES if response else max(0, row["probes_remaining"] - 1)
-            stable = bool(row["stable"]) or success_streak >= 6
-            changed = stable and failure_streak >= 3
+            stable = bool(row["stable"]) or success_streak >= STABLE_RESPONSES
+            # Newest-first receipt history also persists the early hypothesis:
+            # corroborated responses immediately before this failure run. Test
+            # the third failure only, so further failures, receipt replays and
+            # restarts cannot renew the same alternative trial. A later change
+            # requires new meaningful outcomes to arm the detector again.
+            preceding = recent[
+                CHANGE_FAILURES : CHANGE_FAILURES + EARLY_CHANGE_RESPONSES
+            ]
+            early_change = len(preceding) == EARLY_CHANGE_RESPONSES and all(
+                outcome["response"] for outcome in preceding
+            )
+            changed = failure_streak == CHANGE_FAILURES and (stable or early_change)
             if changed:
                 stable = False
-                db.execute(
-                    "UPDATE purpose_scopes SET change_epoch=change_epoch+1 "
-                    "WHERE agent=? AND map=?",
-                    scope,
-                )
-                epoch = db.execute(
-                    "SELECT change_epoch FROM purpose_scopes WHERE agent=? AND map=?",
-                    scope,
-                ).fetchone()[0]
-                db.execute(
-                    "UPDATE purpose_stations SET probes_remaining=1,last_change_epoch=? "
-                    "WHERE agent=? AND map=? AND id<>? AND probes_remaining=0",
-                    (epoch, *scope, station_id),
-                )
+                self._reopen_alternatives(station_id)
             db.execute(
                 "UPDATE purpose_stations SET outcomes=outcomes+1,responses=responses+?,"
                 "alpha=?,beta=?,gain=?,probes_remaining=?,success_streak=?,"

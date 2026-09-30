@@ -7,9 +7,7 @@ from pathlib import Path
 import cv2
 import numpy as np
 
-from bb8_rl.diagnostics import write_report
 from bb8_rl.mapping.scan_geometry import extract, register_camera
-from bb8_rl.training import file_hash
 
 
 def sample_feature_points(
@@ -200,6 +198,9 @@ def estimate_registration(query_rgb, query_intrinsics, clouds):
 
 
 def main(args):
+    from bb8_rl.diagnostics import write_report
+    from bb8_rl.training import file_hash
+
     if args.output.exists():
         raise ValueError("Use a fresh registration output")
     cv2.setNumThreads(2)

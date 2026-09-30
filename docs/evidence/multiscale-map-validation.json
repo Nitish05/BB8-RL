@@ -1,0 +1,217 @@
+{
+  "schema": "bb8.multiscale-development-map-audit.v1",
+  "family": "north_oblique_cool",
+  "scope": "Development on north_oblique_cool using 24 added metric mapping views; original heldout inventory unchanged. No new query registration is claimed. No physical reliability claim.",
+  "controller_map_modified": false,
+  "full_volume": {
+    "directory": "/Users/rrnitish/Documents/Codex/BB8-RL/work/continuation-20260926-visual-heldout/development-multiscale-v1/data/memory",
+    "manifest_sha256": "2f702abbebffab2c2285d4ef224c6b5b466853eda6ef6a559d9642103afc16f2",
+    "meaning": "Full positive-volume intersection with static boxes; no oracle correction, no physical/general guarantee.",
+    "free_voxels": 112074,
+    "occupied_voxels": 1061,
+    "retained_unknown_voxels": 486865,
+    "false_free_solid_intersection_voxels": 0,
+    "free_solid_face_contact_voxels": 0,
+    "free_voxels_outside_room_or_below_floor": 0,
+    "free_prisms": 18679,
+    "candidate_prisms": 18679,
+    "candidate_solid_intersections": 0,
+    "free_solid_intersection_prisms": 0,
+    "free_solid_face_contact_prisms": 0,
+    "retained_unknown_prisms": 21198,
+    "free_without_two_view_support": 0,
+    "support_bits_outside_view_ids": false,
+    "heldout_query_in_map": [],
+    "free_sources_rgb_only": true,
+    "input_provenance_checks": {},
+    "source_rgb_hashes_checked": false,
+    "body_height_m": 0.12,
+    "mapping_input_view_ids": [
+      "scan-000",
+      "scan-001",
+      "scan-002",
+      "scan-003",
+      "scan-004",
+      "scan-005",
+      "scan-006",
+      "scan-007",
+      "scan-008",
+      "scan-009",
+      "scan-010",
+      "scan-011",
+      "scan-012",
+      "scan-013",
+      "scan-015",
+      "scan-016",
+      "scan-018",
+      "scan-019",
+      "scan-021",
+      "scan-022",
+      "scan-024",
+      "scan-025",
+      "scan-026",
+      "scan-027",
+      "scan-028",
+      "scan-029",
+      "scan-030",
+      "scan-031",
+      "scan-032",
+      "scan-033",
+      "scan-034",
+      "scan-035",
+      "scan-036",
+      "scan-037",
+      "scan-038",
+      "scan-039",
+      "scan-040",
+      "scan-041",
+      "scan-042",
+      "scan-043",
+      "scan-044",
+      "scan-045",
+      "scan-046",
+      "scan-047",
+      "scan-048",
+      "scan-049",
+      "scan-050",
+      "scan-051",
+      "scan-052",
+      "scan-053",
+      "scan-054",
+      "scan-055",
+      "scan-056",
+      "scan-057",
+      "scan-058",
+      "scan-059",
+      "scan-060",
+      "scan-061",
+      "scan-062",
+      "scan-063"
+    ],
+    "failing_voxel_indices_first20": [],
+    "legacy_twenty_view_status": "fail"
+  },
+  "parked_robot": {
+    "scope": "Supplementary scan-time movable-object assumption check; not a static obstacle inserted into online control.",
+    "body": {
+      "center_scoring_only": [
+        -1.75,
+        -1.75,
+        0.037
+      ],
+      "radius_m": 0.037,
+      "free_voxel_solid_intersections": 0,
+      "free_voxel_face_contacts": 0,
+      "free_prism_solid_intersections": 0,
+      "free_prism_face_contacts": 0,
+      "collision_object": true
+    },
+    "head": {
+      "center_scoring_only": [
+        -1.75,
+        -1.75,
+        0.083
+      ],
+      "radius_m": 0.019,
+      "free_voxel_solid_intersections": 0,
+      "free_voxel_face_contacts": 0,
+      "free_prism_solid_intersections": 0,
+      "free_prism_face_contacts": 0,
+      "collision_object": false
+    },
+    "pass": true
+  },
+  "safety_checks": {
+    "nonempty_free_volume": true,
+    "no_false_free_voxels": true,
+    "no_false_free_prisms": true,
+    "within_room": true,
+    "rgb_sources_only": true,
+    "query_exclusion": true,
+    "parked_robot_excluded": true,
+    "evidence_complete": true
+  },
+  "evidence_checks": {
+    "all_inputs_bound": true,
+    "valid_memory": true,
+    "coordinate_convention": true,
+    "mapping_ancestry": true,
+    "complete_mask_inventory": true,
+    "all_positive_masks_recomputed": true,
+    "occupied_cells_retained": true,
+    "occupied_records_retained": true,
+    "full_prism": true,
+    "minimum_support": true,
+    "same_photometric_settings": true,
+    "retained_registered_queries_bound": true,
+    "runtime_query_candidates": true,
+    "same_vision": true,
+    "no_query_or_truth_map_inputs": true,
+    "input_hashes": true,
+    "capture_bound": true,
+    "same_memory_settings": true,
+    "unsigned_storage": true,
+    "all_support_bits_roundtrip_exact": true,
+    "wide_storage_when_required": true,
+    "no_undeclared_view_bits": true
+  },
+  "utility": [
+    {
+      "intent": "arrival",
+      "radius_m": 0.1,
+      "start": [
+        -0.15,
+        0.25
+      ],
+      "goal": [
+        0.8,
+        1.3
+      ],
+      "pass": false,
+      "reason": "Start or goal is blocked after footprint inflation"
+    },
+    {
+      "intent": "occupied_rejection",
+      "radius_m": 0.1,
+      "goal": [
+        0.3,
+        1.1
+      ],
+      "pass": true
+    },
+    {
+      "intent": "arrival",
+      "radius_m": 0.14,
+      "start": [
+        -0.15,
+        0.25
+      ],
+      "goal": [
+        0.8,
+        1.3
+      ],
+      "pass": false,
+      "reason": "Start or goal is blocked after footprint inflation"
+    },
+    {
+      "intent": "occupied_rejection",
+      "radius_m": 0.14,
+      "goal": [
+        0.3,
+        1.1
+      ],
+      "pass": true
+    }
+  ],
+  "safety_pass": true,
+  "evidence_pass": true,
+  "utility_pass": false,
+  "native_motion_permitted": false,
+  "input_sha256": {
+    "reconstruction": "1acaae703373779d683d090df9c7da579148eeae437d1ae4d6d9d2440949aad0",
+    "memory": "2f702abbebffab2c2285d4ef224c6b5b466853eda6ef6a559d9642103afc16f2",
+    "capture": "c1ecc1047c376b52b8a9467b680c9af6d3456519aff157375b303f303ae21de0",
+    "registration": "f7fa15eda384a142b1880e6e6dbe77f918a1ce9c99c67f3bba56a6ded838cf0e",
+    "helper": "fa139e7465af008e42fd14301bd9957420b9f525c256a1906efab2c419cd64b3"
+  }
+}

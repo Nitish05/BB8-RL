@@ -13,6 +13,9 @@ from bb8_rl.interactive_runtime import ControlSession
 class OpenMemory:
     extent = 1.0
 
+    def certified_route(self, start, goal, radius_m, *, grid=None):
+        return (self if grid is None else grid).route(start, goal)
+
     def planning_grid(self, _radius):
         return self
 

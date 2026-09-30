@@ -75,8 +75,12 @@ class RoomMemory:
     def _axes(self, bounds, *, fully_contained):
         axes = []
         for dimension, count in enumerate(self._cells.shape):
-            lo = self.bounds.minimum[dimension] + self.resolution_m * np.arange(count)
-            hi = lo + self.resolution_m
+            # Derive shared faces once: adding resolution to a rounded lower
+            # edge can disagree with the next voxel's edge (e.g. .1 + .02).
+            edges = self.bounds.minimum[dimension] + self.resolution_m * np.arange(
+                count + 1
+            )
+            lo, hi = edges[:-1], edges[1:]
             selected = (
                 (lo >= bounds.minimum[dimension]) & (hi <= bounds.maximum[dimension])
                 if fully_contained

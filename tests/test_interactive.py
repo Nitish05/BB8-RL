@@ -5,6 +5,7 @@ import json
 import queue
 import threading
 from http.server import ThreadingHTTPServer
+from pathlib import Path
 from types import SimpleNamespace
 
 import pytest
@@ -21,6 +22,9 @@ from bb8_rl.interactive import Supervisor, goal_cell, make_handler, validate_com
         {"action": "mode", "mode": True},
         {"action": "mode", "mode": 4},
         {"action": "reset", "x": 0},
+        {"action": "recheck_scene", "fault_epoch": 1},
+        {"action": "recheck_scene", "generation": 1},
+        {"action": "recheck_scene", "reference": "replacement"},
         {"action": "shell", "command": "anything"},
         None,
     ],
@@ -49,6 +53,12 @@ def fake_supervisor():
     supervisor.generation = 0
     supervisor.commands = queue.Queue(maxsize=32)
     supervisor.worker_stop = threading.Event()
+    supervisor.scene_invalidated_event = threading.Event()
+    supervisor.scene_validity_enabled = False
+    supervisor.scene_invalidated = False
+    supervisor.scene_fault_epoch = 0
+    supervisor.scene_recovered_epoch = 0
+    supervisor.pending_scene_recheck = None
     supervisor.pending_demo = False
     supervisor.restart_requested = False
     supervisor.frames = {}
@@ -61,6 +71,305 @@ def fake_supervisor():
         "route": [],
     }
     return supervisor
+
+
+def faulted_supervisor(epoch=1):
+    supervisor = fake_supervisor()
+    supervisor.scene_validity_enabled = True
+    supervisor.scene_invalidated_event.set()
+    supervisor._accept_event(
+        {
+            "type": "state",
+            "state": {
+                "generation": 0,
+                "phase": "scene_invalid",
+                "scene_validity": {
+                    "fault_epoch": epoch,
+                    "ready": True,
+                    "invalidated": True,
+                    "navigation_allowed": False,
+                },
+                "agency": {"enabled": False, "intention": None},
+            },
+        }
+    )
+    return supervisor
+
+
+def recovery_state(generation, epoch=1, status="succeeded"):
+    return {
+        "type": "state",
+        "state": {
+            "generation": generation,
+            "phase": "stopped",
+            "goal": None,
+            "route": [],
+            "scene_validity": {
+                "ready": True,
+                "invalidated": status != "succeeded",
+                "navigation_allowed": status == "succeeded",
+                "fault_epoch": epoch,
+                "recovery": {
+                    "generation": generation,
+                    "fault_epoch": epoch,
+                    "status": status,
+                },
+            },
+        },
+    }
+
+
+def test_recheck_is_explicit_maintenance_with_server_owned_ticket():
+    assert validate_command({"action": "recheck_scene"}) == {"action": "recheck_scene"}
+    supervisor = faulted_supervisor()
+    assert supervisor.snapshot()["scene_recheck_available"]
+    accepted = supervisor.command({"action": "recheck_scene"})
+    assert accepted == {"accepted": True, "generation": 1}
+    assert supervisor.commands.get_nowait() == {
+        "action": "recheck_scene",
+        "generation": 1,
+        "fault_epoch": 1,
+    }
+    assert supervisor.scene_invalidated_event.is_set()
+    assert supervisor.snapshot()["scene_invalidated"]
+    assert supervisor.snapshot()["scene_recheck_pending"]
+    assert not supervisor.snapshot()["scene_recheck_available"]
+    assert supervisor.state["goal"] is None and supervisor.state["route"] == []
+    assert not supervisor.state["agency"]["enabled"]
+    with pytest.raises(ValueError, match="stopped, locked"):
+        supervisor.command({"action": "recheck_scene"})
+
+
+@pytest.mark.parametrize(
+    "change",
+    [
+        {"scene_validity_enabled": False},
+        {"scene_fault_epoch": 0},
+        {"commands": None},
+        {"restart_requested": True},
+    ],
+)
+def test_recheck_requires_current_fault_and_live_maintenance_channel(change):
+    supervisor = faulted_supervisor()
+    for name, value in change.items():
+        setattr(supervisor, name, value)
+    with pytest.raises(ValueError, match="stopped, locked"):
+        supervisor.command({"action": "recheck_scene"})
+    assert supervisor.generation == 0 and supervisor.scene_invalidated
+
+
+@pytest.mark.parametrize(
+    "state",
+    [
+        {"phase": "running"},
+        {"phase": "stopping"},
+        {"goal": [0, 0]},
+        {"route": [[0, 0], [1, 1]]},
+        {"agency": {"enabled": True}},
+        {"scene_validity": {"ready": False, "invalidated": True, "fault_epoch": 1}},
+    ],
+)
+def test_recheck_cannot_be_used_as_a_motion_command(state):
+    supervisor = faulted_supervisor()
+    supervisor.state.update(state)
+    with pytest.raises(ValueError, match="stopped, locked"):
+        supervisor.command({"action": "recheck_scene"})
+    assert supervisor.commands.empty()
+
+
+def test_recovery_requires_worker_event_clear_and_never_resumes_authority():
+    supervisor = faulted_supervisor()
+    supervisor.command({"action": "recheck_scene"})
+    event = recovery_state(1)
+    assert supervisor._accept_event(event)
+    assert supervisor.scene_invalidated  # A success presentation is not authority.
+    supervisor.scene_invalidated_event.clear()  # Worker commit only.
+    event["state"].update(goal=[0.5, 0.5], route=[[0, 0], [0.5, 0.5]])
+    event["state"]["agency"] = {"enabled": True, "intention": {"goal": [0.5, 0.5]}}
+    assert supervisor._accept_event(event)
+    assert not supervisor.scene_invalidated and supervisor.scene_recovered_epoch == 1
+    assert supervisor.pending_scene_recheck is None
+    assert supervisor.state["phase"] == "stopped"
+    assert supervisor.state["requires_new_goal"]
+    assert supervisor.state["goal"] is None and supervisor.state["route"] == []
+    assert not supervisor.state["agency"]["enabled"]
+    assert supervisor.state["agency"]["intention"] is None
+    assert supervisor.commands.qsize() == 1  # No hidden goal, Demo or enable.
+
+
+@pytest.mark.parametrize("generation", [0, 2, True, None])
+def test_stale_future_or_malformed_recovery_generation_never_unlocks(generation):
+    supervisor = faulted_supervisor()
+    supervisor.command({"action": "recheck_scene"})
+    supervisor.scene_invalidated_event.clear()
+    supervisor._accept_event(recovery_state(generation))
+    assert supervisor.scene_invalidated and supervisor.scene_recovered_epoch == 0
+
+
+@pytest.mark.parametrize("epoch", [0, 2, True, None])
+def test_stale_future_or_malformed_recovery_epoch_never_unlocks(epoch):
+    supervisor = faulted_supervisor()
+    supervisor.command({"action": "recheck_scene"})
+    supervisor.scene_invalidated_event.clear()
+    supervisor._accept_event(recovery_state(1, epoch))
+    assert supervisor.scene_invalidated and supervisor.scene_recovered_epoch == 0
+
+
+def test_late_stop_cancels_success_ticket_and_allows_explicit_same_epoch_retry():
+    supervisor = faulted_supervisor()
+    supervisor.command({"action": "recheck_scene"})
+    supervisor.command({"action": "stop"})
+    supervisor.scene_invalidated_event.clear()  # Recovery raced the late Stop.
+    assert not supervisor._accept_event(recovery_state(1))
+    assert supervisor.scene_invalidated and supervisor.pending_scene_recheck is None
+    stopped = recovery_state(1)
+    stopped["state"]["generation"] = 2
+    assert supervisor._accept_event(stopped)
+    assert (
+        supervisor.scene_invalidated
+        and supervisor.snapshot()["scene_recheck_available"]
+    )
+    supervisor.command({"action": "recheck_scene"})
+    assert supervisor.pending_scene_recheck == {"generation": 3, "fault_epoch": 1}
+    assert supervisor._accept_event(recovery_state(3))
+    assert not supervisor.scene_invalidated
+
+
+def test_rejected_recheck_keeps_lock_and_can_retry_without_new_reference():
+    supervisor = faulted_supervisor()
+    supervisor.command({"action": "recheck_scene"})
+    assert supervisor._accept_event(recovery_state(1, status="rejected"))
+    assert supervisor.scene_invalidated and supervisor.pending_scene_recheck is None
+    supervisor.command({"action": "recheck_scene"})
+    assert supervisor.pending_scene_recheck == {"generation": 2, "fault_epoch": 1}
+
+
+def test_acknowledged_epoch_discards_old_invalid_presentation_but_not_new_signal():
+    supervisor = faulted_supervisor()
+    supervisor.command({"action": "recheck_scene"})
+    supervisor.scene_invalidated_event.clear()
+    supervisor._accept_event(recovery_state(1))
+    old = recovery_state(1, status="checking")
+    assert not supervisor._accept_event(old)
+    assert not supervisor.scene_invalidated
+    assert not supervisor.state["scene_validity"]["invalidated"]
+    supervisor.scene_invalidated_event.set()  # New fault can precede its state.
+    assert not supervisor._accept_event(old)
+    assert supervisor.scene_invalidated
+    new = recovery_state(1, epoch=2, status="rejected")
+    assert supervisor._accept_event(new)
+    assert supervisor.scene_fault_epoch == 2 and supervisor.scene_invalidated
+
+
+def test_new_fault_supersedes_pending_ticket_without_unlocking():
+    supervisor = faulted_supervisor()
+    supervisor.command({"action": "recheck_scene"})
+    supervisor._accept_event(recovery_state(1, epoch=2, status="rejected"))
+    assert supervisor.scene_fault_epoch == 2 and supervisor.scene_invalidated
+    assert supervisor.pending_scene_recheck is None
+
+
+def test_recheck_queue_failure_stops_worker_and_preserves_fault():
+    supervisor = faulted_supervisor()
+    for _ in range(32):
+        supervisor.commands.put_nowait({"action": "heartbeat"})
+    with pytest.raises(ValueError, match="lock retained"):
+        supervisor.command({"action": "recheck_scene"})
+    assert (
+        supervisor.worker_stop.is_set() and supervisor.scene_invalidated_event.is_set()
+    )
+    assert supervisor.scene_invalidated and supervisor.pending_scene_recheck is None
+    assert not supervisor.snapshot()["scene_recheck_available"]
+
+
+def test_success_without_an_explicit_pending_recheck_never_unlocks():
+    supervisor = faulted_supervisor()
+    supervisor.scene_invalidated_event.clear()
+    supervisor._accept_event(recovery_state(0))
+    assert supervisor.scene_invalidated and supervisor.scene_recovered_epoch == 0
+
+
+def test_inflight_worker_state_without_recovery_preserves_pending_ticket():
+    supervisor = faulted_supervisor()
+    supervisor.command({"action": "recheck_scene"})
+    event = recovery_state(1, status="checking")
+    event["state"]["scene_validity"]["recovery"] = None
+    assert supervisor._accept_event(event)
+    assert supervisor.pending_scene_recheck == {"generation": 1, "fault_epoch": 1}
+    assert supervisor.scene_invalidated
+
+
+def test_recovery_acknowledgement_requires_both_ticket_and_state_epoch():
+    supervisor = faulted_supervisor()
+    supervisor.command({"action": "recheck_scene"})
+    supervisor.scene_invalidated_event.clear()
+    event = recovery_state(1)
+    event["state"]["scene_validity"]["fault_epoch"] = 2
+    supervisor._accept_event(event)
+    assert supervisor.scene_invalidated and supervisor.pending_scene_recheck is not None
+
+
+@pytest.mark.parametrize(
+    "command",
+    [
+        {"action": "reset"},
+        {"action": "mode", "mode": 2},
+        {"action": "demo"},
+        {"action": "autonomy", "enabled": True},
+        {"action": "goal", "x": 0.5, "y": 0.5},
+    ],
+)
+def test_scene_lock_cannot_be_cleared_by_reset_or_new_motion(command):
+    supervisor = fake_supervisor()
+    supervisor.scene_invalidated = True
+    with pytest.raises(ValueError, match="Reset cannot clear"):
+        supervisor.command(command)
+    assert not supervisor.restart_requested and supervisor.commands.empty()
+    assert supervisor.command({"action": "stop"})["accepted"]
+    assert supervisor.command({"action": "heartbeat"})["accepted"]
+
+
+def test_scene_fault_from_inflight_capture_survives_stop_generation():
+    supervisor = fake_supervisor()
+    supervisor.command({"action": "stop"})
+    assert not supervisor._accept_event(
+        {
+            "type": "state",
+            "state": {"generation": 0, "scene_validity": {"invalidated": True}},
+        }
+    )
+    assert supervisor.scene_invalidated
+    with pytest.raises(ValueError, match="Reset cannot clear"):
+        supervisor.command({"action": "reset"})
+
+
+def test_shared_scene_fault_survives_lost_presentation_and_reset_race():
+    supervisor = fake_supervisor()
+    supervisor.scene_invalidated_event = threading.Event()
+    supervisor.closed = threading.Event()
+    supervisor.command({"action": "reset"})
+    # The worker can set this while shutdown is joining it, after Reset was
+    # accepted and with no presentation event ever reaching the supervisor.
+    supervisor._shutdown_worker = supervisor.scene_invalidated_event.set
+    supervisor._start_worker()
+    assert supervisor.scene_invalidated
+    assert not supervisor.restart_requested
+    assert supervisor.state["phase"] == "scene_invalid"
+    assert not supervisor.state["localization_valid"]
+    with pytest.raises(ValueError, match="Reset cannot clear"):
+        supervisor.command({"action": "reset"})
+
+
+def test_invalidation_event_is_latched_even_while_reset_is_pending():
+    supervisor = fake_supervisor()
+    supervisor.command({"action": "reset"})
+    assert not supervisor._accept_event(
+        {
+            "type": "state",
+            "state": {"generation": 0, "scene_validity": {"invalidated": True}},
+        }
+    )
+    assert supervisor.scene_invalidated
 
 
 def test_stop_invalidates_old_goal_and_mode_restarts_without_route():
@@ -265,6 +574,28 @@ class FakeProcess:
         self.started = False
 
 
+def test_shutdown_kills_worker_that_ignores_term_before_replacement():
+    supervisor = fake_supervisor()
+    supervisor.commands, supervisor.events = ClosingQueue(), ClosingQueue()
+    calls = []
+
+    class StubbornProcess(FakeProcess):
+        def terminate(self):
+            calls.append("terminate")
+
+        def kill(self):
+            calls.append("kill")
+            self.started = False
+
+    process = StubbornProcess()
+    process.started = True
+    supervisor.process = process
+    supervisor._shutdown_worker()
+    assert calls == ["terminate", "kill"]
+    assert not process.is_alive()
+    assert supervisor.process is None
+
+
 def test_mode_change_during_worker_shutdown_is_coalesced_into_one_latest_start(
     tmp_path,
 ):
@@ -304,6 +635,34 @@ def test_mode_change_during_worker_shutdown_is_coalesced_into_one_latest_start(
     assert supervisor.commands.get_nowait() == {"action": "heartbeat", "generation": 1}
 
 
+def test_new_worker_has_no_acknowledged_epoch_from_previous_reference(tmp_path):
+    supervisor = fake_supervisor()
+    supervisor.closed = threading.Event()
+    supervisor.asset_dir = tmp_path / "assets"
+    supervisor.run_dir = tmp_path / "runs"
+    supervisor.worker_target = lambda *args: None
+    supervisor.process = None
+    supervisor.events = None
+    supervisor.scene_fault_epoch = supervisor.scene_recovered_epoch = 3
+    supervisor.state["scene_validity"] = {
+        "fault_epoch": 3,
+        "invalidated": False,
+        "navigation_allowed": True,
+    }
+    supervisor.context = SimpleNamespace(
+        Queue=ClosingQueue,
+        Event=threading.Event,
+        Process=lambda **kwargs: FakeProcess(),
+    )
+    supervisor._start_worker()
+    assert supervisor.scene_fault_epoch == supervisor.scene_recovered_epoch == 0
+    assert supervisor.pending_scene_recheck is None
+    assert "scene_validity" not in supervisor.state
+    # First fault in the replacement worker must not look like an old receipt.
+    event = recovery_state(0, epoch=1, status="rejected")
+    assert supervisor._accept_event(event) and supervisor.scene_invalidated
+
+
 def test_stop_without_channel_reports_stopped_and_does_not_schedule_demo():
     supervisor = fake_supervisor()
     supervisor.commands = None
@@ -311,3 +670,108 @@ def test_stop_without_channel_reports_stopped_and_does_not_schedule_demo():
     supervisor.command({"action": "stop"})
     assert supervisor.state["phase"] == "stopped"
     assert not supervisor.pending_demo
+
+
+@pytest.mark.parametrize(
+    ("mode", "directory"),
+    [("purpose", "agency"), ("coverage", "agency"), ("visual", "visual-agency")],
+)
+def test_agency_mode_memory_isolation_and_worker_config(
+    tmp_path, monkeypatch, mode, directory
+):
+    from bb8_rl import interactive
+
+    spawned = []
+    monkeypatch.setattr(interactive, "validate_assets", lambda path: {})
+    monkeypatch.setattr(interactive, "map_payload", lambda *args: sample_map())
+    monkeypatch.setattr(threading.Thread, "start", lambda self: None)
+
+    def process_factory(**kwargs):
+        spawned.append(kwargs)
+        return FakeProcess()
+
+    monkeypatch.setattr(
+        interactive.multiprocessing,
+        "get_context",
+        lambda method: SimpleNamespace(
+            Event=threading.Event,
+            Queue=ClosingQueue,
+            Process=process_factory,
+        ),
+    )
+    supervisor = Supervisor(
+        tmp_path / "assets",
+        tmp_path / "runs",
+        agency_mode=mode,
+        worker_target=lambda *args: None,
+    )
+    expected = interactive.ROOT / "work" / directory / "bb8.sqlite3"
+    assert supervisor.agency_memory == expected
+    assert not supervisor.state["agency"]["enabled"]
+    assert supervisor.snapshot()["agency_mode"] == mode
+    if mode == "visual":
+        assert (
+            supervisor.state["agency"]["selection_policy"] == "learned_station_outcomes"
+        )
+        assert supervisor.state["agency"]["resource_source"] == "native_scene_rgb"
+        assert supervisor.state["agency"]["resource"] is None
+    supervisor._start_worker()
+    config = spawned[0]["args"][0]
+    assert config["agency_mode"] == mode
+    assert config["agency_memory"] == str(expected)
+
+
+def test_visual_memory_override_is_respected_without_opening_database(
+    tmp_path, monkeypatch
+):
+    from bb8_rl import interactive
+
+    memory = tmp_path / "existing.sqlite3"
+    memory.write_bytes(b"preserved database bytes")
+    monkeypatch.setattr(interactive, "validate_assets", lambda path: {})
+    monkeypatch.setattr(interactive, "map_payload", lambda *args: sample_map())
+    monkeypatch.setattr(threading.Thread, "start", lambda self: None)
+    supervisor = Supervisor(
+        tmp_path / "assets",
+        tmp_path / "runs",
+        agency_mode="visual",
+        agency_memory=memory,
+    )
+    assert supervisor.agency_memory == memory
+    assert memory.read_bytes() == b"preserved database bytes"
+
+
+@pytest.mark.parametrize("memory_argument", [None, "selected.sqlite3"])
+def test_visual_cli_accepts_mode_and_defers_default_memory_selection(
+    tmp_path, monkeypatch, memory_argument
+):
+    from bb8_rl import interactive
+
+    calls = []
+    monkeypatch.setattr(
+        interactive,
+        "Supervisor",
+        lambda *args, **kwargs: (
+            calls.append(kwargs) or SimpleNamespace(close=lambda: None)
+        ),
+    )
+
+    def no_server(*args):
+        raise OSError("contract test stops before serving")
+
+    monkeypatch.setattr(interactive, "ThreadingHTTPServer", no_server)
+    arguments = [
+        "--agency-mode",
+        "visual",
+        "--no-browser",
+        "--output",
+        str(tmp_path / "run"),
+    ]
+    if memory_argument:
+        arguments.extend(["--agency-memory", memory_argument])
+    with pytest.raises(OSError, match="contract test"):
+        interactive.main(arguments)
+    assert calls[0]["agency_mode"] == "visual"
+    assert calls[0]["agency_memory"] == (
+        Path(memory_argument) if memory_argument else None
+    )

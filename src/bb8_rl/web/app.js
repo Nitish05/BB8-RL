@@ -9,23 +9,29 @@
     const explicit = Object.prototype.hasOwnProperty.call(state, "localization_status")
       || Object.prototype.hasOwnProperty.call(state, "localization_valid");
     const status = explicit ? String(state.localization_status || "uninitialized") : "legacy";
+    const sceneInvalid = state.scene_invalidated === true || state.scene_validity?.invalidated === true;
+    const sceneRechecking = sceneInvalid && state.scene_recheck_pending === true;
+    const sceneChecking = !sceneInvalid && state.scene_validity?.navigation_allowed === false;
     const validRadius = Number.isFinite(state.position_radius) && state.position_radius >= 0;
-    const usable = explicit ? state.localization_valid === true && ["measured", "predicted"].includes(status)
-      && finitePoint(state.pose) && validRadius : finitePoint(state.pose);
+    const usable = !sceneInvalid && !sceneChecking && (explicit ? state.localization_valid === true && ["measured", "predicted"].includes(status)
+      && finitePoint(state.pose) && validRadius : finitePoint(state.pose));
     const currentPose = usable ? [...state.pose] : null;
     const currentRadius = usable && validRadius ? state.position_radius : null;
     const ghostPose = explicit && !usable && finitePoint(state.last_seen_pose) ? [...state.last_seen_pose] : null;
     const age = Number.isFinite(state.last_seen_age_s) && state.last_seen_age_s >= 0 ? state.last_seen_age_s : null;
     const ageText = age === null ? "time unavailable" : `${age.toFixed(1)} s ago (sim)`;
     const requiresNewGoal = explicit && state.requires_new_goal === true;
-    const label = status === "lost" ? "Localization lost" : status === "reacquiring" ? "Reacquiring position"
+    const label = sceneRechecking ? "Rechecking scene" : sceneInvalid ? "Scene check failed" : sceneChecking ? "Checking scene" : status === "lost" ? "Localization lost" : status === "reacquiring" ? "Reacquiring position"
       : usable ? status === "predicted" ? "Predicted position" : "Position available" : "Waiting for position";
-    const message = status === "lost" ? "The current position is unavailable. The last-seen marker is historical. Wait for visual recovery, or reset the episode."
+    const message = sceneRechecking ? "Checking fresh camera observations against the original scene reference. BB-8 and learning stay stopped."
+      : sceneInvalid ? "Navigation is locked. Restore the original scene and camera positions, stop BB-8, then choose Recheck scene. Reset cannot clear this lock. Recovery keeps motion and learning stopped."
+      : sceneChecking ? "Checking stable camera evidence. Navigation is paused; a cancelled route will need a new request."
+      : status === "lost" ? "The current position is unavailable. The last-seen marker is historical. Wait for visual recovery, or reset the episode."
       : status === "reacquiring" ? "Checking returning camera observations. Navigation stays disabled until position recovery is complete."
         : requiresNewGoal && usable ? "Position recovered. BB-8 is stopped; choose a new destination to move again."
           : explicit && !usable ? "Waiting for a usable camera position. Reset or Demo can start a new episode." : null;
     return {
-      explicit, status, usable, currentPose, currentRadius, ghostPose, requiresNewGoal, label, message,
+      explicit, status, usable, currentPose, currentRadius, ghostPose, requiresNewGoal, label, message, sceneInvalid, sceneChecking, sceneRechecking,
       positionText: currentPose ? coordinates(currentPose) : explicit ? "Unavailable" : "Waiting for vision",
       radiusText: currentRadius === null ? explicit ? "Unavailable" : "—" : `${(currentRadius * 100).toFixed(1)} cm`,
       lastSeenText: ghostPose ? `${coordinates(ghostPose)} · ${ageText}` : null,
@@ -40,12 +46,13 @@
     const phaseReady = !/error|failed|loading|starting|initializ|resetting|stopping|closed/.test(String(state.phase || "").toLowerCase());
     const localization = localizationView(state);
     return {
-      navigate: recoveryReady && mapReady && phaseReady && (!localization.explicit || localization.usable),
+      navigate: recoveryReady && mapReady && phaseReady && !localization.sceneInvalid && !localization.sceneChecking && (!localization.explicit || localization.usable),
       stop: sessionReady,
-      reset: recoveryReady,
-      mode: recoveryReady,
+      reset: recoveryReady && !localization.sceneInvalid,
+      mode: recoveryReady && !localization.sceneInvalid,
       // The supervisor resets the episode before starting this prepared route.
-      demo: recoveryReady && phaseReady,
+      demo: recoveryReady && phaseReady && !localization.sceneInvalid,
+      recheck: recoveryReady && localization.sceneInvalid && state.scene_recheck_available === true && state.scene_recheck_pending !== true,
     };
   }
 
@@ -54,6 +61,8 @@
     const cleanText = (value, fallback = "", limit = 260) => typeof value === "string" && value.trim() ? value.trim().slice(0, limit) : fallback;
     const available = agency?.available === true;
     const purpose = agency?.selection_policy === "learned_station_outcomes";
+    const visual = purpose && agency?.resource_source === "native_scene_rgb";
+    const mode = [1, 2, 3].includes(state.mode) ? state.mode : 1;
     const resource = purpose && Number.isFinite(agency.resource) && agency.resource >= 0 && agency.resource <= 1 ? agency.resource : null;
     const enabled = agency?.enabled === true;
     const connected = session.connected === true;
@@ -75,13 +84,31 @@
       }));
     const status = !connected ? "Waiting for connection" : !agency ? "Unavailable in this session"
       : !hasPosition ? localization.label : agency.status === "exhausted" ? "No new reachable target"
-        : purpose ? (enabled ? ({choosing: "Comparing possible outcomes", travelling: "Approaching a station", interacting: "Testing a station response", remembering: "Remembering the outcome", satisfied: "Need satisfied · waiting", idle: "No useful action · waiting", waiting: "Waiting for an observation"}[agency.status] || "Learning") : available ? "Learning paused" : "Learning unavailable")
+        : purpose ? (enabled ? ({choosing: "Comparing possible outcomes", travelling: visual ? "Approaching a marked entity" : "Approaching a station", interacting: visual ? "Observing a fixture response" : "Testing a station response", remembering: "Remembering the outcome", satisfied: "Need satisfied · waiting", idle: "No useful action · waiting", waiting: visual ? "Awaiting fixture pixels" : "Waiting for an observation"}[agency.status] || "Learning") : available ? "Learning paused" : "Learning unavailable")
           : enabled ? (agency.status === "checking" ? "Checking routes" : "Exploring") : available ? "Exploration paused" : "Exploration unavailable";
+    // The coordinator retains its last pause reason after the camera warmup.
+    // Current readiness can replace that expired text without resuming autonomy.
+    const completedSceneWarmup = !enabled && canToggle && state.scene_validity?.ready === true
+      && state.scene_validity?.navigation_allowed === true
+      && cleanText(agency?.message) === "Checking a stable camera reference; navigation is paused.";
     const message = !connected ? "Exploration controls will return when the local app reconnects."
       : !agency ? "This session does not provide autonomous exploration. You can still choose a destination."
         : !hasPosition ? localization.message
-          : cleanText(agency.message, enabled ? "Selecting map targets without a completed exploration visit." : available ? "Start exploring to let BB-8 choose its next destination." : "Exploration is not ready in this session.");
-    return { available, enabled, canToggle, status, message, intention, preferences, recentExperience, purpose, resource,
+          : completedSceneWarmup ? purpose ? "Camera reference is ready. Start learning when you are ready; remembered outcomes are retained."
+            : "Camera reference is ready. Start exploring when you are ready; remembered visits are retained."
+          : cleanText(agency.message, visual ? "Waiting for fresh native RGB observations of the fixture markers and gauge." : enabled ? "Selecting map targets without a completed exploration visit." : available ? "Start exploring to let BB-8 choose its next destination." : "Exploration is not ready in this session.");
+    return { available, enabled, canToggle, status, message, intention, preferences, recentExperience, purpose, visual, resource,
+      caption: visual ? "Experimental · live RGB fixture learning" : purpose ? "Experimental · learned interaction outcomes" : "Diagnostic · map target coverage",
+      description: visual ? "Learn from native camera images of marked fixture entities and their resource gauges." : purpose ? "Learn which station restores a depleted resource, then wait when the need is satisfied." : "Visit reachable targets not previously completed, then pause.",
+      preferenceTitle: visual ? "Learned visual fixture responses" : purpose ? "Learned station responses" : "Places with experience",
+      help: visual ? "Stop or a manual destination pauses learning. Reset keeps learned outcomes and requires fresh pixels. This experiment uses fixed synthetic markers and gauges with a fixture-specific decoder." : purpose ? "Stop or a manual destination pauses learning. Reset starts a new resource episode and keeps learned outcomes. This is an engineered motivation experiment, not a personality claim." : "Stop or a manual destination pauses exploration. Completed targets stay remembered after Reset.",
+      resourceText: resource === null ? visual ? "Awaiting fixture pixels" : "Awaiting telemetry" : visual ? `Observed gauge · ${Math.round(resource * 100)}%` : `${Math.round(resource * 100)}%`,
+      resourceLabel: visual ? "Observed fixture gauge" : "Simulated resource",
+      resourceHelp: visual ? "Target: 80%. Outcomes are learned from before/after native RGB of fixed synthetic markers and gauges." : "Target: 80%. Station zones are virtual task fixtures. Effects come from simulation telemetry; camera feeds locate BB-8.",
+      cameraCount: visual ? `${mode} NAV + 1 RGB` : `${mode} ${mode === 1 ? "VIEW" : "VIEWS"}`,
+      cameraSetup: visual ? "Choose the navigation cameras. An additional RGB camera at the B view reads the fixture gauges." : "Choose the fixed cameras observing the room.",
+      cameraDisclosure: visual ? "Shown below: navigation feeds. An additional camera at the registered B view reads fixture identities and gauges; its feed is not displayed." : "",
+      enableMessage: visual ? "BB-8 will compare remembered visual outcomes with the currently observed fixture gauge." : purpose ? "BB-8 will compare station outcomes with its current simulated resource need." : "BB-8 will choose map targets without a completed exploration visit.",
       buttonText: purpose ? enabled ? "Pause learning" : "Start learning" : enabled ? "Pause exploration" : "Start exploring",
       experienceText: `${episodes} ${episodes === 1 ? "experience" : "experiences"} remembered`,
     };
@@ -201,14 +228,21 @@
     $("agency-panel").dataset.enabled = String(connected && agency.enabled);
     text("agency-status", agency.status);
     text("agency-message", agency.message);
-    text("agency-caption", agency.purpose ? "Experimental · learned interaction outcomes" : "Diagnostic · map target coverage");
+    text("agency-caption", agency.caption);
     text("agency-title", agency.purpose ? "A reason to move" : "Autonomous exploration");
-    text("agency-description", agency.purpose ? "Learn which station restores a depleted resource, then wait when the need is satisfied." : "Visit reachable targets not previously completed, then pause.");
-    text("agency-preference-title", agency.purpose ? "Learned station responses" : "Places with experience");
-    text("agency-help", agency.purpose ? "Stop or a manual destination pauses learning. Reset starts a new resource episode and keeps learned outcomes. This is an engineered motivation experiment, not a personality claim." : "Stop or a manual destination pauses exploration. Completed targets stay remembered after Reset.");
+    text("agency-description", agency.description);
+    text("agency-preference-title", agency.preferenceTitle);
+    text("agency-help", agency.help);
     $("purpose-resource").hidden = !agency.purpose;
-    text("resource-value", agency.resource === null ? "Awaiting telemetry" : `${Math.round(agency.resource * 100)}%`);
+    text("resource-label", agency.resourceLabel);
+    text("resource-help", agency.resourceHelp);
+    text("resource-value", agency.resourceText);
     $("resource-meter").value = agency.resource ?? 0;
+    text("camera-count", agency.cameraCount);
+    text("camera-setup-description", agency.cameraSetup);
+    $("camera-mode-selector").setAttribute("aria-label", agency.visual ? "Number of active navigation cameras" : "Number of active cameras");
+    text("camera-disclosure", agency.cameraDisclosure);
+    $("camera-disclosure").hidden = !agency.visual;
     $("agency-intention").hidden = !agency.intention;
     text("agency-intention-label", agency.intention?.label || "—");
     text("agency-intention-explanation", agency.intention?.explanation || "");
@@ -238,6 +272,10 @@
     $("stop-button").disabled = !controls.stop;
     $("stop-button").title = connected ? "Cancel motion and the current route (Escape)" : "Stop is unavailable until the local app reconnects";
     $("reset-button").disabled = !controls.reset;
+    $("recheck-scene-button").disabled = !controls.recheck;
+    const checking = state?.scene_recheck_pending === true;
+    text("recheck-scene-button", checking ? "Checking scene…" : "Recheck scene");
+    $("scene-recovery-notice").hidden = !localizationView(state || {}).sceneInvalid;
     modeButtons.forEach((button) => { button.disabled = !controls.mode; });
     $("map-stage").dataset.enabled = String(controls.navigate);
     canvas.setAttribute("aria-disabled", String(!controls.navigate));
@@ -367,7 +405,6 @@
     if (previous && (previous.mode !== state.mode || (Number.isFinite(state.frame_seq) && state.frame_seq < previous.frame_seq))) frameEpoch += 1;
     modeButtons.forEach((button) => button.setAttribute("aria-pressed", String(Number(button.dataset.mode) === mode)));
     $("camera-feeds").dataset.mode = String(mode);
-    text("camera-count", `${mode} ${mode === 1 ? "VIEW" : "VIEWS"}`);
     const sources = Array.isArray(state.source_ids) ? state.source_ids.map(String) : [];
     ids.forEach((id, index) => {
       const camera = cameras.get(id);
@@ -636,10 +673,16 @@
     const enabled = !agency.enabled;
     if (enabled) { selectedGoal = null; text("map-selection", agency.purpose ? "Purposeful interaction requested" : "Autonomous exploration requested"); }
     void command({ action: "autonomy", enabled }, enabled ? agency.purpose ? "Learning requested" : "Exploration requested" : "Pause requested",
-      enabled ? agency.purpose ? "BB-8 will compare station outcomes with its current simulated resource need." : "BB-8 will choose map targets without a completed exploration visit." : "Waiting for the controller to pause autonomy and stop motion.");
+      enabled ? agency.enableMessage : "Waiting for the controller to pause autonomy and stop motion.");
   });
   window.addEventListener("keydown", (event) => { if (event.key === "Escape" && connected && token) { event.preventDefault(); stop(); } });
   $("reset-button").addEventListener("click", () => { selectedGoal = null; text("map-selection", "No target selected"); frameEpoch += 1; void command({ action: "reset" }, "Reset requested", "The episode, position estimate and route will restart."); });
+  $("recheck-scene-button").addEventListener("click", () => {
+    if (!availableControls().recheck) return;
+    selectedGoal = null;
+    text("map-selection", "No target selected");
+    void command({ action: "recheck_scene" }, "Scene recheck requested", "Comparing fresh RGB with the original reference. Motion and learning stay stopped.");
+  });
   $("demo-button").addEventListener("click", () => {
     if (!availableControls().demo) return;
     selectedGoal = finitePoint(map?.demo_goal) ? { point: [...map.demo_goal], status: "submitted" } : null;

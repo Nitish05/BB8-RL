@@ -1,0 +1,19 @@
+{
+  "scope": "Compare two separate fresh legacy-bundle mode3 train-b cases around the opt-in pixel-coordinate patch; no additional native episode. UUID/request/recording timing may differ.",
+  "old_frames": 373,
+  "new_frames": 373,
+  "all_saved_camera_rgb_hashes_identical": true,
+  "checks": {
+    "time": true,
+    "measurement": true,
+    "action": true,
+    "controller_status": true,
+    "controller_arrived": true,
+    "truth_before_scoring_only": true
+  },
+  "input_sha256": {
+    "storage_rows": "4aff5fad5044c891bc9dd9a0d702b55d576f1a892e1ccca22f937afed1fce6a5",
+    "compatibility_rows": "c2b230d6909cac1d5a9fe61254e84e21ba13e3e8746ca0b4eae0767ec28fc203"
+  },
+  "same_selected_behavior": true
+}

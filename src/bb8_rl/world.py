@@ -116,7 +116,10 @@ class NavigationWorld:
         viewer: bool = False,
         render: bool = False,
         camera_positions=None,
+        visual_fixture=None,
     ):
+        if visual_fixture is not None and not render:
+            raise ValueError("A visual interaction fixture requires rendering")
         if camera_positions is not None and (
             not render
             or not 1 <= len(camera_positions) <= 3
@@ -143,6 +146,7 @@ class NavigationWorld:
         self.backend = None
         self.camera = None
         self.cameras = {}
+        self.visual_fixture = visual_fixture
         self.frames: deque[CameraFrame] = deque(maxlen=4)
         self.camera_period = 1 / camera.rate
         self._next_frame = 0.0
@@ -179,7 +183,11 @@ class NavigationWorld:
                         GUI=False,
                     )
                 self.camera = self.cameras["A"]
+            if self.visual_fixture is not None:
+                self.visual_fixture.attach(self.scene, gs)
             self.scene.build()
+            if self.visual_fixture is not None:
+                self.visual_fixture.initialize_visuals()
             self.body = self.scene.get_entity(name=self.config.body)
             self.head = self.scene.get_entity(name=self.config.head)
             self.backend = GenesisPlanarDriveBackend(

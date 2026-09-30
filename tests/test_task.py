@@ -10,10 +10,24 @@ from bb8_rl.env import NavigationEnv
 from bb8_rl.evaluate import suite_cases, wilson
 from bb8_rl.layouts import layout_grid, make_layout, sample_endpoints
 from bb8_rl.planner import OccupancyGrid
-from bb8_rl.task import TaskConfig
+from bb8_rl.task import SPLITS, TaskConfig, require_split_seed
 
 TASK = Path(__file__).resolve().parents[1] / "configs/navigation/bb8-task.yaml"
 SUITES = TASK.parent / "suites.json"
+
+
+def test_frozen_heldout_seeds_are_disjoint_and_require_authored_fixtures():
+    require_split_seed("heldout", 926101)
+    require_split_seed("heldout", 926102)
+    for name, (lower, upper) in SPLITS.items():
+        if name != "heldout":
+            assert upper <= SPLITS["heldout"][0]
+            with pytest.raises(ValueError):
+                require_split_seed(name, 926101)
+            with pytest.raises(ValueError):
+                require_split_seed("heldout", lower)
+    with pytest.raises(ValueError, match="authored"):
+        NavigationEnv(TASK, split="heldout")
 
 
 def test_astar_detour_never_crosses_blocked_cells():

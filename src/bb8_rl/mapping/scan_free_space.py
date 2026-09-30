@@ -12,7 +12,7 @@ import hashlib
 import json
 import math
 from dataclasses import dataclass
-from itertools import combinations, product
+from itertools import combinations, pairwise, product
 from pathlib import Path
 
 import cv2
@@ -484,6 +484,70 @@ class ScanFreeMemory:
                 self.free_mask, self.extent, self.resolution, start, end, radius_m
             )
         )
+
+    def certified_route(self, start, goal, radius_m, *, grid=None):
+        """Keep conservative grid search, but certify endpoint connectors metrically.
+
+        A literal endpoint can touch an inflated blocked-cell rectangle while
+        its full physical footprint remains inside certified free space. Only
+        this memory's exact capsule predicate may admit that connector; the
+        grid's free-node, diagonal and shortcut checks remain unchanged.
+        """
+        start, goal = np.asarray(start, float), np.asarray(goal, float)
+        if (
+            not self.memory.valid
+            or start.shape != (2,)
+            or goal.shape != (2,)
+            or not np.isfinite(start).all()
+            or not np.isfinite(goal).all()
+            or not math.isfinite(radius_m)
+            or radius_m < 0
+        ):
+            raise ValueError("Route needs valid memory, finite endpoints and clearance")
+        if grid is None:
+            grid = self.planning_grid(radius_m)
+        else:
+            if (
+                not isinstance(grid, OccupancyGrid)
+                or grid.extent != self.extent
+                or grid.resolution != self.resolution
+                or grid.n != self.free_mask.shape[0]
+                or not math.isfinite(grid.inflation)
+                or grid.inflation < radius_m
+                or not isinstance(grid.blocked, np.ndarray)
+                or grid.blocked.dtype != np.dtype(bool)
+                or grid.blocked.shape != self.free_mask.shape
+            ):
+                raise ValueError(
+                    "Cached grid geometry or clearance does not match memory"
+                )
+            if not np.array_equal(
+                grid.blocked, self.planning_grid(grid.inflation).blocked
+            ):
+                raise ValueError(
+                    "Cached grid does not match this memory's conservative mask"
+                )
+        source, target = grid.cell(start), grid.cell(goal)
+        if not grid.free(source) or not grid.free(target):
+            raise ValueError("Start or goal is blocked after footprint inflation")
+        if not self.segment_free(start, start, radius_m) or not self.segment_free(
+            goal, goal, radius_m
+        ):
+            raise ValueError("Route endpoint lacks the full requested clearance")
+        try:
+            # Preserve existing successful routes, including their waypoints.
+            route = grid.route(start, goal)
+        except ValueError:
+            route = grid.route(grid.point(source), grid.point(target))
+        # Preserve literal endpoints exactly, even if grid smoothing discarded a
+        # sub-nanometer displacement. Only exact duplicate waypoints vanish.
+        points = [start, *route, goal]
+        route = np.asarray(
+            [points[0]] + [b for a, b in pairwise(points) if not np.array_equal(a, b)]
+        )
+        if not all(self.segment_free(a, b, radius_m) for a, b in pairwise(route)):
+            raise ValueError("Planned route lacks the full requested clearance")
+        return route
 
     def supporting_views(self, cell_yx):
         bits = int(self.support_bits[tuple(cell_yx)])

@@ -96,6 +96,7 @@ def test_summary_counts_hidden_false_accepts_and_reappearance_denominators():
     )
 
 
+@pytest.mark.studio
 def test_fixture_writes_valid_separate_world_without_native_initialization(tmp_path):
     import json
 

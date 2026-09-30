@@ -1,0 +1,104 @@
+{
+  "schema": "bb8.navigation-continuation-evidence.v1",
+  "scope": "Opt-in development prototypes in a prepared lockstep synthetic room; not physical, held-out, or live RGB interaction evidence.",
+  "evidence_root": "work/continuation-20260926-navigation",
+  "base_commit": "ef39d3dfcd67eeef4e2d7be4a14fdba4ddfa59e9",
+  "protocol_sha256": "82ccfbe9e65c8a65b1ef454b69317087994a4b6257a56cf4a07af9f6ddd875fe",
+  "development": {
+    "requested": 24,
+    "executed": 24,
+    "unexecuted": 0,
+    "contacts": 0,
+    "arrivals": 11,
+    "localization_loss_episodes": 7,
+    "rejected_requests": 9,
+    "unexpected_rejections": 0,
+    "manual_interventions": 0,
+    "scene_invalidations": 3,
+    "worker_errors": 0,
+    "audit_errors": 0,
+    "unscored_requests": 0,
+    "passed_requests": 23
+  },
+  "arrival_requests": {
+    "candidate": {
+      "passed": 6,
+      "requested": 6
+    },
+    "baseline": {
+      "passed": 5,
+      "requested": 6
+    }
+  },
+  "goal_commands": {
+    "initial_requested": 24,
+    "initial_rejected": 9,
+    "post_latch_probe_requested": 3,
+    "post_latch_probe_rejected": 3,
+    "total_goal_commands": 27,
+    "total_rejected": 12
+  },
+  "heldout": {
+    "requested": 48,
+    "executed": 0,
+    "unexecuted": 48,
+    "reason": "Four new scan/registration fixture families not provisioned."
+  },
+  "active_camera": {
+    "frozen_cases": 3,
+    "completed_cases": 3,
+    "passed_completed_cases": 3,
+    "attempts": 5,
+    "startup_failures": 2,
+    "contacts_completed": 0,
+    "initial_goals_accepted": 3,
+    "post_latch_probes_rejected": 3,
+    "run_dirs": [
+      "native-active-camera/1-diagnostic",
+      "native-active-camera/2",
+      "native-active-camera/3"
+    ],
+    "failed_attempts": [
+      "native-active-camera/1",
+      "native-active-camera/1-authorized"
+    ],
+    "startup_exception_status": "Sandbox abort and authorized pre-frame IndexError retained; underlying IndexError not reproduced or explained."
+  },
+  "validation": {
+    "non_native_passed": 1200,
+    "native_gui_deselected": 20,
+    "public_dependency_passed": 1158,
+    "public_dependency_deselected": 5,
+    "ci_negative_controls_rejected": 3,
+    "frontend_suites_passed": 3,
+    "ruff_passed": true
+  },
+  "preserved": {
+    "prior_evidence_files_unchanged": 4254,
+    "bundle_members_unchanged": 13,
+    "production_memory_unchanged": true,
+    "studio_clean": true,
+    "runtimes_retained": true
+  },
+  "remaining": [
+    "48 held-out requests",
+    "Native moved-obstacle and appearance nuisance cases",
+    "Saved-map correctness at startup",
+    "Automatic camera registration/map rebuilding/global localization",
+    "Intermittent pre-frame native startup IndexError",
+    "Live RGB entity/consequence learning slice",
+    "Personality/social/cross-room/hardware claims",
+    "App parent shutdown after workers finalize"
+  ],
+  "publication": {
+    "local_uncommitted": true,
+    "pr_created": false,
+    "published": false
+  },
+  "app_validation": {
+    "finalized_worker_sessions": 5,
+    "retained_test_experiences": 2,
+    "final_display_checked": true,
+    "all_known_test_processes_closed": true
+  }
+}

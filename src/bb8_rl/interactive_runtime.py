@@ -29,6 +29,42 @@ def jsonable(value):
     return value
 
 
+def set_render_camera_pose(camera, record):
+    """Reproduce the declared fixture independently of previous camera roll.
+
+    Render setup only. Estimated registration remains the controller calibration.
+    Existing bundles use world-Z up; an explicitly declared up is honored.
+    """
+    camera.set_pose(
+        pos=record["position"],
+        lookat=record.get("lookat", [0, 0, 0.1]),
+        up=record.get("up", [0, 0, 1]),
+    )
+
+
+def camera_pixel_coordinates(record):
+    """Untagged installed bundles retain their original renderer convention."""
+    value = record.get("pixel_coordinates", "genesis_viewport")
+    if value not in ("genesis_viewport", "opencv_integer_center"):
+        raise ValueError("Unknown camera pixel coordinate convention")
+    return value
+
+
+def validate_render_camera_intrinsics(camera, record, extent, *, scale=1):
+    """Check renderer setup in the declared convention, never install true W2C."""
+    from .camera_rig import calibration_from_live_camera, scale_intrinsics
+
+    coordinates = camera_pixel_coordinates(record)
+    live = calibration_from_live_camera(camera, extent, pixel_coordinates=coordinates)
+    expected = scale_intrinsics(
+        record["intrinsics"], scale, pixel_coordinates=coordinates
+    )
+    if not np.allclose(live.intrinsics, expected, atol=1e-5) or tuple(
+        live.resolution
+    ) != tuple(scale * value for value in record["resolution"]):
+        raise ValueError("Live camera intrinsics/resolution differ from bundle")
+
+
 def publish_latest(events, event):
     """Never block actuation on a slow consumer or an already-full queue."""
     for _ in range(4):
@@ -60,6 +96,37 @@ def _point(value):
     return point
 
 
+def evaluation_camera_changes(config, camera_ids):
+    """Validate explicit render-only test disturbances; never control inputs."""
+    changes = config.get("evaluation_camera_changes", [])
+    if not isinstance(changes, list) or len(changes) > 8:
+        raise ValueError("At most eight evaluation camera changes are supported")
+    if changes and config.get("recording_mode") != "audit":
+        raise ValueError("Evaluation camera changes require full audit recording")
+    checked = []
+    for change in changes:
+        if not isinstance(change, dict) or set(change) != {
+            "at_time",
+            "camera_id",
+            "position",
+            "lookat",
+        }:
+            raise ValueError("Invalid evaluation camera change fields")
+        at = change["at_time"]
+        if type(at) not in (int, float) or not math.isfinite(at) or at < 0:
+            raise ValueError("Invalid evaluation camera change time")
+        if change["camera_id"] not in camera_ids:
+            raise ValueError("Evaluation camera change must use an active view")
+        for key in ("position", "lookat"):
+            value = np.asarray(change[key], dtype=float)
+            if value.shape != (3,) or not np.isfinite(value).all():
+                raise ValueError("Camera pose must be a finite three-vector")
+        if np.linalg.norm(np.asarray(change["position"]) - change["lookat"]) < 1e-6:
+            raise ValueError("Camera position and lookat must differ")
+        checked.append(dict(change))
+    return sorted(checked, key=lambda change: change["at_time"])
+
+
 class ControlSession:
     """Pure control coordinator; no simulator state or renderer labels accepted.
 
@@ -88,6 +155,8 @@ class ControlSession:
         clock=time.monotonic,
         agency_engine=None,
         agency_coordinator=None,
+        visibility_planner=None,
+        scene_validity_required=False,
     ):
         from .agency_runtime import AutonomyCoordinator
         from .occluded_control import (
@@ -113,6 +182,21 @@ class ControlSession:
         self.grid = memory.planning_grid(self.planning_radius)
         self.route_grids = {}
         self.route_planning_details = None
+        self.visibility_planner = visibility_planner
+        self.scene_validity_required = bool(scene_validity_required)
+        self.scene_validity = {
+            "enabled": self.scene_validity_required,
+            "navigation_allowed": not self.scene_validity_required,
+            "ready": not self.scene_validity_required,
+            "invalidated": False,
+            "fault_epoch": 0,
+            "recovery": None,
+            "timestamp": None,
+            "reason": "awaiting_reference" if scene_validity_required else "disabled",
+        }
+        self.scene_recheck = None
+        self.scene_recheck_cancel_reason = None
+        self.scene_recheck_cancellation = None
         self.clock, self.heartbeat_seconds = clock, float(heartbeat_seconds)
         self.last_heartbeat = clock()
         self.parameters = parameters or OcclusionParameters()
@@ -145,6 +229,8 @@ class ControlSession:
 
     def route_with_clearance(self, start, goal, radius):
         """Prefer cached coarse grids; retry the exact required reserve if needed."""
+        if not self.scene_validity["navigation_allowed"]:
+            raise ValueError("Scene/camera validity does not permit navigation")
         if not math.isfinite(radius) or radius < 0:
             raise ValueError("Route clearance must be finite and nonnegative")
         required = max(self.planning_radius, radius + self.planning_reserve)
@@ -176,8 +262,21 @@ class ControlSession:
             return self.route_grids[clearance]
 
         rounded_grid = grid_for(rounded)
+
+        def plan(grid):
+            if self.visibility_planner is None:
+                return self.memory.certified_route(start, goal, required, grid=grid)
+            try:
+                return self.visibility_planner.route(
+                    start, goal, grid=grid, radius=required
+                )
+            finally:
+                self.route_planning_details["visibility"] = (
+                    self.visibility_planner.diagnostics
+                )
+
         try:
-            route = rounded_grid.route(start, goal)
+            route = plan(rounded_grid)
         except ValueError:
             if rounded == required:
                 raise
@@ -185,7 +284,7 @@ class ControlSession:
                 selected_radius_m=required, exact_fallback_used=True
             )
             # Retain every millimeter of requested clearance and reserve.
-            route = grid_for(required).route(start, goal)
+            route = plan(grid_for(required))
         route = np.asarray(route, float)
         if (
             route.ndim != 2
@@ -205,6 +304,219 @@ class ControlSession:
             )
         self.route_planning_details["route_certified"] = True
         return route
+
+    def update_scene_validity(self, record, timestamp):
+        """Readmit a latch only for this session's explicit recovery ticket."""
+        if not self.scene_validity_required:
+            return False
+        previously_allowed = self.scene_validity["navigation_allowed"]
+        valid_record = (
+            isinstance(record, dict)
+            and type(record.get("navigation_allowed")) is bool
+            and type(record.get("invalidated")) is bool
+            and type(record.get("ready")) is bool
+            and record.get("timestamp") == timestamp
+            and math.isfinite(timestamp)
+            and timestamp >= 0
+            and (self.capture_time is None or timestamp > self.capture_time)
+            and not (
+                record["navigation_allowed"]
+                and (record["invalidated"] or not record["ready"])
+            )
+        )
+        recovery = record.get("recovery") if isinstance(record, dict) else None
+        ticket = self.scene_recheck
+        recovered = bool(
+            valid_record
+            and ticket
+            and record["navigation_allowed"]
+            and isinstance(recovery, dict)
+            and recovery.get("status") == "succeeded"
+            and type(recovery.get("generation")) is int
+            and type(recovery.get("fault_epoch")) is int
+            and type(recovery.get("stable_checks")) is int
+            and recovery["stable_checks"] >= 3
+            and recovery.get("generation") == ticket["generation"] == self.generation
+            and type(record.get("fault_epoch")) is int
+            and record["fault_epoch"]
+            == recovery.get("fault_epoch")
+            == ticket["fault_epoch"]
+            and recovery.get("requested_at") == ticket["requested_at"]
+            and recovery.get("completed_at") == timestamp
+            and timestamp - ticket["requested_at"] >= 1.0
+            and recovery.get("reference_sha256") == ticket.get("reference_sha256")
+            and ticket.get("reference_sha256")
+            and (self.map_version, self.calibration_version) == self.registered_versions
+        )
+        # Ordinary healthy or old-generation records cannot clear a latch.
+        if (
+            self.scene_validity["invalidated"]
+            and not recovered
+            and (not valid_record or not record["invalidated"])
+        ):
+            return False
+        if recovered:
+            self.scene_recheck = None
+            self.cancel(
+                "stopped",
+                "Original scene reference restored; waiting for fresh local RGB localization and a new goal.",
+            )
+            self.agency.disable(timestamp, self.message)
+            self.requires_new_goal = True
+        self.scene_validity = (
+            dict(record, enabled=True)
+            if valid_record
+            else {
+                "enabled": True,
+                "ready": False,
+                "navigation_allowed": False,
+                "invalidated": True,
+                "fault_epoch": self.scene_validity.get("fault_epoch", 0),
+                "recovery": None,
+                "timestamp": timestamp,
+                "reason": "invalid_or_stale_scene_evidence",
+            }
+        )
+        if not self.scene_validity["navigation_allowed"]:
+            # A suspect image cannot update the pose. Freeze the preceding
+            # accepted local anchor and require the existing reacquisition gate
+            # if the scene check later clears; never replay a cancelled route.
+            belief = self.idle_belief
+            if not self.localization_lost and belief.xy is not None:
+                if (
+                    belief.timestamp == self.capture_time
+                    and belief.last_visual_time is not None
+                    and belief.timestamp - belief.last_visual_time
+                    <= self.parameters.max_occlusion_seconds
+                    and belief.position_radius <= self.parameters.max_position_radius
+                ):
+                    self._loss_reference = (
+                        belief.xy.copy(),
+                        belief.timestamp,
+                        "measured" if belief.measured else "predicted",
+                    )
+                self._lose_localization("scene evidence is not currently usable.")
+            self.cancel(
+                "scene_invalid"
+                if self.scene_validity["invalidated"]
+                else "scene_checking",
+                "Scene or camera evidence changed; restore the original scene and explicitly recheck it."
+                if self.scene_validity["invalidated"]
+                else "Checking a stable camera reference; navigation is paused.",
+            )
+            self.agency.disable(timestamp, self.message)
+            self.requires_new_goal = True
+            if self.scene_validity["invalidated"]:
+                self.localization_status = "lost"
+                self.braking_prediction.invalidate("scene_invalid")
+        elif not previously_allowed and not self.localization_lost:
+            self.phase = self.status = "localizing"
+            self.message = (
+                "Scene reference established; waiting for a fresh RGB position."
+            )
+        return recovered
+
+    def _cancel_scene_recheck(self, reason):
+        if self.scene_recheck is not None:
+            recovery = self.scene_validity.get("recovery") or {}
+            self.scene_recheck_cancellation = {
+                "requested_at": None,
+                "stable_checks": 0,
+                "reference_sha256": {},
+                **recovery,
+                **self.scene_recheck,
+                "status": "cancelled",
+                "reason": reason,
+                "completed_at": None,
+            }
+            self.scene_validity["recovery"] = dict(self.scene_recheck_cancellation)
+            self.scene_recheck = None
+            self.scene_recheck_cancel_reason = reason
+
+    def observe_scene_guard(
+        self,
+        guard,
+        frames,
+        views,
+        *,
+        timestamp,
+        measurement,
+        applied,
+        intervals,
+        invalidation_event=None,
+    ):
+        """Worker handoff, called after the post-render command drain.
+
+        Compare pixels only after checking current authority and the complete
+        stopped actuator timeline. Clearing the shared fault follows session
+        admission, never merely a guard result or a lossy presentation event.
+        """
+        heartbeat_ok = self.heartbeat_guard()
+        ticket = self.scene_recheck
+        if ticket:
+            try:
+                stopped = (
+                    heartbeat_ok
+                    and ticket["generation"] == self.generation
+                    and self._capture_valid(timestamp, measurement, applied, intervals)
+                    and np.array_equal(applied, [0, 0])
+                    and all(
+                        np.array_equal(item["command"], [0, 0]) for item in intervals
+                    )
+                    and self.controller is None
+                    and self.goal is None
+                    and self.pending_goal is None
+                    and not self.agency.enabled
+                )
+            except (KeyError, TypeError, ValueError):
+                stopped = False
+            if not stopped:
+                self._cancel_scene_recheck(
+                    "Recheck cancelled: authority, versions or stopped acknowledgements changed."
+                )
+            else:
+                recovery = guard.snapshot().get("recovery")
+                if not recovery or recovery["generation"] != ticket["generation"]:
+                    try:
+                        snapshot = guard.request_recheck(
+                            ticket["generation"], now=timestamp
+                        )
+                        recovery = snapshot["recovery"]
+                        ticket.update(
+                            requested_at=recovery["requested_at"],
+                            reference_sha256=recovery["reference_sha256"],
+                        )
+                    except ValueError as error:
+                        self._cancel_scene_recheck(str(error))
+        if self.scene_recheck is None:
+            guard.cancel_recheck(
+                self.scene_recheck_cancel_reason or "Recheck request no longer current."
+            )
+        record = guard.observe(frames, views, now=timestamp)
+        # Comparison itself can consume wall time. An expired heartbeat must
+        # also cancel a success produced during that comparison.
+        self.heartbeat_guard()
+        cancellation = self.scene_recheck_cancellation
+        if cancellation and cancellation["generation"] >= (
+            record.get("recovery") or {}
+        ).get("generation", -1):
+            if cancellation["completed_at"] is None:
+                cancellation["completed_at"] = timestamp
+            record["recovery"] = dict(cancellation)
+        committed = self.update_scene_validity(record, timestamp)
+        recovery = record.get("recovery")
+        if (
+            self.scene_recheck
+            and recovery
+            and recovery["status"] in ("rejected", "cancelled")
+        ):
+            self.scene_recheck = None
+        if invalidation_event is not None:
+            if self.scene_validity["invalidated"]:
+                invalidation_event.set()
+            elif committed:
+                invalidation_event.clear()
+        return committed
 
     def cancel(self, phase="stopped", message="Stopped; choose a goal to resume."):
         self.stop()
@@ -250,6 +562,7 @@ class ControlSession:
                 self.generation, *(message["generation"] for message, _ in valid)
             )
             self.last_motion_generation = self.generation
+            self._cancel_scene_recheck("Recheck cancelled by Stop.")
             self.cancel()
             self.agency.disable(sim_time or 0.0, "Autonomy paused by the user.")
             for message, record in valid:
@@ -265,7 +578,7 @@ class ControlSession:
             return records
         for message, record in valid:
             action, generation = message.get("action"), message["generation"]
-            if action not in ("goal", "demo", "autonomy"):
+            if action not in ("goal", "demo", "autonomy", "recheck_scene"):
                 record["outcome"] = "unsupported_worker_command"
                 continue
             if action == "autonomy" and type(message.get("enabled")) is not bool:
@@ -278,6 +591,43 @@ class ControlSession:
                 record["outcome"] = "stale_generation"
                 continue
             self.generation = self.last_motion_generation = generation
+            self._cancel_scene_recheck("Recheck cancelled by a newer command.")
+            if action == "recheck_scene":
+                epoch = message.get("fault_epoch")
+                prior = self.scene_validity.get("recovery")
+                can_retry = (
+                    isinstance(prior, dict) and prior.get("status") == "succeeded"
+                )
+                if (
+                    not self.scene_validity_required
+                    or not self.scene_validity["ready"]
+                    or not (self.scene_validity["invalidated"] or can_retry)
+                    or type(epoch) is not int
+                    or epoch <= 0
+                    or epoch != self.scene_validity.get("fault_epoch")
+                    or (self.map_version, self.calibration_version)
+                    != self.registered_versions
+                ):
+                    record.update(
+                        outcome="rejected",
+                        reason="No matching original-reference fault is available for recheck.",
+                    )
+                    continue
+                self.cancel(
+                    "scene_invalid",
+                    "Rechecking the original scene reference while stopped.",
+                )
+                self.agency.disable(sim_time or 0.0, self.message)
+                self.requires_new_goal = True
+                self.scene_validity.update(invalidated=True, navigation_allowed=False)
+                self.scene_recheck = {"generation": generation, "fault_epoch": epoch}
+                self.scene_recheck_cancel_reason = None
+                self.scene_recheck_cancellation = None
+                record["outcome"] = "accepted_scene_recheck"
+                continue
+            if not self.scene_validity["navigation_allowed"]:
+                record.update(outcome="rejected", reason=self.message)
+                continue
             if action == "autonomy":
                 if not self.agency.available or not self.state()["localization_valid"]:
                     record.update(
@@ -326,6 +676,7 @@ class ControlSession:
     def heartbeat_guard(self, now=None):
         now = self.clock() if now is None else now
         if now - self.last_heartbeat > self.heartbeat_seconds:
+            self._cancel_scene_recheck("Recheck cancelled by heartbeat expiry.")
             if self.phase != "heartbeat_expired":
                 self.last_motion_generation = max(
                     self.last_motion_generation, self.generation
@@ -468,6 +819,22 @@ class ControlSession:
         return False
 
     def decide(self, timestamp, measurement, applied, intervals, *, wall_time=None):
+        if self.scene_validity_required:
+            if self.scene_validity.get("timestamp") != timestamp:
+                self.update_scene_validity(None, timestamp)
+            if not self.scene_validity["navigation_allowed"]:
+                self.heartbeat_guard(wall_time)
+                self.capture_time = timestamp
+                self.cancel(
+                    "scene_invalid"
+                    if self.scene_validity["invalidated"]
+                    else "scene_checking",
+                    "Scene or camera evidence changed; restore the original scene and explicitly recheck it."
+                    if self.scene_validity["invalidated"]
+                    else "Checking a stable camera reference; navigation is paused.",
+                )
+                self.agency.disable(timestamp, self.message)
+                return np.zeros(2, np.float32)
         action = self._decide(
             timestamp, measurement, applied, intervals, wall_time=wall_time
         )
@@ -706,7 +1073,8 @@ class ControlSession:
         # and its stricter expiry is still enforced in decide().
         belief = self.idle_belief
         valid = (
-            self.localization_status in ("measured", "predicted")
+            self.scene_validity["navigation_allowed"]
+            and self.localization_status in ("measured", "predicted")
             and not self.localization_lost
             and belief.xy is not None
             and belief.timestamp == self.capture_time
@@ -717,6 +1085,8 @@ class ControlSession:
             and belief.position_radius <= self.parameters.max_position_radius
         )
         return {
+            "scene_validity": dict(self.scene_validity),
+            "visibility_planning": self.visibility_planner is not None,
             "agency": self.agency.snapshot(),
             "route_planning": self.route_planning_details,
             "phase": self.phase,
@@ -776,21 +1146,26 @@ def _digest(path):
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
 
-def _append(path, item):
-    with path.open("a") as stream:
-        stream.write(json.dumps(jsonable(item), allow_nan=False) + "\n")
-
-
-def worker_main(config, command_queue, event_queue, stop_event):
+def worker_main(
+    config, command_queue, event_queue, stop_event, invalidation_event=None
+):
     """Multiprocessing spawn entry; all native/model imports and lifetime live here.
 
     Required config: asset_dir, mode (1/2/3), run_dir. Optional generation,
-    max_steps, task_path, save_frames, save_every, scoring_labels, jpeg_width, jpeg_quality,
-    camera_dropouts ({ID:[[sim_start,sim_end],...]}), invalidate_memory_at.
+    max_steps, save_frames, save_every, scoring_labels, jpeg_width, jpeg_quality,
+    camera_dropouts ({ID:[[sim_start,sim_end],...]}), invalidate_memory_at,
+    recording_mode (telemetry default, audit for complete physics evidence).
     The last two are explicit test interventions, never geometric oracle input.
     """
+    # Presentation events are deliberately lossy; durable audit evidence is
+    # finalized on disk. Joining a feeder after the supervisor detaches its
+    # reader can otherwise keep an already-finished native process alive.
+    cancel_join = getattr(event_queue, "cancel_join_thread", None)
+    if cancel_join is not None:
+        cancel_join()
     env = session = agency_store = None
     manifest = None
+    recorder = None
     run_dir = None
     try:
         mode = config.get("mode", 1)
@@ -804,8 +1179,21 @@ def worker_main(config, command_queue, event_queue, stop_event):
             Path(config["run_dir"]).resolve(),
         )
         run_dir.mkdir(parents=True, exist_ok=True)
-        if (run_dir / "rows.jsonl").exists():
+        if any(
+            (run_dir / name).exists()
+            for name in ("rows.jsonl", "manifest.json", "recording.json")
+        ):
             raise ValueError("Use a fresh run directory for each worker generation")
+        from .session_recording import SessionRecorder
+
+        recorder = SessionRecorder(
+            run_dir,
+            mode=config.get("recording_mode", "telemetry"),
+            segment_bytes=config.get("log_segment_bytes", 1_048_576),
+            segments=config.get("log_segments", 4),
+        )
+        if config.get("save_frames") and recorder.mode != "audit":
+            raise ValueError("Saving every frame requires explicit audit recording")
         from .demo_assets import validate_assets
 
         demo = validate_assets(asset_dir)
@@ -820,6 +1208,23 @@ def worker_main(config, command_queue, event_queue, stop_event):
                 raise ValueError("Demo assets must stay inside the asset bundle")
             return path
 
+        # Task overrides must not bypass the checked dependency graph. To use a
+        # different world, supply a fresh bundle with that task in demo.json.
+        if config.get("task_path") and Path(config["task_path"]).resolve() != asset(
+            "task"
+        ):
+            raise ValueError("Task override must match the checksummed demo task")
+        if (
+            len(
+                {
+                    camera_pixel_coordinates(record)
+                    for record in demo["cameras"].values()
+                }
+            )
+            != 1
+        ):
+            raise ValueError("Camera bundle mixes pixel coordinate conventions")
+
         # Heavy/native imports are intentionally below config/asset validation.
         import cv2
         import torch
@@ -829,7 +1234,7 @@ def worker_main(config, command_queue, event_queue, stop_event):
             CameraFrame,
             CameraRig,
             CameraView,
-            calibration_from_live_camera,
+            scale_intrinsics,
         )
         from .env import NavigationEnv
         from .guided import GuidedSAC
@@ -848,11 +1253,87 @@ def worker_main(config, command_queue, event_queue, stop_event):
         from .purpose_runtime import PurposeCoordinator
 
         agency_mode = config.get("agency_mode", "purpose")
-        if agency_mode not in ("purpose", "coverage"):
-            raise ValueError("Agency mode must be purpose or coverage")
+        if agency_mode not in ("purpose", "coverage", "visual"):
+            raise ValueError("Agency mode must be purpose, coverage or visual")
+        visual_fixture = visual_observer = visual_calibration = None
+        visual_version = None
+        if agency_mode == "visual":
+            from .purpose import Station
+            from .visual_fixture import DEFAULT_PANELS, VisualCamera, VisualFixture
+            from .visual_interaction import INTERACTION_OFFSET, PixelVisualObserver
+            from .visual_purpose_runtime import VisualPurposeCoordinator
+
+            if not config.get("agency_memory"):
+                raise ValueError(
+                    "Visual learning requires a separate persistent memory"
+                )
+            if (
+                any(
+                    key in config
+                    for key in (
+                        "visual_effects",
+                        "visual_initial_resource",
+                        "visual_dropouts",
+                        "visual_hide_after_completion",
+                    )
+                )
+                and recorder.mode != "audit"
+            ):
+                raise ValueError("Visual evaluation overrides require audit recording")
+            record = demo["cameras"]["B"]
+            coordinates = camera_pixel_coordinates(record)
+            intrinsics = scale_intrinsics(
+                record["intrinsics"], 2, pixel_coordinates=coordinates
+            )
+            resolution = tuple(2 * value for value in record["resolution"])
+            visual_version = _digest(asset_dir / "demo.json") + ":visual-B-scaled2-v2"
+            if coordinates != "genesis_viewport":
+                visual_version += ":" + coordinates
+            visual_calibration = Calibration(
+                intrinsics,
+                np.asarray(record["world_to_camera"]),
+                resolution,
+                float(memory.extent),
+                provenance="RGB-estimated registered pose; scaled synthetic intrinsics",
+            )
+            visual_fixture = VisualFixture(
+                initial_resource=config.get("visual_initial_resource", 0.25),
+                camera_specs=(
+                    VisualCamera(
+                        "V",
+                        tuple(record["position"]),
+                        tuple(record["lookat"]),
+                        resolution,
+                    ),
+                ),
+            )
+            visual_observer = PixelVisualObserver(
+                visual_calibration, "V", visual_version
+            )
+            world_stations = tuple(
+                Station(
+                    panel.visual_id,
+                    tuple(
+                        a + b
+                        for a, b in zip(
+                            panel.center_xy, INTERACTION_OFFSET, strict=True
+                        )
+                    ),
+                    panel.visual_id,
+                )
+                for panel in DEFAULT_PANELS
+            )
         interaction_environment = (
             InteractionEnvironment() if agency_mode == "purpose" else None
         )
+        if agency_mode == "visual":
+            interaction_environment = InteractionEnvironment(
+                world_stations,
+                initial_resource=config.get("visual_initial_resource", 0.25),
+                effects=config.get(
+                    "visual_effects", {"marker-01": 0.0, "marker-02": 0.45}
+                ),
+            )
         agency_engine = None
         agency_error = None
         if config.get("agency_memory"):
@@ -869,7 +1350,17 @@ def worker_main(config, command_queue, event_queue, stop_event):
                         sort_keys=True,
                     ).encode()
                 ).hexdigest()
-                if agency_mode == "purpose":
+                if agency_mode == "visual":
+                    # Scope to observable map/calibration/protocol, never hidden effects.
+                    agency_map_version += (
+                        ":visual-v2:"
+                        + hashlib.sha256(visual_version.encode()).hexdigest()
+                    )
+                    agency_store = PurposeStore(
+                        config["agency_memory"], map_version=agency_map_version
+                    )
+                    agency_engine = PurposeEngine(agency_store)
+                elif agency_mode == "purpose":
                     # Fixture identities/coordinates also scope outcome memory.
                     agency_map_version += (
                         ":stations-v1:"
@@ -888,7 +1379,10 @@ def worker_main(config, command_queue, event_queue, stop_event):
                     agency_engine = AgencyEngine(agency_store)
             except (OSError, ValueError, RuntimeError, sqlite3.Error) as error:
                 agency_error = str(error)
+        if agency_mode == "visual" and agency_engine is None:
+            raise ValueError(f"Visual memory unavailable: {agency_error}")
         camera_ids = tuple("ABC"[:mode])
+        camera_changes = evaluation_camera_changes(config, camera_ids)
         cameras = demo["cameras"]
         calibration_version = (
             _digest(asset_dir / "demo.json") + ":" + "".join(camera_ids)
@@ -916,16 +1410,42 @@ def worker_main(config, command_queue, event_queue, stop_event):
                 )
             )
         rig = CameraRig(views)
-        policy = GuidedSAC.load(asset("policy"), device="cpu")
-        task_path = (
-            Path(config["task_path"]) if config.get("task_path") else asset("task")
+        from .scene_validity import SceneValidityGuard
+        from .visibility_planning import VisibilityPlanner
+
+        for option in ("visibility_planning", "scene_validity"):
+            if type(config.get(option, False)) is not bool:
+                raise ValueError(f"{option} must be an explicit boolean")
+        visibility_planner = (
+            VisibilityPlanner(
+                memory,
+                calibrations,
+                max_blind_distance_m=0.10,
+                reference_speed_m_s=0.10,
+            )
+            if config.get("visibility_planning", False)
+            else None
         )
+        validity_guard = (
+            SceneValidityGuard(
+                calibrations,
+                {name: cameras[name]["calibration_version"] for name in camera_ids},
+            )
+            if config.get("scene_validity", False)
+            else None
+        )
+        policy = GuidedSAC.load(asset("policy"), device="cpu")
+        task_path = asset("task")
         sources = [
             Path(__file__),
             Path(__file__).with_name("agency.py"),
             Path(__file__).with_name("agency_runtime.py"),
             Path(__file__).with_name("purpose.py"),
             Path(__file__).with_name("purpose_runtime.py"),
+            Path(__file__).with_name("visual_interaction.py"),
+            Path(__file__).with_name("visual_purpose_runtime.py"),
+            Path(__file__).with_name("visual_fixture.py"),
+            Path(__file__).with_name("visual_evidence.py"),
             Path(__file__).with_name("interaction_environment.py"),
             Path(__file__).with_name("braking_prediction.py"),
             Path(__file__).with_name("occluded_control.py"),
@@ -933,6 +1453,8 @@ def worker_main(config, command_queue, event_queue, stop_event):
             Path(__file__).with_name("camera.py"),
             Path(__file__).with_name("camera_rig.py"),
             Path(__file__).with_name("vision.py"),
+            Path(__file__).with_name("visibility_planning.py"),
+            Path(__file__).with_name("scene_validity.py"),
             Path(__file__).parent / "control/genesis_backend.py",
             Path(__file__).parent / "mapping/scan_free_space.py",
         ]
@@ -940,9 +1462,13 @@ def worker_main(config, command_queue, event_queue, stop_event):
         for source in sources:
             (run_dir / "source" / source.name).write_bytes(source.read_bytes())
         manifest = {
+            "schema": "bb8.interactive-run.v2",
             "status": "running",
             "mode": mode,
             "camera_ids": camera_ids,
+            "render_camera_up": {
+                name: cameras[name].get("up", [0, 0, 1]) for name in camera_ids
+            },
             "scope": "Interactive lockstep synthetic development session",
             "truth_to_controller": False,
             "segmentation_to_controller": False,
@@ -952,7 +1478,9 @@ def worker_main(config, command_queue, event_queue, stop_event):
                 "frozen scan evidence",
                 "user goal",
                 "optional learned station-outcome chooser (coverage diagnostic available)",
-                "explicit simulated resource and station-response telemetry in purpose mode",
+                "native fixture RGB identity/anchor/gauge evidence and completion-only correlation in visual mode"
+                if agency_mode == "visual"
+                else "explicit simulated resource and station-response telemetry in purpose mode",
                 "command acknowledgements and times",
                 "heartbeat/generation/stop",
             ],
@@ -973,9 +1501,15 @@ def worker_main(config, command_queue, event_queue, stop_event):
             "control_profile": profile.record(),
             "map_version": map_version,
             "calibration_version": calibration_version,
+            "navigation_safeguards": {
+                "visibility_planning": visibility_planner is not None,
+                "scene_validity": validity_guard is not None,
+                "scope": "Experimental geometric visibility heuristic and same-session RGB change guard; neither certifies the frozen map at startup",
+            },
             "generation": int(config.get("generation", 0)),
             "goal": demo["goal"],
             "completed_steps": 0,
+            "recording": recorder.summary(),
             "agency_mode": agency_mode,
             "interaction_fixture": {
                 "scope": "Virtual task zones; not RGB-recognized objects or rendered station responses",
@@ -990,14 +1524,35 @@ def worker_main(config, command_queue, event_queue, stop_event):
             if interaction_environment is not None
             else None,
         }
+        if agency_mode == "visual":
+            manifest["interaction_fixture"] = {
+                "scope": "Fixture-specific native RGB panels; world-side synthetic effects, not generic object understanding",
+                "rendering": visual_fixture.rendering_contract(),
+                "source": "native_scene_rgb",
+                "visual_camera": {
+                    "id": "V",
+                    "intrinsics": visual_calibration.intrinsics,
+                    "world_to_camera": visual_calibration.world_to_camera,
+                    "resolution": visual_calibration.resolution,
+                    "calibration_version": visual_version,
+                },
+                "world_effects_scoring_only": dict(interaction_environment._effects),
+                "initial_resource_scoring_only": interaction_environment.resource,
+            }
         (run_dir / "manifest.json").write_text(
             json.dumps(jsonable(manifest), indent=2) + "\n"
         )
+        evaluation_split = config.get("evaluation_split", "validation")
+        if evaluation_split not in {"validation", "heldout"} or (
+            evaluation_split == "heldout" and recorder.mode != "audit"
+        ):
+            raise ValueError("Held-out fixtures require explicit audit recording")
         env = NavigationEnv(
             task_path,
-            split="validation",
+            split=evaluation_split,
             render_mode="rgb_array",
             camera_positions=[cameras[name]["position"] for name in "ABC"],
+            visual_fixture=visual_fixture,
         )
         env.task.max_episode_steps = int(config.get("max_steps", 1_000_000))
         env.reset(
@@ -1008,6 +1563,39 @@ def worker_main(config, command_queue, event_queue, stop_event):
                 "goal": demo["goal"],
             },
         )
+        from .run_identity import capture_run_identity
+
+        manifest["run_identity"] = capture_run_identity(
+            run_dir / "identity",
+            asset_dir=asset_dir,
+            demo=demo,
+            task_path=task_path,
+        )
+        # Record effective setup after reset as well as the on-disk dependency
+        # graph. These are provenance/scoring data, never controller inputs.
+        loaded_setup = {
+            "task": env.task.model_dump(mode="json"),
+            "world": env.config.model_dump(mode="json"),
+            "project": env.world.project.model_dump(mode="json"),
+            "layout": {
+                "seed": env.layout.seed,
+                "kind": env.layout.kind,
+                "positions": env.layout.positions,
+            },
+            "reset_start": demo["start"],
+            "reset_goal": demo["goal"],
+            "camera_fixture": cameras,
+            "scope": "Effective synthetic setup; not observations supplied to control",
+        }
+        loaded_path = run_dir / "loaded-setup.json"
+        loaded_path.write_text(json.dumps(jsonable(loaded_setup), indent=2) + "\n")
+        manifest["loaded_setup"] = {
+            "path": loaded_path.name,
+            "sha256": _digest(loaded_path),
+        }
+        (run_dir / "manifest.json").write_text(
+            json.dumps(jsonable(manifest), indent=2) + "\n"
+        )
         if not math.isclose(env.config.action_steps * env.world.dt, 0.05, abs_tol=1e-9):
             raise ValueError(
                 "Interactive controller requires the existing 50 ms action period"
@@ -1015,17 +1603,13 @@ def worker_main(config, command_queue, event_queue, stop_event):
         env.world.camera_period = env.world._next_frame = 1e9
         for name in "ABC":
             record, camera = cameras[name], env.world.cameras[name]
-            camera.set_pose(
-                pos=record["position"], lookat=record.get("lookat", [0, 0, 0.1])
-            )
-            live = calibration_from_live_camera(camera, memory.extent)
+            set_render_camera_pose(camera, record)
             # Render geometry is fixture setup only; never replace estimated W2C.
-            if not np.allclose(
-                live.intrinsics, record["intrinsics"], atol=1e-5
-            ) or tuple(live.resolution) != tuple(record["resolution"]):
-                raise ValueError(
-                    f"Live camera {name} intrinsics/resolution differ from bundle"
-                )
+            validate_render_camera_intrinsics(camera, record, memory.extent)
+        if visual_fixture is not None:
+            validate_render_camera_intrinsics(
+                visual_fixture.cameras["V"], cameras["B"], memory.extent, scale=2
+            )
         session = ControlSession(
             policy=lambda vector: policy.predict(vector, deterministic=True)[0],
             memory=memory,
@@ -1038,9 +1622,15 @@ def worker_main(config, command_queue, event_queue, stop_event):
             parameters=profile.parameters(),
             planning_reserve=profile.planning_reserve_m,
             agency_engine=agency_engine,
-            agency_coordinator=PurposeCoordinator(agency_engine, DEFAULT_STATIONS)
-            if agency_mode == "purpose"
-            else None,
+            agency_coordinator=(
+                VisualPurposeCoordinator(agency_engine, visual_version)
+                if agency_mode == "visual"
+                else PurposeCoordinator(agency_engine, DEFAULT_STATIONS)
+                if agency_mode == "purpose"
+                else None
+            ),
+            visibility_planner=visibility_planner,
+            scene_validity_required=validity_guard is not None,
         )
         if agency_error:
             session.agency.message = f"Memory unavailable: {agency_error}"
@@ -1107,10 +1697,19 @@ def worker_main(config, command_queue, event_queue, stop_event):
             if isinstance(value, tuple) and value[0] == env.world.head.idx
         ]
         intervals = []
+        previous_scene_recovery = None
         save_frames, score_labels = (
             bool(config.get("save_frames", False)),
-            bool(config.get("scoring_labels", True)),
+            bool(config.get("scoring_labels", recorder.mode == "audit")),
         )
+        visual_evidence = None
+        if visual_fixture is not None:
+            from .visual_evidence import VisualEvidenceArchive
+
+            visual_evidence = VisualEvidenceArchive(
+                run_dir, audit=recorder.mode == "audit"
+            )
+            session.agency.evidence_retainer = visual_evidence.retain_outcome
         for step in range(env.task.max_episode_steps):
             if stop_event.is_set():
                 session.cancel("stopped", "Worker stopped by supervisor.")
@@ -1122,10 +1721,16 @@ def worker_main(config, command_queue, event_queue, stop_event):
                 for record in session.receive(
                     drain_commands(command_queue), sim_time=capture_time
                 ):
-                    _append(run_dir / "commands.jsonl", record)
+                    recorder.command(jsonable(record))
 
             receive_pending()
             session.heartbeat_guard()
+            while camera_changes and timestamp + 1e-9 >= camera_changes[0]["at_time"]:
+                change = camera_changes.pop(0)
+                # This changes the evaluation renderer, not a body pose or the
+                # registered calibration. The RGB guard receives only images.
+                set_render_camera_pose(env.world.cameras[change["camera_id"]], change)
+                recorder.event("evaluation_camera_change", time=timestamp, **change)
             frames, rgbs, segmentations = [], {}, {}
             for name in camera_ids:
                 rendered = env.world.cameras[name].render(
@@ -1143,6 +1748,29 @@ def worker_main(config, command_queue, event_queue, stop_event):
                     CameraFrame(
                         name, cameras[name]["calibration_version"], pixels, timestamp
                     )
+                )
+            visual_scene = visual_artifact = None
+            if visual_fixture is not None:
+                # Numeric mechanics reach the renderer only; the learner sees RGB.
+                visual_fixture.set_resource(interaction_environment.resource)
+                if (
+                    config.get("visual_hide_after_completion", False)
+                    and (interaction_observation or {}).get("outcome") is not None
+                ):
+                    visual_fixture.set_visible_panels(())
+                visual_rgb = np.ascontiguousarray(
+                    visual_fixture.cameras["V"].render(rgb=True, force_render=True)[0]
+                )
+                if any(
+                    a <= timestamp < b for a, b in config.get("visual_dropouts", [])
+                ):
+                    visual_rgb = np.zeros_like(visual_rgb)
+                visual_scene = visual_observer.observe(
+                    CameraFrame("V", visual_version, visual_rgb, timestamp),
+                    now=timestamp,
+                )
+                visual_artifact = visual_evidence.capture(
+                    visual_rgb, step=step, timestamp=timestamp
                 )
             observation = rig.observe(frames, now=timestamp)
             empty = np.zeros((0, 0), bool)
@@ -1165,7 +1793,55 @@ def worker_main(config, command_queue, event_queue, stop_event):
                 session.map_version = map_version + ":invalidated"
                 session.cancel("guarded_stop", "Map validity changed; reset required.")
             applied = np.asarray(env.world.backend.applied_request)
-            if interaction_observation is not None:
+            if validity_guard is not None:
+                session.observe_scene_guard(
+                    validity_guard,
+                    frames,
+                    observation.views,
+                    timestamp=timestamp,
+                    measurement=measurement,
+                    applied=applied,
+                    intervals=intervals,
+                    invalidation_event=invalidation_event,
+                )
+                recovery = session.scene_validity.get("recovery")
+                recovery_key = (
+                    None
+                    if recovery is None
+                    else (
+                        recovery.get("generation"),
+                        recovery.get("fault_epoch"),
+                        recovery.get("status"),
+                        recovery.get("stable_checks"),
+                    )
+                )
+                if recovery_key is not None and recovery_key != previous_scene_recovery:
+                    recorder.event(
+                        "scene_reference_recheck",
+                        time=timestamp,
+                        **jsonable(recovery),
+                        navigation_allowed=session.scene_validity["navigation_allowed"],
+                        requires_new_goal=session.requires_new_goal,
+                        shared_fault_set=None
+                        if invalidation_event is None
+                        else invalidation_event.is_set(),
+                    )
+                previous_scene_recovery = recovery_key
+            if agency_mode == "visual":
+                receipt = (interaction_observation or {}).get("outcome")
+                completion = (
+                    None
+                    if receipt is None
+                    else session.agency.completion_for(
+                        {
+                            key: receipt[key]
+                            for key in ("request_id", "station_id", "timestamp")
+                        },
+                        session.generation,
+                    )
+                )
+                session.agency.feed_visual(visual_scene, completion)
+            elif interaction_observation is not None:
                 session.agency.observe(interaction_observation)
             action = session.decide(timestamp, measurement, applied, intervals)
             decision_finished = time.monotonic()
@@ -1209,6 +1885,8 @@ def worker_main(config, command_queue, event_queue, stop_event):
                             head_mask_path=mask_path.name,
                             head_mask_sha256=_digest(mask_path),
                         )
+            if visual_artifact is not None:
+                artifacts["V"] = visual_artifact
             row = {
                 "step": step,
                 "time": timestamp,
@@ -1230,8 +1908,14 @@ def worker_main(config, command_queue, event_queue, stop_event):
                 "action": action,
                 "controller_status": session.status,
                 "route_planning": session.route_planning_details,
+                "scene_validity": state["scene_validity"],
                 "agency": state["agency"],
-                "interaction_telemetry": interaction_observation,
+                "interaction_telemetry": interaction_observation
+                if agency_mode != "visual"
+                else None,
+                "interaction_world_scoring_only": interaction_observation
+                if agency_mode == "visual"
+                else None,
                 "localization": {
                     key: state[key]
                     for key in (
@@ -1272,7 +1956,11 @@ def worker_main(config, command_queue, event_queue, stop_event):
             command_trace.clear()
             physics_trace.clear()
             interaction_request = (
-                session.agency.interaction_request()
+                (
+                    session.agency.world_request()
+                    if agency_mode == "visual"
+                    else session.agency.interaction_request()
+                )
                 if interaction_environment is not None
                 else None
             )
@@ -1287,9 +1975,14 @@ def worker_main(config, command_queue, event_queue, stop_event):
                 "collision_scoring_only": info["collision"],
                 "boundary_scoring_only": info["boundary_failure"],
                 "physics_trace_scoring_only": list(physics_trace),
-                "interaction_telemetry": interaction_observation,
+                "interaction_telemetry": interaction_observation
+                if agency_mode != "visual"
+                else None,
+                "interaction_world_scoring_only": interaction_observation
+                if agency_mode == "visual"
+                else None,
             }
-            _append(run_dir / "rows.jsonl", row)
+            recorder.row(jsonable(row))
             manifest["completed_steps"] = step + 1
             encoded = {}
             for name, rgb in rgbs.items():
@@ -1325,6 +2018,11 @@ def worker_main(config, command_queue, event_queue, stop_event):
         )
         if session is not None:
             session.cancel("error", f"{type(error).__name__}: {error}")
+        if recorder is not None:
+            try:
+                recorder.event("fault", error=f"{type(error).__name__}: {error}")
+            except OSError:
+                pass  # Braking/error publication must survive a failed log device.
         publish_latest(
             event_queue,
             {
@@ -1361,6 +2059,15 @@ def worker_main(config, command_queue, event_queue, stop_event):
         if agency_store is not None:
             agency_store.close()
         if manifest is not None and run_dir is not None:
+            from .session_recording import finish_recording
+
+            finish_recording(recorder, manifest)
+            if "run_identity" in manifest:
+                from .run_identity import verify_run_identity
+
+                manifest["run_identity_verification"] = verify_run_identity(
+                    manifest["run_identity"]
+                )
             manifest["source_files_unchanged"] = all(
                 _digest(
                     Path(__file__).parent
@@ -1375,7 +2082,7 @@ def worker_main(config, command_queue, event_queue, stop_event):
                 )
                 == digest
                 for name, digest in manifest["source_sha256"].items()
-            )
+            ) and manifest.get("run_identity_verification", {}).get("unchanged", False)
             (run_dir / "manifest.json").write_text(
                 json.dumps(jsonable(manifest), indent=2) + "\n"
             )

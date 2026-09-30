@@ -188,6 +188,7 @@ def run_mode(args, mode):
         )
     config = {
         "asset_dir": str(args.assets.resolve()),
+        "recording_mode": "audit",
         "mode": mode,
         "run_dir": str(output / "worker"),
         "agency_memory": str(memory),

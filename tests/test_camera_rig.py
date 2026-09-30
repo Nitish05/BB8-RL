@@ -1,6 +1,7 @@
 """Causal RGB rig contracts; no renderer or privileged robot state."""
 
 from dataclasses import replace
+from types import SimpleNamespace
 
 import numpy as np
 import pytest
@@ -11,6 +12,8 @@ from bb8_rl.camera_rig import (
     CameraRig,
     CameraView,
     calibration_from_live_camera,
+    intrinsics_from_genesis,
+    scale_intrinsics,
 )
 
 
@@ -335,10 +338,199 @@ def test_live_calibration_reads_current_transform_never_cached_extrinsics(calibr
     assert second.provenance == "synthetic_exact_live_transform"
 
 
+def test_native_export_default_preserves_legacy_values_and_owns_arrays(calibration):
+    camera_to_world = np.linalg.inv(calibration.world_to_camera)
+    camera_to_world[:3, 1:3] *= -1
+    camera = SimpleNamespace(
+        transform=camera_to_world,
+        intrinsics=calibration.intrinsics.copy(),
+        res=calibration.resolution,
+    )
+    legacy = calibration_from_live_camera(camera, calibration.extent)
+    explicit = calibration_from_live_camera(
+        camera, calibration.extent, pixel_coordinates="genesis_viewport"
+    )
+    corrected = calibration_from_live_camera(
+        camera, calibration.extent, pixel_coordinates="opencv_integer_center"
+    )
+    assert legacy.intrinsics.tobytes() == camera.intrinsics.tobytes()
+    assert legacy.intrinsics.tobytes() == explicit.intrinsics.tobytes()
+    assert legacy.world_to_camera.tobytes() == explicit.world_to_camera.tobytes()
+    assert legacy.world_to_camera.tobytes() == corrected.world_to_camera.tobytes()
+    assert legacy.resolution == corrected.resolution == camera.res
+    assert legacy.provenance == corrected.provenance
+    np.testing.assert_array_equal(
+        corrected.intrinsics[:2, 2], camera.intrinsics[:2, 2] - 0.5
+    )
+    copied = intrinsics_from_genesis(camera.intrinsics)
+    copied[0, 0] = 1
+    camera.intrinsics[0, 0] = 2
+    assert legacy.intrinsics[0, 0] == corrected.intrinsics[0, 0] == 80
+    assert copied[0, 0] == 1
+
+
+@pytest.mark.parametrize("resolution", [(64, 48), (65, 49), (1280, 960)])
+def test_integer_center_export_matches_native_gl_rays_and_flipped_array(resolution):
+    # Genesis uses (u + .5 - cx) / fx for array backprojection. The RGB
+    # readback flips bottom-left OpenGL rows into a top-left array.
+    width, height = resolution
+    focal = height / (2 * np.tan(np.deg2rad(58) / 2))
+    native_k = np.array([[focal, 0, width / 2], [0, focal, height / 2], [0, 0, 1]])
+    camera_to_world = np.eye(4)
+    camera_to_world[:3, 3] = [0.3, -0.4, 3]
+    camera = SimpleNamespace(
+        transform=camera_to_world, intrinsics=native_k, res=resolution
+    )
+    calibration = calibration_from_live_camera(
+        camera, 10, pixel_coordinates="opencv_integer_center"
+    )
+    pixels = np.array([[0, 0], [width - 1, height - 1], [width // 3, height // 3]])
+    # Calculate GL sample centers directly, including framebuffer row flip.
+    window_x = pixels[:, 0] + 0.5
+    window_y = height - pixels[:, 1] - 0.5
+    gl_rays = np.column_stack(
+        ((window_x - width / 2) / focal, (window_y - height / 2) / focal)
+    )
+    world_on_floor = camera_to_world[:2, 3] + 3 * gl_rays
+    np.testing.assert_allclose(calibration.to_plane(pixels), world_on_floor, atol=1e-12)
+    np.testing.assert_allclose(calibration.to_pixel(world_on_floor), pixels, atol=1e-12)
+    np.testing.assert_array_equal(camera.intrinsics, native_k)
+
+
+def test_opposite_image_axes_map_exact_integer_array_mirror():
+    width, height = 64, 48
+    native_k = np.array([[80.0, 0, width / 2], [0, 80.0, height / 2], [0, 0, 1]])
+    pixels = np.array([[0, 0, 1], [width - 1, height - 1, 1], [7, 19, 1]])
+    opposite_axes = np.diag([-1.0, -1.0, 1.0])
+    corrected = intrinsics_from_genesis(
+        native_k, pixel_coordinates="opencv_integer_center"
+    )
+    homography = corrected @ opposite_axes @ np.linalg.inv(corrected)
+    mirrored = pixels @ homography.T
+    np.testing.assert_array_equal(mirrored[:, 0], width - 1 - pixels[:, 0])
+    np.testing.assert_array_equal(mirrored[:, 1], height - 1 - pixels[:, 1])
+    old_mirror = pixels @ (native_k @ opposite_axes @ np.linalg.inv(native_k)).T
+    np.testing.assert_array_equal(old_mirror[:, :2] - mirrored[:, :2], 1)
+
+
+@pytest.mark.parametrize("scales", [(2, 3), (0.5, 0.25), (1, 1), (1.75, 0.625)])
+def test_integer_center_scaling_matches_pixel_area_centers_and_round_trip(scales):
+    # Noncentral estimated OpenCV K is already integer-centered: scaling must
+    # not apply the native export correction a second time. Keep skew as well.
+    original = np.array([[123.0, 0.7, 58.321], [0, 127.0, 43.217], [0, 0, 1]])
+    unchanged = original.copy()
+    scaled = scale_intrinsics(
+        original, *scales, pixel_coordinates="opencv_integer_center"
+    )
+    rays = np.array([[0, 0, 1], [0.2, -0.3, 1], [-0.1, 0.4, 1]])
+    original_pixels = (rays @ original.T)[:, :2]
+    scaled_pixels = (rays @ scaled.T)[:, :2]
+    # Equal continuous pixel-area coordinates in each image, measured from
+    # the upper-left outer edge, supply the independent resize constraint.
+    np.testing.assert_allclose(
+        (scaled_pixels + 0.5) / np.array(scales), original_pixels + 0.5
+    )
+    recovered = scale_intrinsics(
+        scaled, *(1 / np.array(scales)), pixel_coordinates="opencv_integer_center"
+    )
+    np.testing.assert_allclose(recovered, original, rtol=0, atol=1e-13)
+    np.testing.assert_array_equal(original, unchanged)
+    if scales == (1, 1):
+        assert scaled.tobytes() == original.tobytes()
+
+
+def test_supersampled_native_export_area_downsample_retains_effective_intrinsics():
+    native = np.array([[865.0, 0, 640], [0, 865.0, 480], [0, 0, 1]])
+    expected = intrinsics_from_genesis(
+        native, pixel_coordinates="opencv_integer_center"
+    )
+    # A fresh native capture at 3x resolution has 3x viewport K. Reducing each
+    # 3x3 pixel area samples raw centroid 3*u+1, not raw position 3*u.
+    high_native = native.copy()
+    high_native[:2] *= 3
+    high_cv = intrinsics_from_genesis(
+        high_native, pixel_coordinates="opencv_integer_center"
+    )
+    actual = scale_intrinsics(high_cv, 1 / 3, pixel_coordinates="opencv_integer_center")
+    np.testing.assert_allclose(actual, expected, rtol=0, atol=1e-12)
+    np.testing.assert_allclose(high_cv[:2, 2], 3 * expected[:2, 2] + 1)
+
+
+def test_legacy_scaling_is_exact_row_multiplication_and_default_is_uniform():
+    intrinsics = np.array([[123.0, 0.7, 58.321], [0, 127.0, 43.217], [0, 0, 1]])
+    expected = intrinsics.copy()
+    expected[0] *= 2.5
+    expected[1] *= 0.75
+    assert scale_intrinsics(intrinsics, 2.5, 0.75).tobytes() == expected.tobytes()
+    assert (
+        scale_intrinsics(
+            intrinsics, 2.5, 0.75, pixel_coordinates="genesis_viewport"
+        ).tobytes()
+        == expected.tobytes()
+    )
+    uniform = intrinsics.copy()
+    uniform[:2] *= 2
+    np.testing.assert_array_equal(scale_intrinsics(intrinsics, 2), uniform)
+
+
+@pytest.mark.parametrize(
+    "convention", [None, "", "opencv_integer_centers", "OpenCV", 0]
+)
+def test_native_export_and_scaling_reject_unknown_convention(calibration, convention):
+    with pytest.raises(ValueError, match="pixel_coordinates"):
+        intrinsics_from_genesis(calibration.intrinsics, pixel_coordinates=convention)
+    with pytest.raises(ValueError, match="pixel_coordinates"):
+        scale_intrinsics(calibration.intrinsics, 2, pixel_coordinates=convention)
+    camera = SimpleNamespace(
+        transform=np.eye(4),
+        intrinsics=calibration.intrinsics,
+        res=calibration.resolution,
+    )
+    with pytest.raises(ValueError, match="pixel_coordinates"):
+        calibration_from_live_camera(camera, 2, pixel_coordinates=convention)
+
+
+@pytest.mark.parametrize(
+    "intrinsics",
+    [
+        np.ones((2, 3)),
+        np.diag([0, 1, 1]),
+        np.diag([-1, 1, 1]),
+        np.diag([1, np.inf, 1]),
+        np.diag([np.nan, 1, 1]),
+        np.diag([1, 1, 2]),
+        np.array([[1, 0, 2], [1, 1, 2], [0, 0, 1]]),
+        np.eye(3) + 1j,
+        [["invalid"]],
+    ],
+)
+def test_intrinsics_boundaries_reject_invalid_matrices(intrinsics):
+    with pytest.raises(ValueError, match="pinhole intrinsics"):
+        intrinsics_from_genesis(intrinsics, pixel_coordinates="opencv_integer_center")
+    with pytest.raises(ValueError, match="pinhole intrinsics"):
+        scale_intrinsics(intrinsics, 2)
+
+
+@pytest.mark.parametrize("scale", [0, -1, np.nan, np.inf, True, [2], "2", 2j])
+def test_scaling_rejects_invalid_axis_factor(calibration, scale):
+    for x, y in ((scale, 1), (1, scale)):
+        with pytest.raises(ValueError, match="finite positive scalars"):
+            scale_intrinsics(calibration.intrinsics, x, y)
+
+
+def test_scaling_rejects_overflow_and_underflow(calibration):
+    with pytest.raises(ValueError, match="finite positive range"):
+        scale_intrinsics(calibration.intrinsics, np.finfo(float).max)
+    tiny = np.diag([np.nextafter(0.0, 1.0), 1, 1])
+    with pytest.raises(ValueError, match="finite positive range"):
+        scale_intrinsics(tiny, 0.1)
+
+
 @pytest.mark.parametrize(
     "positions",
     [[], [(0, 0, 2)] * 2, [(i, 0, 2) for i in range(4)], [(0, float("nan"), 2)]],
 )
+@pytest.mark.studio
 def test_world_rejects_invalid_rig_before_loading_scene(positions):
     from pathlib import Path
 

@@ -18,7 +18,22 @@ from .demo_assets import checked_path, validate_assets
 
 ROOT = Path(__file__).resolve().parents[2]
 WEB = Path(__file__).with_name("web")
-ACTIONS = {"goal", "stop", "reset", "mode", "demo", "heartbeat", "autonomy"}
+ACTIONS = {
+    "goal",
+    "stop",
+    "reset",
+    "mode",
+    "demo",
+    "heartbeat",
+    "autonomy",
+    "recheck_scene",
+}
+AGENCY_MODES = ("purpose", "coverage", "visual")
+
+
+def default_agency_memory(mode):
+    directory = "visual-agency" if mode == "visual" else "agency"
+    return ROOT / "work" / directory / "bb8.sqlite3"
 
 
 def validate_command(data):
@@ -95,15 +110,31 @@ class Supervisor:
         control_profile=None,
         agency_memory=None,
         agency_mode="purpose",
+        recording_mode="telemetry",
+        visibility_planning=False,
+        scene_validity=False,
     ):
         from .control_profiles import get_profile
 
         self.control_profile = get_profile(control_profile).name
-        if agency_mode not in ("purpose", "coverage"):
-            raise ValueError("Agency mode must be purpose or coverage")
+        if agency_mode not in AGENCY_MODES:
+            raise ValueError("Agency mode must be purpose, coverage or visual")
         self.agency_mode = agency_mode
+        if recording_mode not in ("telemetry", "audit"):
+            raise ValueError("Recording mode must be telemetry or audit")
+        self.recording_mode = recording_mode
+        if type(visibility_planning) is not bool or type(scene_validity) is not bool:
+            raise ValueError("Navigation safeguards must be explicit booleans")
+        self.visibility_planning = visibility_planning
+        self.scene_validity_enabled = scene_validity
+        self.scene_invalidated = False
+        self.scene_fault_epoch = 0
+        self.scene_recovered_epoch = 0
+        self.pending_scene_recheck = None
         self.agency_memory = Path(
-            agency_memory or ROOT / "work/agency/bb8.sqlite3"
+            agency_memory
+            if agency_memory is not None
+            else default_agency_memory(agency_mode)
         ).resolve()
         self.asset_dir, self.run_dir = (
             Path(asset_dir).resolve(),
@@ -113,6 +144,8 @@ class Supervisor:
         self.lock = threading.RLock()
         self.closed = threading.Event()
         self.context = multiprocessing.get_context("spawn")
+        # Separate from the lossy presentation queue; never cleared by Reset.
+        self.scene_invalidated_event = self.context.Event()
         self.process = self.commands = self.events = self.worker_stop = None
         self.worker_target = worker_target
         self.generation = 0
@@ -147,10 +180,16 @@ class Supervisor:
                 "preferences": [],
                 "message": "Loading persistent outcome memory…",
                 "selection_policy": "learned_station_outcomes"
-                if self.agency_mode == "purpose"
+                if self.agency_mode in ("purpose", "visual")
                 else "unvisited_map_targets",
             },
         }
+        if self.agency_mode == "visual":
+            self.state["agency"].update(
+                resource_source="native_scene_rgb",
+                resource=None,
+                message="Loading memory for native RGB fixture observations…",
+            )
         try:
             self.demo = validate_assets(self.asset_dir)
             self.map = map_payload(self.asset_dir, self.demo)
@@ -168,14 +207,49 @@ class Supervisor:
 
     def snapshot(self):
         with self.lock:
+            self._scene_faulted()
             return {
                 **self.state,
                 "token": self.token,
                 "generation": self.generation,
+                "recording_mode": getattr(self, "recording_mode", "telemetry"),
                 "control_profile": getattr(self, "control_profile", None),
                 "agency_mode": getattr(self, "agency_mode", "purpose"),
+                "visibility_planning": getattr(self, "visibility_planning", False),
+                "scene_validity_enabled": getattr(
+                    self, "scene_validity_enabled", False
+                ),
+                "scene_invalidated": getattr(self, "scene_invalidated", False),
+                "scene_recheck_pending": getattr(self, "pending_scene_recheck", None)
+                is not None,
+                "scene_recheck_available": self._can_recheck_scene(),
                 "scope": "Synthetic room · lockstep simulation · estimated map",
             }
+
+    def _scene_faulted(self):
+        event = getattr(self, "scene_invalidated_event", None)
+        if event is not None and event.is_set():
+            self.scene_invalidated = True
+        return getattr(self, "scene_invalidated", False)
+
+    def _can_recheck_scene(self):
+        """Maintenance readiness only; the worker checks physical stopping too."""
+        return (
+            getattr(self, "scene_validity_enabled", False)
+            and self._scene_faulted()
+            and getattr(self, "scene_fault_epoch", 0) > 0
+            and getattr(self, "pending_scene_recheck", None) is None
+            and not self.restart_requested
+            and self.commands is not None
+            and self.worker_stop is not None
+            and not self.worker_stop.is_set()
+            and self.state.get("asset_ready") is True
+            and self.state.get("scene_validity", {}).get("ready") is True
+            and self.state.get("phase") in ("stopped", "scene_invalid", "idle")
+            and self.state.get("goal") is None
+            and not self.state.get("route")
+            and not self.state.get("agency", {}).get("enabled", False)
+        )
 
     def _send(self, data):
         if self.commands is None:
@@ -216,6 +290,7 @@ class Supervisor:
             if action == "stop" or (action == "autonomy" and not data["enabled"]):
                 self.generation += 1
                 self.pending_demo = False
+                self.pending_scene_recheck = None
                 self._pause_agency()
                 sent = self._send(data)
                 self.state.update(goal=None, route=[])
@@ -231,6 +306,37 @@ class Supervisor:
             if not self.state["asset_ready"]:
                 raise ValueError(
                     "Install the checked demo assets before starting simulation"
+                )
+            if action == "recheck_scene":
+                if not self._can_recheck_scene():
+                    raise ValueError(
+                        "Scene recheck requires a stopped, locked scene and an available worker."
+                    )
+                self.generation += 1
+                ticket = {
+                    "generation": self.generation,
+                    "fault_epoch": self.scene_fault_epoch,
+                }
+                self.pending_demo = False
+                self._pause_agency("Scene recheck; learning remains paused.")
+                if not self._send({**data, "fault_epoch": ticket["fault_epoch"]}):
+                    raise ValueError(
+                        "Scene recheck channel unavailable; lock retained."
+                    )
+                self.pending_scene_recheck = ticket
+                self.state.update(
+                    phase="scene_rechecking",
+                    goal=None,
+                    route=[],
+                    requires_new_goal=True,
+                    message="Checking fresh RGB against the original scene reference. BB-8 stays stopped.",
+                )
+                return {"accepted": True, "generation": self.generation}
+            if self._scene_faulted() or self.state.get("scene_validity", {}).get(
+                "invalidated"
+            ):
+                raise ValueError(
+                    "Scene or camera validity was lost. Restore the original scene and cameras, then choose Recheck scene while stopped. Reset cannot clear this lock."
                 )
             if action in ("reset", "mode", "demo"):
                 self.generation += 1
@@ -287,6 +393,8 @@ class Supervisor:
                 raise ValueError(
                     "Localization lost; wait for visual reacquisition or reset."
                 )
+            if self.state.get("scene_validity", {}).get("navigation_allowed") is False:
+                raise ValueError("Wait for stable scene and camera evidence.")
             if action == "autonomy":
                 if not self.state.get("agency", {}).get("available"):
                     raise ValueError("Persistent exploration memory is unavailable")
@@ -334,6 +442,13 @@ class Supervisor:
             if process.is_alive():
                 process.terminate()
                 process.join(timeout=2)
+            if process.is_alive():
+                # Some native shutdown paths do not respond to TERM. Never
+                # start a second simulator while the prior worker still lives.
+                process.kill()
+                process.join(timeout=2)
+            if process.is_alive():
+                raise RuntimeError("Previous native worker could not be stopped")
             for channel in (commands, events):
                 channel.cancel_join_thread()
                 channel.close()
@@ -343,10 +458,27 @@ class Supervisor:
         with self.lock:
             if self.closed.is_set():
                 return
+            if self._scene_faulted():
+                self.restart_requested = self.pending_demo = False
+                self.state.update(
+                    phase="scene_invalid",
+                    localization_valid=False,
+                    pose=None,
+                    goal=None,
+                    route=[],
+                    message="Scene or camera validity was lost. Check and re-register before restarting the app; Reset cannot clear this lock.",
+                )
+                self._pause_agency(self.state["message"])
+                return
             # Coalesce any Reset/Mode requests received during shutdown. The
             # current generation/mode below already includes those requests;
             # leaving their flag set would launch this same generation twice.
             self.restart_requested = False
+            # An acknowledged recovery belongs only to its worker's immutable
+            # reference. A new worker starts a new reference/epoch namespace.
+            self.scene_fault_epoch = self.scene_recovered_epoch = 0
+            self.pending_scene_recheck = None
+            self.state.pop("scene_validity", None)
             if self.worker_target is None:
                 from .interactive_runtime import worker_main
 
@@ -363,15 +495,25 @@ class Supervisor:
                 "run_dir": str(run),
                 "mode": self.state["mode"],
                 "generation": self.generation,
+                "recording_mode": getattr(self, "recording_mode", "telemetry"),
+                "visibility_planning": getattr(self, "visibility_planning", False),
+                "scene_validity": getattr(self, "scene_validity_enabled", False),
                 "control_profile": getattr(self, "control_profile", None),
                 "agency_mode": getattr(self, "agency_mode", "purpose"),
                 "agency_memory": str(
-                    getattr(self, "agency_memory", ROOT / "work/agency/bb8.sqlite3")
+                    getattr(
+                        self,
+                        "agency_memory",
+                        default_agency_memory(getattr(self, "agency_mode", "purpose")),
+                    )
                 ),
             }
+            worker_args = (config, self.commands, self.events, self.worker_stop)
+            if self.worker_target is None:
+                worker_args += (self.scene_invalidated_event,)
             self.process = self.context.Process(
                 target=target,
-                args=(config, self.commands, self.events, self.worker_stop),
+                args=worker_args,
                 name="BB8 native simulation",
             )
             self.process.start()
@@ -380,13 +522,84 @@ class Supervisor:
     def _accept_event(self, event):
         """Consume only current-generation presentation state under the lock."""
         with self.lock:
+            self._scene_faulted()
+            if event.get("type") == "state":
+                validity = event.get("state", {}).get("scene_validity", {})
+                epoch = validity.get("fault_epoch")
+                if validity.get("invalidated"):
+                    if type(epoch) is int and 0 < epoch <= getattr(
+                        self, "scene_recovered_epoch", 0
+                    ):
+                        # The shared event has already been read above. Old
+                        # lossy presentation cannot relatch an acknowledged epoch.
+                        return False
+                    self.scene_invalidated = True
+                    if type(epoch) is int and epoch > 0:
+                        self.scene_fault_epoch = max(
+                            getattr(self, "scene_fault_epoch", 0), epoch
+                        )
+                        pending = getattr(self, "pending_scene_recheck", None)
+                        if pending is not None and epoch > pending["fault_epoch"]:
+                            self.pending_scene_recheck = None
             if self.restart_requested:
                 return False
             if event.get("type") == "state":
                 state = event["state"]
-                if state.get("generation", -1) != self.generation:
+                if (
+                    type(state.get("generation")) is not int
+                    or state["generation"] != self.generation
+                ):
                     return False
+                validity = state.get("scene_validity", {})
+                recovery = validity.get("recovery") or {}
+                pending = getattr(self, "pending_scene_recheck", None)
+                matched = (
+                    pending is not None
+                    and type(recovery.get("generation")) is int
+                    and type(recovery.get("fault_epoch")) is int
+                    and recovery.get("generation") == self.generation
+                    and recovery.get("generation") == pending["generation"]
+                    and recovery.get("fault_epoch") == pending["fault_epoch"]
+                    and recovery.get("fault_epoch")
+                    == getattr(self, "scene_fault_epoch", 0)
+                    and type(validity.get("fault_epoch")) is int
+                    and validity.get("fault_epoch") == pending["fault_epoch"]
+                )
+                signal = getattr(self, "scene_invalidated_event", None)
+                recovered = (
+                    matched
+                    and recovery.get("status") == "succeeded"
+                    and validity.get("invalidated") is False
+                    and validity.get("ready") is True
+                    and validity.get("navigation_allowed") is True
+                    and signal is not None
+                    and not signal.is_set()
+                    and self.commands is not None
+                    and self.worker_stop is not None
+                    and not self.worker_stop.is_set()
+                )
+                if recovered:
+                    self.scene_invalidated = False
+                    self.scene_recovered_epoch = pending["fault_epoch"]
+                    self.pending_scene_recheck = None
+                elif matched and recovery.get("status") in ("rejected", "cancelled"):
+                    self.pending_scene_recheck = None
                 self.state.update(state)
+                if recovered:
+                    self.state.update(
+                        phase="stopped",
+                        goal=None,
+                        route=[],
+                        requires_new_goal=True,
+                        message="Original scene reference matched. BB-8 stays stopped; wait for position recovery, then choose a new destination.",
+                    )
+                    self._pause_agency("Scene recovered; learning remains paused.")
+                elif self._scene_faulted():
+                    self.pending_demo = False
+                    self.state.update(goal=None, route=[], requires_new_goal=True)
+                    self._pause_agency(
+                        "Scene validity locked; learning remains paused."
+                    )
                 if (
                     self.pending_demo
                     and state.get("phase") == "idle"
@@ -558,18 +771,34 @@ def main(argv=None):
     parser.add_argument("--mode", type=int, choices=(1, 2, 3), default=1)
     parser.add_argument("--port", type=int, default=8765)
     parser.add_argument("--no-browser", action="store_true")
+    parser.add_argument(
+        "--recording-mode",
+        choices=("telemetry", "audit"),
+        default="telemetry",
+        help="Bounded everyday diagnostics, or complete unrotated physics audit rows",
+    )
     parser.add_argument("--control-profile", choices=tuple(PROFILES))
+    parser.add_argument(
+        "--visibility-planning",
+        action="store_true",
+        help="Use experimental scan/camera visibility-aware route candidates",
+    )
+    parser.add_argument(
+        "--scene-validity",
+        action="store_true",
+        help="Enable latched same-session RGB scene/camera change detection",
+    )
     parser.add_argument(
         "--agency-memory",
         type=Path,
-        default=ROOT / "work/agency/bb8.sqlite3",
-        help="Persistent outcome memory; never enables motion on launch",
+        default=None,
+        help="Persistent memory override; visual mode otherwise uses work/visual-agency/bb8.sqlite3",
     )
     parser.add_argument(
         "--agency-mode",
-        choices=("purpose", "coverage"),
+        choices=AGENCY_MODES,
         default="purpose",
-        help="Learn station effects, or run the legacy map-coverage diagnostic",
+        help="Learn simulated station effects, opt into native RGB fixture learning, or run coverage diagnostics",
     )
     args = parser.parse_args(argv)
     if not 0 <= args.port <= 65535:
@@ -584,6 +813,9 @@ def main(argv=None):
         control_profile=args.control_profile,
         agency_memory=args.agency_memory,
         agency_mode=args.agency_mode,
+        recording_mode=args.recording_mode,
+        visibility_planning=args.visibility_planning,
+        scene_validity=args.scene_validity,
     )
     try:
         server = ThreadingHTTPServer(("127.0.0.1", args.port), make_handler(supervisor))

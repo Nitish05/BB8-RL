@@ -38,6 +38,9 @@ class Memory:
             raise ValueError("No certified path")
         return np.array([start, goal])
 
+    def certified_route(self, start, goal, radius_m, *, grid=None):
+        return (self if grid is None else grid).route(start, goal)
+
 
 def observed(t, status="visible"):
     return SimpleNamespace(
@@ -48,7 +51,7 @@ def observed(t, status="visible"):
     )
 
 
-def session():
+def session(**options):
     now, stops, memory = [10.0], [], Memory()
     control = ControlSession(
         policy=lambda vector: np.array([0.4, 0]),
@@ -58,8 +61,127 @@ def session():
         calibration_version="rig",
         demo_goal=[0.5, 0],
         clock=lambda: now[0],
+        **options,
     )
     return control, memory, now, stops
+
+
+def scene_evidence(timestamp, *, ready=True, allowed=True, invalidated=False):
+    return {
+        "timestamp": timestamp,
+        "ready": ready,
+        "navigation_allowed": allowed,
+        "invalidated": invalidated,
+        "reason": "test_rgb_evidence",
+    }
+
+
+def test_scene_guard_warmup_and_suspicion_cancel_authority_without_auto_resume():
+    control, _, _, _ = session(scene_validity_required=True)
+    assert (
+        control.receive([{"action": "demo", "generation": 1}])[0]["outcome"]
+        == "rejected"
+    )
+    control.update_scene_validity(scene_evidence(0), 0)
+    advance(control, 0)
+    assert control.phase == "idle"
+    control.receive([{"action": "demo", "generation": 2}])
+    assert control.goal is not None
+    control.update_scene_validity(scene_evidence(0.05, allowed=False), 0.05)
+    assert np.array_equal(advance(control, 1), [0, 0])
+    assert control.goal is None and control.state()["pose"] is None
+    control.update_scene_validity(scene_evidence(0.10), 0.10)
+    assert np.array_equal(advance(control, 2), [0, 0])
+    assert control.goal is None and control.requires_new_goal
+    for index in range(3, 30):
+        control.update_scene_validity(scene_evidence(index * 0.05), index * 0.05)
+        assert np.array_equal(advance(control, index), [0, 0])
+    assert control.state()["localization_valid"]
+    control.receive([{"action": "demo", "generation": 3}])
+    assert control.goal is not None
+
+
+def test_scene_invalidation_latches_against_fresh_pixels_and_new_command_generations():
+    control, _, _, stops = session(scene_validity_required=True)
+    control.update_scene_validity(scene_evidence(0), 0)
+    advance(control, 0)
+    control.receive([{"action": "demo", "generation": 1}])
+    control.update_scene_validity(
+        scene_evidence(0.05, allowed=False, invalidated=True), 0.05
+    )
+    assert np.array_equal(advance(control, 1), [0, 0])
+    control.update_scene_validity(scene_evidence(0.10), 0.10)
+    assert (
+        control.receive([{"action": "demo", "generation": 2}])[0]["outcome"]
+        == "rejected"
+    )
+    assert np.array_equal(advance(control, 2), [0, 0])
+    assert control.state()["scene_validity"]["invalidated"]
+    assert control.goal is None and control.state()["pose"] is None and stops
+    assert (
+        control.receive([{"action": "stop", "generation": 3}])[0]["outcome"]
+        == "accepted"
+    )
+    assert np.array_equal(advance(control, 3), [0, 0])
+    assert control.phase == "scene_invalid"
+
+
+@pytest.mark.parametrize(
+    "record",
+    [
+        None,
+        {},
+        scene_evidence(0),
+        {**scene_evidence(0.05), "ready": False},
+        {**scene_evidence(0.05), "navigation_allowed": "true"},
+        {**scene_evidence(0.05), "invalidated": True},
+    ],
+)
+def test_scene_guard_rejects_malformed_stale_or_inconsistent_evidence(record):
+    control, _, _, _ = session(scene_validity_required=True)
+    control.update_scene_validity(scene_evidence(0), 0)
+    advance(control, 0)
+    control.update_scene_validity(record, 0.05)
+    assert np.array_equal(advance(control, 1), [0, 0])
+    assert control.scene_validity["invalidated"]
+
+
+def test_missing_guard_update_cannot_reuse_last_frame_permission():
+    control, _, _, _ = session(scene_validity_required=True)
+    control.update_scene_validity(scene_evidence(0), 0)
+    advance(control, 0)
+    assert np.array_equal(advance(control, 1), [0, 0])
+    assert control.scene_validity["invalidated"]
+
+
+def test_visibility_veto_cannot_fall_back_to_clearance_only_route():
+    class Visibility:
+        def __init__(self):
+            self.diagnostics = {"rejected": "blind_destination"}
+
+        def route(self, *args, **kwargs):
+            raise ValueError("blind_destination")
+
+    control, _, _, _ = session(visibility_planner=Visibility())
+    with pytest.raises(ValueError, match="blind_destination"):
+        control.route_with_clearance([0, 0], [0.5, 0], 0.105)
+    assert not control.route_planning_details["route_certified"]
+    assert (
+        control.route_planning_details["visibility"]["rejected"] == "blind_destination"
+    )
+
+
+def test_visibility_candidate_still_requires_full_footprint_clearance():
+    class Visibility:
+        def __init__(self):
+            self.diagnostics = {"predicted_visible": True}
+
+        def route(self, start, goal, **kwargs):
+            return np.array([start, [2.0, 0.0], goal])
+
+    control, _, _, _ = session(visibility_planner=Visibility())
+    with pytest.raises(ValueError, match="full requested clearance"):
+        control.route_with_clearance([0, 0], [0.5, 0], 0.1)
 
 
 def advance(control, index, status="visible"):
@@ -265,6 +387,56 @@ def test_worker_configuration_failure_emits_error_without_native_import(
     assert outputs[1]["state"]["generation"] == 7
 
 
+def test_worker_does_not_wait_on_detached_presentation_reader():
+    import multiprocessing
+
+    import bb8_rl.interactive_runtime as runtime
+
+    context = multiprocessing.get_context("spawn")
+    commands, events, stop = context.Queue(2), context.Queue(8), context.Event()
+    # Fill the OS pipe, leaving no consumer. The child can enqueue a fault but
+    # must not wait for its feeder at interpreter shutdown.
+    events.put(b"x" * 1_000_000)
+    process = context.Process(
+        target=runtime.worker_main, args=({"mode": 4}, commands, events, stop)
+    )
+    try:
+        process.start()
+        process.join(timeout=8)
+        assert not process.is_alive(), "Finished worker waited on presentation pipe"
+        assert process.exitcode == 0
+    finally:
+        if process.pid is not None and process.is_alive():
+            process.kill()
+            process.join(timeout=2)
+        for channel in (commands, events):
+            channel.cancel_join_thread()
+            channel.close()
+
+
+def test_worker_rejects_task_override_before_loading_models(tmp_path, monkeypatch):
+    import bb8_rl.demo_assets as assets
+
+    monkeypatch.setitem(sys.modules, "torch", None)
+    monkeypatch.setattr(assets, "validate_assets", lambda _path: {"task": "task.yaml"})
+    (tmp_path / "bundle.json").write_text("{}")
+    events = queue.Queue(maxsize=8)
+    worker_main(
+        {
+            "mode": 1,
+            "asset_dir": str(tmp_path),
+            "run_dir": str(tmp_path / "run"),
+            "task_path": str(tmp_path / "unchecked-task.yaml"),
+        },
+        queue.Queue(),
+        events,
+        SimpleNamespace(is_set=lambda: False),
+    )
+    outputs = drain_commands(events)
+    assert outputs[0]["type"] == "error"
+    assert "checksummed demo task" in outputs[0]["message"]
+
+
 @pytest.mark.parametrize(
     "required,expected",
     [
@@ -391,3 +563,347 @@ def test_exact_fallback_and_final_capsule_validation_still_fail_closed():
         control.route_with_clearance([0, 0], [0.5, 0], radius)
     assert memory.route_attempts == [0.16]  # No fallback after certificate failure.
     assert not control.route_planning_details["route_certified"]
+
+
+def test_render_camera_pose_resets_history_dependent_up_without_truth_calibration():
+    from bb8_rl.interactive_runtime import set_render_camera_pose
+
+    calls = []
+    camera = SimpleNamespace(set_pose=lambda **values: calls.append(values))
+    record = {
+        "position": [4, -2, 3],
+        "lookat": [0, 0, 0.1],
+        "world_to_camera": object(),
+    }
+    set_render_camera_pose(camera, record)
+    assert calls[-1] == {"pos": [4, -2, 3], "lookat": [0, 0, 0.1], "up": [0, 0, 1]}
+    set_render_camera_pose(camera, {**record, "up": [0, 1, 0]})
+    assert calls[-1]["up"] == [0, 1, 0]
+    assert "world_to_camera" not in calls[-1]
+
+
+@pytest.mark.parametrize(
+    "coordinates", [None, "genesis_viewport", "opencv_integer_center"]
+)
+@pytest.mark.parametrize("scale", [1, 2])
+def test_render_intrinsics_admit_declared_coordinates_without_using_true_pose(
+    coordinates, scale
+):
+    from bb8_rl.interactive_runtime import validate_render_camera_intrinsics
+
+    # Native renderer pixel centers are u+.5/v+.5. The corrected exported K
+    # places the optical axis halfway between the two central array pixels.
+    center = 639.5 if coordinates == "opencv_integer_center" else 640.0
+    vertical = 479.5 if coordinates == "opencv_integer_center" else 480.0
+    record = {
+        "intrinsics": [[800, 0, center], [0, 800, vertical], [0, 0, 1]],
+        "resolution": [1280, 960],
+        "world_to_camera": object(),  # Must not inspect or replace estimated pose.
+    }
+    if coordinates is not None:
+        record["pixel_coordinates"] = coordinates
+    native_k = np.array(
+        [[800 * scale, 0, 640 * scale], [0, 800 * scale, 480 * scale], [0, 0, 1]],
+        dtype=float,
+    )
+    camera = SimpleNamespace(
+        intrinsics=native_k,
+        res=(1280 * scale, 960 * scale),
+        transform=np.eye(4),
+    )
+    before = native_k.copy()
+    assert validate_render_camera_intrinsics(camera, record, 2, scale=scale) is None
+    np.testing.assert_array_equal(native_k, before)
+    assert not isinstance(record["world_to_camera"], np.ndarray)
+
+
+def test_render_intrinsics_reject_mislabeled_or_double_shifted_array_calibration():
+    from bb8_rl.interactive_runtime import validate_render_camera_intrinsics
+
+    camera = SimpleNamespace(
+        intrinsics=np.array([[800, 0, 640], [0, 800, 480], [0, 0, 1]], dtype=float),
+        res=(1280, 960),
+        transform=np.eye(4),
+    )
+    for center, vertical in [(640, 480), (639, 479)]:
+        record = {
+            "intrinsics": [[800, 0, center], [0, 800, vertical], [0, 0, 1]],
+            "resolution": [1280, 960],
+            "pixel_coordinates": "opencv_integer_center",
+        }
+        with pytest.raises(ValueError, match="intrinsics/resolution"):
+            validate_render_camera_intrinsics(camera, record, 2)
+
+
+@pytest.mark.parametrize(
+    "coordinates", [None, "", "auto", "opencv_integer_centers", []]
+)
+def test_unknown_explicit_camera_pixel_convention_fails_closed(coordinates):
+    from bb8_rl.interactive_runtime import camera_pixel_coordinates
+
+    with pytest.raises(ValueError, match="pixel coordinate convention"):
+        camera_pixel_coordinates({"pixel_coordinates": coordinates})
+
+
+@pytest.mark.parametrize("coordinates", ["opencv_integer_center", "unrecognized"])
+def test_worker_rejects_mixed_or_unknown_coordinate_inventory_before_models(
+    tmp_path, monkeypatch, coordinates
+):
+    import bb8_rl.demo_assets as assets
+
+    monkeypatch.setitem(sys.modules, "torch", None)
+    monkeypatch.setattr(
+        assets,
+        "validate_assets",
+        lambda _path: {
+            "task": "task.yaml",
+            "cameras": {"A": {}, "B": {"pixel_coordinates": coordinates}, "C": {}},
+        },
+    )
+    (tmp_path / "bundle.json").write_text("{}")
+    events = queue.Queue(maxsize=8)
+    worker_main(
+        {"mode": 1, "asset_dir": str(tmp_path), "run_dir": str(tmp_path / "run")},
+        queue.Queue(),
+        events,
+        SimpleNamespace(is_set=lambda: False),
+    )
+    result = drain_commands(events)[0]
+    assert result["type"] == "error"
+    assert "pixel coordinate convention" in result["message"]
+
+
+class SceneRecoveryHarness:
+    """The worker's actual guard/session handoff with synthetic RGB and no native state."""
+
+    def __init__(self):
+        import threading
+
+        from bb8_rl.camera import Calibration
+        from bb8_rl.scene_validity import SceneValidityGuard
+
+        transform = np.diag([1.0, -1.0, -1.0, 1.0])
+        transform[2, 3] = 3
+        calibration = Calibration(
+            np.array([[150.0, 0, 96], [0, 150, 72], [0, 0, 1]]),
+            transform,
+            (192, 144),
+            2.0,
+        )
+        self.guard = SceneValidityGuard({"A": calibration}, {"A": "rig"})
+        self.control, self.memory, self.clock, _ = session(scene_validity_required=True)
+        self.event = threading.Event()
+        self.index = -1
+        rng = np.random.default_rng(1729)
+        gray = np.repeat(np.repeat(rng.integers(45, 185, (18, 24)), 8, 0), 8, 1)
+        self.pixels = np.repeat(gray[:, :, None], 3, axis=2).astype(np.uint8)
+        for _ in range(31):
+            self.step()
+        self.control.receive([{"action": "demo", "generation": 1}], sim_time=1.5)
+        for _ in range(20):
+            self.step(changed=True)
+        assert self.control.scene_validity["invalidated"] and self.event.is_set()
+        assert self.control.scene_validity["fault_epoch"] == 1
+        assert self.control.goal is None and self.control.controller is None
+
+    def step(self, *, command=None, changed=False, applied=(0, 0), intervals=None):
+        from bb8_rl.camera_rig import CameraFrame, ViewObservation
+
+        self.index += 1
+        timestamp = self.index * 0.05
+        if command:
+            self.records = self.control.receive([command], sim_time=timestamp)
+        pixels = self.pixels.copy()
+        x = 65 if changed else 30
+        pixels[35:64, x : x + 23] = (205, 30, 40)
+        frame = CameraFrame("A", "rig", pixels, timestamp)
+        measurement = observed(timestamp)
+        view = ViewObservation("A", "rig", timestamp, measurement, "visible")
+        if intervals is None:
+            intervals = (
+                []
+                if self.index == 0
+                else [
+                    {
+                        "start": (self.index - 1) * 0.05,
+                        "end": timestamp,
+                        "command": [0, 0],
+                    }
+                ]
+            )
+        committed = self.control.observe_scene_guard(
+            self.guard,
+            [frame],
+            {"A": view},
+            timestamp=timestamp,
+            measurement=measurement,
+            applied=applied,
+            intervals=intervals,
+            invalidation_event=self.event,
+        )
+        action = self.control.decide(timestamp, measurement, applied, intervals)
+        assert np.array_equal(action, [0, 0])
+        return committed
+
+    def request(self, generation=2, *, changed=False):
+        self.step(
+            command={
+                "action": "recheck_scene",
+                "generation": generation,
+                "fault_epoch": 1,
+            },
+            changed=changed,
+        )
+        assert self.records[0]["outcome"] == "accepted_scene_recheck"
+
+    def complete(self):
+        commits = [self.step() for _ in range(24)]
+        assert sum(commits) == 1
+        assert not self.event.is_set()
+        assert self.control.scene_validity["recovery"]["status"] == "succeeded"
+        assert self.control.goal is None and self.control.pending_goal is None
+        assert self.control.controller is None and not self.control.agency.enabled
+        assert self.control.requires_new_goal
+
+
+def test_worker_original_reference_recheck_then_local_reacquisition_needs_new_goal():
+    h = SceneRecoveryHarness()
+    original = h.guard.snapshot()["cameras"]["A"]["reference_sha256"]
+    h.request(changed=True)
+    h.step(changed=True)
+    assert h.control.scene_validity["recovery"]["status"] == "rejected"
+    assert h.event.is_set()
+    for _ in range(12):
+        h.step()
+    assert h.control.scene_validity["invalidated"]
+    h.request(3)
+    h.complete()
+    assert h.guard.snapshot()["cameras"]["A"]["reference_sha256"] == original
+    # Guard success does not itself establish a measured local pose.
+    assert not h.control.state()["localization_valid"]
+    for _ in range(20):
+        h.step()
+    assert h.control.state()["localization_valid"]
+    assert h.control.requires_new_goal and h.control.goal is None
+    result = h.control.receive([{"action": "demo", "generation": 4}])
+    assert result[0]["outcome"] == "accepted_pending_visible_route"
+
+
+@pytest.mark.parametrize(
+    "interruption", ["stop", "manual", "heartbeat", "version", "moving", "timeline"]
+)
+def test_scene_recheck_cannot_commit_after_authority_or_evidence_interruption(
+    interruption,
+):
+    h = SceneRecoveryHarness()
+    h.request()
+    for _ in range(12):
+        h.step()
+    assert h.control.scene_validity["recovery"]["stable_checks"] == 2
+    if interruption == "stop":
+        h.step(command={"action": "stop", "generation": 3})
+    elif interruption == "manual":
+        h.step(command={"action": "demo", "generation": 3})
+    elif interruption == "heartbeat":
+        h.clock[0] += 4
+        h.step()
+    elif interruption == "version":
+        h.control.map_version = "other"
+        h.step()
+    elif interruption == "moving":
+        h.step(applied=[0.2, 0])
+    else:
+        h.step(intervals=[])
+    assert h.control.scene_recheck is None
+    assert h.control.scene_validity["recovery"]["status"] == "cancelled"
+    for _ in range(20):
+        h.step()
+    assert h.event.is_set() and h.control.scene_validity["invalidated"]
+    assert h.control.goal is None and not h.control.agency.enabled
+    if interruption != "version":
+        h.control.receive([{"action": "heartbeat", "generation": 4}])
+        h.request(4)
+        h.complete()
+
+
+def test_late_stop_after_worker_success_allows_same_epoch_recheck_without_restart():
+    h = SceneRecoveryHarness()
+    h.request()
+    h.complete()
+    previous = h.control.scene_validity["recovery"].copy()
+    h.step(command={"action": "stop", "generation": 3})
+    assert previous["generation"] < h.control.generation
+    # Supervisor rejects the generation-2 success and remains faulted; retry
+    # does not require replacing the reference or worker.
+    h.request(4)
+    assert h.event.is_set() and h.guard.snapshot()["fault_epoch"] == 1
+    h.complete()
+    assert h.control.scene_validity["recovery"]["generation"] == 4
+    assert (
+        h.control.scene_validity["recovery"]["reference_sha256"]
+        == previous["reference_sha256"]
+    )
+
+
+@pytest.mark.parametrize(
+    "field,value",
+    [
+        ("generation", 1),
+        ("fault_epoch", 2),
+        ("requested_at", 0),
+        ("completed_at", 0),
+        ("reference_sha256", {}),
+    ],
+)
+def test_session_rejects_uncorrelated_guard_success(field, value):
+    import copy
+
+    h = SceneRecoveryHarness()
+    h.request()
+    record = copy.deepcopy(h.guard.snapshot())
+    timestamp = (h.index + 22) * 0.05
+    record.update(timestamp=timestamp, invalidated=False, navigation_allowed=True)
+    record["recovery"].update(
+        status="succeeded", completed_at=timestamp, stable_checks=3
+    )
+    record["recovery"][field] = value
+    assert not h.control.update_scene_validity(record, timestamp)
+    assert h.control.scene_validity["invalidated"] and h.event.is_set()
+    assert h.control.goal is None
+
+
+def test_recheck_rejects_wrong_epoch_and_healthy_unfaulted_scene():
+    control, _, _, _ = session(scene_validity_required=True)
+    control.update_scene_validity(dict(scene_evidence(0), fault_epoch=0), 0)
+    result = control.receive(
+        [{"action": "recheck_scene", "generation": 1, "fault_epoch": 0}]
+    )
+    assert result[0]["outcome"] == "rejected"
+    h = SceneRecoveryHarness()
+    h.step(command={"action": "recheck_scene", "generation": 2, "fault_epoch": 2})
+    assert h.records[0]["outcome"] == "rejected"
+    assert h.event.is_set() and h.control.scene_recheck is None
+
+
+def test_heartbeat_expiring_inside_last_comparison_cannot_clear_shared_fault(
+    monkeypatch,
+):
+    h = SceneRecoveryHarness()
+    h.request()
+    original_observe = h.guard.observe
+
+    def observe_then_expire(*args, **kwargs):
+        result = original_observe(*args, **kwargs)
+        if (result.get("recovery") or {}).get("status") == "succeeded":
+            h.clock[0] += 4
+        return result
+
+    monkeypatch.setattr(h.guard, "observe", observe_then_expire)
+    for _ in range(24):
+        assert not h.step()
+    assert h.event.is_set() and h.control.scene_validity["invalidated"]
+    assert h.control.scene_validity["recovery"]["status"] == "cancelled"
+    monkeypatch.setattr(h.guard, "observe", original_observe)
+    h.control.receive([{"action": "heartbeat", "generation": 3}])
+    h.request(3)
+    h.complete()

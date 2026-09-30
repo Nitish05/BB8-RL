@@ -5,11 +5,28 @@ import uuid
 
 import numpy as np
 
-from .purpose import MEANINGFUL_GAIN
+from .purpose import MEANINGFUL_GAIN, RESOURCE_TARGET
+
+ROUTE_RETRY_INITIAL = 2.0
+ROUTE_RETRY_MAX = 30.0
+ROUTE_POSE_CHANGE = 0.10
+ROUTE_RADIUS_CHANGE = 0.01
 
 
 class PurposeCoordinator:
-    def __init__(self, engine=None, stations=()):
+    def __init__(
+        self,
+        engine=None,
+        stations=(),
+        *,
+        observation_source="simulated_station_telemetry",
+    ):
+        if observation_source not in {
+            "simulated_station_telemetry",
+            "native_scene_rgb",
+        }:
+            raise ValueError("Unsupported purpose observation source")
+        self.observation_source = observation_source
         self.engine, self.stations = engine, tuple(stations)
         self.available, self.enabled = engine is not None, False
         self.status = "paused" if self.available else "unavailable"
@@ -18,7 +35,13 @@ class PurposeCoordinator:
         self.next_choice = self.active_since = 0.0
         self.interaction_since = self.guarded_since = None
         self.blocked = set()
+        self._blocked_route_unavailable = set()
         self._idle_resource = None
+        self._idle_message = None
+        self._idle_retry = False
+        self._route_retry_delay = ROUTE_RETRY_INITIAL
+        self._route_evidence = None
+        self._last_route_check = -math.inf
         self._memory = {}
         if engine is not None:
             try:
@@ -44,7 +67,7 @@ class PurposeCoordinator:
             if self.observation is None
             else self.observation["resource"],
             "target": 0.8,
-            "resource_source": "simulated_station_telemetry",
+            "resource_source": self.observation_source,
             "stations": [
                 {"id": s.id, "goal": list(s.xy), "label": s.label, "radius": 0.14}
                 for s in self.stations
@@ -58,7 +81,7 @@ class PurposeCoordinator:
             raise TypeError("Invalid station telemetry")
         resource, timestamp = observation.get("resource"), observation.get("timestamp")
         if (
-            observation.get("source") != "simulated_station_telemetry"
+            observation.get("source") != self.observation_source
             or not isinstance(resource, (int, float))
             or isinstance(resource, bool)
             or not math.isfinite(resource)
@@ -81,6 +104,8 @@ class PurposeCoordinator:
                 "timestamp",
                 "source",
             }
+            if self.observation_source == "native_scene_rgb":
+                fields.add("visual_evidence")
             if not isinstance(outcome, dict) or set(outcome) != fields:
                 raise ValueError("Invalid station receipt fields")
             outcome = dict(outcome)
@@ -110,6 +135,7 @@ class PurposeCoordinator:
             }
         self.intention = None
         self.interaction_since = None
+        self._reset_routes()
         self.status, self.message = "paused", reason
 
     def enable(self, now):
@@ -121,8 +147,37 @@ class PurposeCoordinator:
             "Comparing learned effects with the current resource need.",
         )
         self.next_choice = float(now)
+        self._reset_routes()
+
+    def _reset_routes(self):
+        """Route failures belong to this authority session, never learned effects."""
         self.blocked.clear()
+        self._blocked_route_unavailable.clear()
         self._idle_resource = None
+        self._idle_message = None
+        self._idle_retry = False
+        self._route_retry_delay = ROUTE_RETRY_INITIAL
+        self._route_evidence = None
+        self._last_route_check = -math.inf
+
+    @staticmethod
+    def _route_context(session, state):
+        return tuple(state["pose"]), max(
+            session.planning_radius,
+            session.parameters.robot_radius
+            + session.parameters.clearance_margin
+            + state["position_radius"],
+        )
+
+    def _route_changed(self, context):
+        if self._route_evidence is None:
+            return False
+        pose, radius = context
+        old_pose, old_radius = self._route_evidence
+        return (
+            math.dist(pose, old_pose) >= ROUTE_POSE_CHANGE
+            or abs(radius - old_radius) >= ROUTE_RADIUS_CHANGE
+        )
 
     def _cancel(self, session, now, reason, outcome="cancelled"):
         session.cancel("idle", reason)
@@ -173,7 +228,7 @@ class PurposeCoordinator:
                         if (
                             outcome.get("request_id") != expected["request_id"]
                             or outcome.get("station_id") != expected["station_id"]
-                            or outcome.get("source") != "simulated_station_telemetry"
+                            or outcome.get("source") != self.observation_source
                             or outcome.get("timestamp", -1) - self.interaction_since
                             < 1.0 - 1e-9
                             or not self.interaction_since
@@ -193,6 +248,11 @@ class PurposeCoordinator:
                             after=outcome["after"],
                             now=outcome["timestamp"],
                             source=outcome["source"],
+                            **(
+                                {"visual_evidence": outcome["visual_evidence"]}
+                                if self.observation_source == "native_scene_rgb"
+                                else {}
+                            ),
                         )
                         self._memory = self.engine.snapshot()
                         gain = outcome["after"] - outcome["before"]
@@ -244,6 +304,10 @@ class PurposeCoordinator:
                     )
                 ):
                     self.blocked.add(self.intention["candidate_id"])
+                    self._blocked_route_unavailable.discard(
+                        self.intention["candidate_id"]
+                    )
+                    self._route_evidence = self._route_context(session, state)
                     self.recent_experience = {
                         "outcome": "route_unavailable",
                         "summary": f"{self.intention['label']}: route unavailable; station effect remains untested.",
@@ -254,8 +318,6 @@ class PurposeCoordinator:
                     self.status = "choosing"
                     return True
                 return False
-            if now < self.next_choice:
-                return False
             if not measured:
                 self.status, self.message = (
                     "waiting",
@@ -263,38 +325,92 @@ class PurposeCoordinator:
                 )
                 return False
             resource = self.observation["resource"]
-            if self.status in ("idle", "satisfied") and resource == self._idle_resource:
+            unchanged_resource = resource == self._idle_resource
+            # Camera jitter and route changes cannot create a satisfied need.
+            if unchanged_resource and resource >= RESOURCE_TARGET:
+                self.status = "satisfied"
+                self.message = self._idle_message
                 return False
+            context = self._route_context(session, state)
+            changed = self._route_changed(context)
+            if now < self.next_choice and not (
+                self._idle_resource is not None
+                and changed
+                and now - self._last_route_check >= ROUTE_RETRY_INITIAL
+            ):
+                return False
+            if unchanged_resource and not changed and not self._idle_retry:
+                self.status = "idle"
+                self.message = self._idle_message
+                return False
+            if changed:
+                self.blocked.clear()
+                self._blocked_route_unavailable.clear()
+                self._route_retry_delay = ROUTE_RETRY_INITIAL
+            if changed or self._route_evidence is None:
+                self._route_evidence = context
+            self._last_route_check = now
+            # An explicitly enabled, fresh measured choice may reconcile legacy
+            # outcome evidence before its suppression flags filter route queries.
+            if self.engine.reconsider_outcomes(resource=resource):
+                self._memory = self.engine.snapshot()
             candidates = []
-            radius = max(
-                session.planning_radius,
-                session.parameters.robot_radius
-                + session.parameters.clearance_margin
-                + state["position_radius"],
-            )
+            route_unavailable = False
+            _, radius = context
+            suppressed = {
+                item["candidate_id"]
+                for item in self._memory.get("preferences", ())
+                if item.get("suppressed")
+            }
             for station in self.stations:
-                if station.id in self.blocked:
+                if resource >= RESOURCE_TARGET or station.id in suppressed:
                     continue
                 try:
                     session.route_with_clearance(state["pose"], station.xy, radius)
                 except ValueError:
+                    route_unavailable = True
+                    if station.id in self.blocked:
+                        self._blocked_route_unavailable.add(station.id)
                     continue
+                if station.id in self.blocked:
+                    # A successful dry plan alone cannot renew a failed dispatched
+                    # goal: that plan may have succeeded before the failure too.
+                    # Require changed measured context or an observed failed→valid
+                    # dry route transition before trying the same motion again.
+                    if station.id not in self._blocked_route_unavailable:
+                        route_unavailable = True
+                        continue
+                    self.blocked.remove(station.id)
+                    self._blocked_route_unavailable.remove(station.id)
                 candidates.append(station)
             choice = self.engine.select(
                 candidates, resource=resource, pose=tuple(state["pose"]), now=now
             )
             self._memory = self.engine.snapshot()
             if choice is None:
-                self.status = "satisfied" if resource >= 0.8 else "idle"
+                self.status = "satisfied" if resource >= RESOURCE_TARGET else "idle"
                 self.message = (
                     "Resource need satisfied. Waiting; idle does not drain the simulated resource."
                     if self.status == "satisfied"
                     else "No reachable interaction has enough expected benefit. Waiting; no map-point wandering."
                 )
-                session.cancel("idle", self.message)
                 self._idle_resource = resource
-                self.next_choice = now + 2.0
+                self._idle_message = self.message
+                self._idle_retry = route_unavailable
+                self.next_choice = now + self._route_retry_delay
+                if route_unavailable:
+                    self._route_retry_delay = min(
+                        ROUTE_RETRY_MAX, 2 * self._route_retry_delay
+                    )
+                # Retry route queries quietly. No new goal, cancellation event or
+                # interaction is warranted when the same need remains blocked.
+                if unchanged_resource:
+                    return False
+                session.cancel("idle", self.message)
                 return True
+            self._idle_resource = None
+            self._idle_retry = False
+            self._route_retry_delay = ROUTE_RETRY_INITIAL
             station = next(s for s in candidates if s.id == choice["candidate_id"])
             # Reuse only an already-confirmed arrival at this same station.
             at_station = (

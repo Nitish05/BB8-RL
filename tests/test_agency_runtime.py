@@ -17,6 +17,9 @@ class Memory:
         self.queries = []
         self.block_routes = False
 
+    def certified_route(self, start, goal, radius_m, *, grid=None):
+        return (self if grid is None else grid).route(start, goal)
+
     def planning_grid(self, radius):
         return self
 

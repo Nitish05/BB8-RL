@@ -1,0 +1,177 @@
+{
+  "schema": "bb8.continuation-repair-results.v1",
+  "base_commit": "ef39d3dfcd67eeef4e2d7be4a14fdba4ddfa59e9",
+  "source_state": "local uncommitted first-party changes; no publication",
+  "studio_commit": "cd20c8c685f2b51263814fd0a6296bfd849bdce6",
+  "evidence_root": "work/continuation-20260925-audit-repair",
+  "non_native": {
+    "passed": 1083,
+    "deselected_native": 20
+  },
+  "public_dependency_isolation": {
+    "passed": 1041,
+    "deselected_studio_cases": 5,
+    "studio_modules_omitted": 6
+  },
+  "native_modes": [
+    {
+      "mode": 1,
+      "checks": {
+        "learning_physics_and_stop": true,
+        "station_effects_independently_valid": true,
+        "learned_from_consequences_not_arrivals": true,
+        "resource_need_satisfied_and_idle": true,
+        "restart_physics_and_stop": true,
+        "outcomes_durable_restart_disabled": true
+      },
+      "learning_captures": 321,
+      "learning_sim_seconds": 16.05,
+      "receipts": 3,
+      "learning_contacts": false,
+      "invalid_arrivals": 0,
+      "restart_captures": 43,
+      "restart_sim_seconds": 2.15
+    },
+    {
+      "mode": 2,
+      "checks": {
+        "learning_physics_and_stop": true,
+        "station_effects_independently_valid": true,
+        "learned_from_consequences_not_arrivals": true,
+        "resource_need_satisfied_and_idle": true,
+        "restart_physics_and_stop": true,
+        "outcomes_durable_restart_disabled": true
+      },
+      "learning_captures": 322,
+      "learning_sim_seconds": 16.1,
+      "receipts": 3,
+      "learning_contacts": false,
+      "invalid_arrivals": 0,
+      "restart_captures": 43,
+      "restart_sim_seconds": 2.15
+    },
+    {
+      "mode": 3,
+      "checks": {
+        "learning_physics_and_stop": true,
+        "station_effects_independently_valid": true,
+        "learned_from_consequences_not_arrivals": true,
+        "resource_need_satisfied_and_idle": true,
+        "restart_physics_and_stop": true,
+        "outcomes_durable_restart_disabled": true
+      },
+      "learning_captures": 322,
+      "learning_sim_seconds": 16.1,
+      "receipts": 3,
+      "learning_contacts": false,
+      "invalid_arrivals": 0,
+      "restart_captures": 43,
+      "restart_sim_seconds": 2.15
+    }
+  ],
+  "final_mode2_smoke_passed": true,
+  "difficult_route": {
+    "case": "original-purpose-mode1",
+    "profile": "reserve-3cm",
+    "intent": "arrival",
+    "audit_pass": true,
+    "valid_arrival": false,
+    "arrival_time_s": null,
+    "recorded_simulation_s": 6.0,
+    "guarded_stop_episodes": 0,
+    "status_counts": {
+      "warming_up": 20,
+      "tracking_visible": 24,
+      "tracking_hidden": 20,
+      "localization_lost": 7,
+      "reacquiring": 20,
+      "stopped": 29
+    },
+    "collision": false,
+    "boundary": false,
+    "premature_arrivals": 0,
+    "report_sha256": "ef893bba042ffce34918f1623f2e7f11afbff13e33328c3daf734825504a952d",
+    "harness_sha256": "798166b68dcf4dcce2882f47255d56e1111d142a055e5f2c5f987b76a90db46c",
+    "images_saved": true
+  },
+  "browser": {
+    "scope": "Actual control-room browser acceptance through native RGB loop; default bounded telemetry, separate test memory; no physical hardware",
+    "url": "http://127.0.0.1:8765/",
+    "camera_mode": 1,
+    "observations": [
+      {
+        "action": "open",
+        "localization": "measured",
+        "resource": 0.35,
+        "experiences": 0,
+        "enabled": false
+      },
+      {
+        "action": "Start learning",
+        "visible_status": "Approaching a station",
+        "intention": "Station A"
+      },
+      {
+        "action": "wait for outcome",
+        "visible_status": "Need satisfied \u00b7 waiting",
+        "resource": 1.0,
+        "experiences": 3,
+        "last_outcome": "Station B: 79% \u2192 100% simulated resource. Response remembered."
+      },
+      {
+        "action": "Stop",
+        "visible_status": "Learning paused",
+        "enabled": false
+      },
+      {
+        "action": "Reset and wait for localization",
+        "visible_status": "Idle; Learning paused",
+        "resource": 0.35,
+        "experiences": 3,
+        "enabled": false
+      }
+    ],
+    "checks": {
+      "native_camera_visible": true,
+      "station_choice_and_outcome_visible": true,
+      "satisfied_idle": true,
+      "stop_revokes_autonomy": true,
+      "reset_retains_knowledge_not_authority": true
+    },
+    "server_shutdown": "graceful shutdown requested after verification; see worker manifests"
+  },
+  "logging": {
+    "scope": "Offline re-encoding of existing historical native rows, not a new native simulation",
+    "source": "work/purpose-native/live-20260924/session-0004/rows.jsonl",
+    "source_sha256": "cb6961c80ccfe27b8e4aa408217c227c89fe31175cf00e0a57714fd92a755f9d",
+    "source_bytes": 151943905,
+    "source_rows": 16212,
+    "source_simulated_seconds": 810.6,
+    "retained_jsonl_bytes": 361792
+  },
+  "wheel": {
+    "scope": "Isolated wheel target install against prepared runtime; not clean-machine native installation",
+    "version": "0.1.2.dev0",
+    "wheel_sha256": "001a0ff4aec6558b8749e6d77855a14d88745bca840210adfe32cc5d903458d1",
+    "modules_loaded_from_wheel": {
+      "demo_assets": "bb8_rl/demo_assets.py",
+      "purpose": "bb8_rl/purpose.py",
+      "purpose_runtime": "bb8_rl/purpose_runtime.py",
+      "session_recording": "bb8_rl/session_recording.py",
+      "run_identity": "bb8_rl/run_identity.py",
+      "interactive": "bb8_rl/interactive.py"
+    },
+    "installed_bundle_valid": true,
+    "web_assets_present": true,
+    "sqlite_choice_passed": true,
+    "cwd": "/private/tmp"
+  },
+  "limits": [
+    "synthetic development room, lockstep; not physical real-time",
+    "stations and outcomes are explicit simulated telemetry, not live visual grounding",
+    "difficult original camera route still fails",
+    "visibility/validity and visual entity slice pending",
+    "hosted complete CI needs private dependency read token",
+    "no clean-machine native install or new release"
+  ]
+}

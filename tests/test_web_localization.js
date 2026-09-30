@@ -37,7 +37,7 @@ assert.equal(expired.ghostLabel, "Last seen · 241.3 s ago (sim)");
 assert.equal(expired.lastSeenText, "-0.20, 0.40 m · 241.3 s ago (sim)");
 assert.equal(expired.showRoute, false);
 assert(!JSON.stringify(expired).includes("719.2"));
-assert.deepEqual(controlAvailability(lost, ready), { navigate: false, stop: true, reset: true, mode: true, demo: true });
+assert.deepEqual(controlAvailability(lost, ready), { navigate: false, stop: true, reset: true, mode: true, demo: true, recheck: false });
 
 const reacquiring = { ...lost, localization_status: "reacquiring", phase: "reacquiring" };
 const recovery = localizationView(reacquiring);
@@ -84,9 +84,56 @@ assert.equal(localizationView({ ...lost, last_seen_age_s: -1 }).ghostLabel, "Las
 
 // Connection and in-flight command guards still apply independently. Reset,
 // mode changes and demo resets never depend on valid localization or a UI map.
-assert.deepEqual(controlAvailability(lost, { ...ready, connected: false }), { navigate: false, stop: false, reset: false, mode: false, demo: false });
-assert.deepEqual(controlAvailability(lost, { ...ready, token: null }), { navigate: false, stop: false, reset: false, mode: false, demo: false });
-assert.deepEqual(controlAvailability(lost, { ...ready, pendingCommands: 1 }), { navigate: false, stop: true, reset: false, mode: false, demo: false });
+assert.deepEqual(controlAvailability(lost, { ...ready, connected: false }), { navigate: false, stop: false, reset: false, mode: false, demo: false, recheck: false });
+assert.deepEqual(controlAvailability(lost, { ...ready, token: null }), { navigate: false, stop: false, reset: false, mode: false, demo: false, recheck: false });
+assert.deepEqual(controlAvailability(lost, { ...ready, pendingCommands: 1 }), { navigate: false, stop: true, reset: false, mode: false, demo: false, recheck: false });
 assert.equal(controlAvailability(lost, { ...ready, mapReady: false }).demo, true);
 assert.equal(controlAvailability(measured, { ...ready, mapReady: false }).navigate, false);
 console.log("Localization UI tests passed: explicit validity, loss/recovery, historical marker age, expired-radius suppression and recovery controls.");
+
+for (const scene of [{scene_invalidated: true}, {scene_validity: {invalidated: true, navigation_allowed: false}}]) {
+  const changed = {...measured, ...scene};
+  assert.equal(localizationView(changed).currentPose, null);
+  assert.match(localizationView(changed).message, /Reset cannot clear/);
+  assert.deepEqual(controlAvailability(changed, ready), {navigate: false, stop: true, reset: false, mode: false, demo: false, recheck: false});
+}
+const checkingScene = {...measured, scene_validity: {invalidated: false, navigation_allowed: false}};
+assert.equal(localizationView(checkingScene).label, "Checking scene");
+assert.equal(controlAvailability(checkingScene, ready).navigate, false);
+assert.equal(controlAvailability(checkingScene, ready).stop, true);
+
+// Recovery is a separate stopped maintenance action. The Supervisor supplies
+// readiness; neither a good old pose nor a valid map may bypass the scene lock.
+const sceneFault = {
+  ...measured, phase: "scene_invalid", scene_invalidated: true,
+  scene_validity_enabled: true, scene_recheck_available: true, scene_recheck_pending: false,
+  scene_validity: {invalidated: true, navigation_allowed: false, fault_epoch: 1},
+};
+assert.equal(controlAvailability(sceneFault, ready).recheck, true);
+assert.equal(controlAvailability(sceneFault, {...ready, mapReady: false}).recheck, true);
+for (const session of [
+  {...ready, connected: false}, {...ready, token: null}, {...ready, pendingCommands: 1},
+]) assert.equal(controlAvailability(sceneFault, session).recheck, false);
+for (const override of [
+  {scene_recheck_available: false}, {scene_recheck_available: undefined},
+  {scene_recheck_available: "true"}, {scene_recheck_pending: true}, {asset_ready: false},
+]) assert.equal(controlAvailability({...sceneFault, ...override}, ready).recheck, false);
+const sceneRecheck = {...sceneFault, scene_recheck_pending: true};
+assert.equal(localizationView(sceneRecheck).label, "Rechecking scene");
+assert.match(localizationView(sceneRecheck).message, /original scene reference/);
+assert.match(localizationView(sceneRecheck).message, /stay stopped/);
+assert.equal(localizationView(sceneRecheck).currentPose, null);
+assert.equal(controlAvailability(sceneRecheck, ready).stop, true);
+for (const action of ["navigate", "reset", "mode", "demo", "recheck"]) {
+  assert.equal(controlAvailability(sceneRecheck, ready)[action], false);
+}
+const sceneRecovered = {
+  ...measured, phase: "stopped", scene_invalidated: false, scene_recheck_available: false,
+  scene_recheck_pending: false, requires_new_goal: true,
+  scene_validity: {invalidated: false, navigation_allowed: true, fault_epoch: 1},
+};
+assert.equal(controlAvailability(sceneRecovered, ready).recheck, false);
+assert.equal(localizationView(sceneRecovered).showRoute, false);
+assert.match(localizationView(sceneRecovered).message, /choose a new destination/);
+assert.equal(controlAvailability({...sceneRecovered, localization_valid: false}, ready).navigate, false);
+console.log("Scene recovery UI tests passed: explicit server readiness, original-reference messaging, stopped recovery and fresh goal requirement.");

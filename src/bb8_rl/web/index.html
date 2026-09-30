@@ -27,8 +27,8 @@
       <section class="control-section">
         <p class="eyebrow">01 / CAMERA SETUP</p>
         <h2>More ways to see.</h2>
-        <p class="muted section-description">Choose the fixed cameras observing the room.</p>
-        <div class="mode-selector" role="group" aria-label="Number of active cameras">
+        <p id="camera-setup-description" class="muted section-description">Choose the fixed cameras observing the room.</p>
+        <div id="camera-mode-selector" class="mode-selector" role="group" aria-label="Number of active cameras">
           <button type="button" data-mode="1" aria-pressed="true" disabled><strong>1</strong><span>camera</span></button>
           <button type="button" data-mode="2" aria-pressed="false" disabled><strong>2</strong><span>cameras</span></button>
           <button type="button" data-mode="3" aria-pressed="false" disabled><strong>3</strong><span>cameras</span></button>
@@ -67,6 +67,7 @@
       <div class="workspace-heading"><div><p class="eyebrow">NAVIGATION WORKSPACE</p><h1>A little robot.<br class="compact-break"> A bigger picture.</h1></div><span id="phase-chip" class="phase-chip"><span class="status-dot"></span><span id="phase-text">Starting up</span></span></div>
       <div id="asset-notice" class="notice asset-notice" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 10 18H2Z"/><path d="M12 9v5m0 3v1"/></svg><div><strong>Demo assets needed</strong><p id="asset-message">The local app has not loaded its map and policy bundle.</p></div></div>
       <div id="connection-notice" class="notice connection-notice" hidden><strong>Connection interrupted</strong><p>Controls are unavailable. Waiting for the local app to reconnect.</p></div>
+      <div id="scene-recovery-notice" class="notice" hidden><div><strong>Scene recovery</strong><p id="scene-recovery-help">Restore the original scene and camera positions, then recheck while stopped. The check keeps the original reference. Motion and learning require new requests after recovery.</p></div><button id="recheck-scene-button" class="button secondary-button" type="button" disabled aria-describedby="scene-recovery-help">Recheck scene</button></div>
 
       <section id="agency-panel" class="agency-panel panel" aria-labelledby="agency-title" data-enabled="false">
         <div class="agency-heading">
@@ -74,7 +75,7 @@
           <button id="autonomy-button" class="button secondary-button" type="button" disabled aria-pressed="false" aria-describedby="agency-help">Start learning</button>
         </div>
         <div class="agency-state" role="status" aria-live="polite" aria-atomic="true"><strong id="agency-status">Waiting for the local app</strong><p id="agency-message">Exploration starts only when you choose it.</p></div>
-        <div id="purpose-resource" class="purpose-resource" hidden><label for="resource-meter">Simulated resource <strong id="resource-value">—</strong></label><progress id="resource-meter" max="1" value="0"></progress><p>Target: 80%. Station zones are virtual task fixtures. Effects come from simulation telemetry; camera feeds locate BB-8.</p></div>
+        <div id="purpose-resource" class="purpose-resource" hidden><label for="resource-meter"><span id="resource-label">Simulated resource</span> <strong id="resource-value">—</strong></label><progress id="resource-meter" max="1" value="0"></progress><p id="resource-help">Target: 80%. Station zones are virtual task fixtures. Effects come from simulation telemetry; camera feeds locate BB-8.</p></div>
         <div id="agency-intention" class="agency-intention" hidden><span>Current intention</span><strong id="agency-intention-label">—</strong><p id="agency-intention-explanation"></p></div>
         <p id="agency-recent" class="agency-recent" hidden><span>Latest outcome</span> <span id="agency-recent-summary"></span></p>
         <div class="agency-memory"><span id="agency-experiences">0 experiences remembered</span><details id="agency-preferences" hidden><summary id="agency-preference-title">Learned station responses</summary><ol id="agency-preference-list"></ol></details></div>
@@ -95,6 +96,7 @@
 
         <aside class="vision-column" aria-label="Live visual observations">
           <section class="camera-section" aria-labelledby="camera-title"><div class="camera-section-heading"><h2 id="camera-title">Eyes on the room</h2><span id="camera-count" class="camera-count">1 VIEW</span></div>
+            <p id="camera-disclosure" class="microcopy" hidden></p>
             <div id="camera-feeds" class="camera-feeds" data-mode="1">
               <article class="camera-card" data-camera="A"><div class="camera-card-heading"><span class="camera-label"><span class="camera-letter">A</span>Camera A</span><span class="camera-status" data-camera-status="A">Waiting</span></div><div class="camera-image-wrap"><img data-camera-image="A" alt="Live RGB observation from camera A" hidden><div class="camera-placeholder" data-camera-placeholder="A"><svg viewBox="0 0 40 32" aria-hidden="true"><rect x="2" y="6" width="27" height="22" rx="4"/><path d="m29 13 9-5v20l-9-5M10 6l3-4h9l3 4"/><circle cx="15" cy="17" r="6"/></svg><span>No RGB frame yet</span></div><span class="feed-label">RGB · LIVE</span></div><div class="camera-card-footer"><span data-camera-source="A">Awaiting observation</span><span data-camera-frame="A">—</span></div></article>
               <article class="camera-card" data-camera="B" hidden><div class="camera-card-heading"><span class="camera-label"><span class="camera-letter">B</span>Camera B</span><span class="camera-status" data-camera-status="B">Waiting</span></div><div class="camera-image-wrap"><img data-camera-image="B" alt="Live RGB observation from camera B" hidden><div class="camera-placeholder" data-camera-placeholder="B"><svg viewBox="0 0 40 32" aria-hidden="true"><rect x="2" y="6" width="27" height="22" rx="4"/><path d="m29 13 9-5v20l-9-5M10 6l3-4h9l3 4"/><circle cx="15" cy="17" r="6"/></svg><span>No RGB frame yet</span></div><span class="feed-label">RGB · LIVE</span></div><div class="camera-card-footer"><span data-camera-source="B">Awaiting observation</span><span data-camera-frame="B">—</span></div></article>

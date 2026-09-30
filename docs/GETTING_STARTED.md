@@ -147,7 +147,18 @@ For the older finite map-coverage diagnostic, launch with `--agency-mode coverag
 ./scripts/launch-control-room.sh --mode 3 --port 8766
 ./scripts/launch-control-room.sh --no-browser --output work/my-interactive-session
 ./scripts/launch-control-room.sh --control-profile baseline
+./scripts/launch-control-room.sh --visibility-planning --scene-validity
 ```
+
+The last command enables the [experimental navigation safeguards](NAVIGATION_VISIBILITY.md).
+Visibility planning proposes routes using the frozen scan and registered cameras;
+all existing clearance, uncertainty, braking and arrival checks still apply.
+The scene guard first checks a stable RGB reference, pauses on suspected changes,
+and latches confirmed changes. After a latch, Stop remains available but Reset,
+Demo, mode changes and new goals cannot clear the lock. Check the actual scene
+and camera registration before restarting the app. This guard detects only
+same-session visible changes; it does not certify an old map at startup or repair
+changed geometry. Both features remain opt-in while held-out evaluation is pending.
 
 The default `reserve-3cm` profile uses a **3 cm fixed margin**, a **15 cm/s speed
 cap** and **4 cm of extra route-search clearance** to leave room for braking.
@@ -156,9 +167,19 @@ stopping motion are still included. The wider search can reject tight goals.
 The previous settings remain available as `baseline`; all seven experimental
 profiles and their outcomes are in the [configuration comparison](M7_11_RESULTS.md).
 
-Choose a fresh output directory. Each worker session records issued requests,
-command acknowledgements, source/model hashes and a separately labeled physics
-trace for independent scoring. These logs remain ignored by Git.
+Choose a fresh output directory. The default `telemetry` recording samples compact
+state once per simulated second and retains transitions, station receipts,
+commands and faults in a separate event stream. Each stream rotates four 1 MiB
+segments per worker session (8 MiB total JSONL quota). `recording.json` reports
+sampling, evicted records and oversized-record truncation. Older rotated history
+is not complete benchmark evidence; resets create separately bounded sessions.
+
+Use `--recording-mode audit` for complete unsampled, unrotated command and physics
+rows. This explicitly opts into larger logs; native benchmark scripts set it
+automatically. The independent auditor rejects explicitly sampled recordings.
+Both modes record project/Studio source snapshots, revisions and relevant dirty
+changes, runtime versions, checked assets/configuration and effective reset setup.
+All generated records remain under ignored `work/` directories.
 
 This is lockstep simulation: physics pauses during camera rendering/inference.
 The displayed processing time does not establish a wall-clock control guarantee.

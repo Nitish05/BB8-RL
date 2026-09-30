@@ -28,10 +28,13 @@ class NavigationEnv(gym.Env):
         backend="cpu",
         render_mode=None,
         camera_positions=None,
+        visual_fixture=None,
     ):
         if split not in SPLITS or render_mode not in (None, "human", "rgb_array"):
             raise ValueError("Invalid task split or render mode")
         self.task, self.world_path = load_task(Path(task_path))
+        if split == "heldout" and self.task.layout_mode != "authored":
+            raise ValueError("The held-out seed domain requires an authored fixture")
         self.config, project, self.body_spec, _, _ = validate_world(self.world_path)
         self.sizes = [
             next(o.size for o in project.objects if o.name == name)
@@ -86,6 +89,7 @@ class NavigationEnv(gym.Env):
                 )
         self.split, self.backend_name, self.render_mode = split, backend, render_mode
         self.camera_positions = camera_positions
+        self.visual_fixture = visual_fixture
         self.world = None
         self._done = True
         self.grid = None
@@ -155,6 +159,7 @@ class NavigationEnv(gym.Env):
                 viewer=self.render_mode == "human",
                 render=self.render_mode == "rgb_array",
                 camera_positions=self.camera_positions,
+                visual_fixture=self.visual_fixture,
             )
         self.state = self.world.reset(
             start=tuple(start), obstacle_positions=layout.positions

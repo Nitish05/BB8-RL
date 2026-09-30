@@ -33,7 +33,7 @@ evidence, route and uncertainty behind each motion request.
 | Visual recovery | Validate returning observations across multiple frames; stay stopped until a new destination is requested |
 | Stop and Reset | Cancel the goal, clear queued motion, or return to the demo start |
 | Purposeful interaction experiment | Learn station response probabilities from simulated resource changes; choose useful interactions, retain outcomes and wait when the need is satisfied |
-| Reproducible evidence | Retain commands, model hashes and separate physics records for independent scoring |
+| Reproducible evidence | Bounded everyday diagnostics; explicit full physics audits with source/config/asset identity |
 
 **Destinations depend on map coverage.** A clear cell alone does not establish
 that the robot footprint, route and stopping envelope are clear. Rejected goals
@@ -63,6 +63,11 @@ observed free cells** than the original bundle. Additional free space requires
 four separated image supports; occupied and unknown evidence still constrains
 motion. The [scan-coverage report](docs/M7_12_SCAN_COVERAGE.md) records all failed
 reconstruction attempts, independent geometry checks and driving results.
+
+New synthetic acquisition can explicitly export OpenCV pixel-centre calibration.
+Its metadata, RGB registration and map must be derived together; the installed
+bundle retains its existing calibration convention. New-room route admission
+remains subject to the [separate safety and utility checks](docs/VISUAL_HELDOUT_RESULTS.md).
 
 ![Scan coverage before and after additional RGB viewpoints](docs/media/m712-map-comparison.png)
 
@@ -103,6 +108,26 @@ environment snapshot, not a guarantee for other platforms.
 
 See the [setup guide](docs/GETTING_STARTED.md) for runtime selection, offline asset
 installation and troubleshooting.
+
+The [continuation ledger](docs/CONTINUATION_PLAN.md) tracks the September audit
+repairs and the remaining navigation/visual-interaction work. Ordinary sessions
+now use bounded diagnostic logs. Add `--recording-mode audit` when complete
+per-step physics evidence is required; benchmark scripts request that mode
+explicitly. Existing assets and learned memories do not need replacement.
+
+An opt-in [navigation visibility and scene-change prototype](docs/NAVIGATION_VISIBILITY.md)
+adds scan/camera-aware route candidates and a latched RGB change guard:
+`./scripts/launch-control-room.sh --visibility-planning --scene-validity`.
+The guard pauses motion on suspect evidence. After restoring the original scene
+and cameras, **Recheck scene** compares fresh RGB with the unchanged reference
+while BB-8 stays stopped. It requires three stable checks over at least one
+simulated second, fresh local position recovery and a new destination before
+motion. Stop or a lost heartbeat cancels the check; Reset cannot clear the lock.
+A camera left in a new pose still needs registration. These are synthetic
+development features; reliable navigation in new rooms remains unproven.
+Existing control bounds and the installed assets are unchanged.
+The [restored-reference recovery results](docs/SCENE_RECOVERY_RESULTS.md) retain
+all native attempts and the separate controlled-light RGB preflight.
 
 ## Examples
 
@@ -165,12 +190,65 @@ episode while retaining learned effects. The SQLite file defaults to
 `work/agency/bb8.sqlite3`; override it with `--agency-memory /path/to/memory.sqlite3`.
 New outcome tables are separate from the earlier arrival-reward experiment.
 
+An enabled but route-blocked chooser now retries dry route checks with backoff
+(2 seconds initially, capped at 30 seconds). Satisfied or learned-useless idle
+stays quiet. Two corroborating useful outcomes followed by three ineffective
+ones can reopen one previously suppressed alternative trial, including before
+the six-success stability threshold. The finite probe budget and receipt
+deduplication remain in force; Stop and localization loss still require an
+explicit restart.
+
 The resource and station effects are **explicitly simulated telemetry**, not a
 real battery, RGB-recognized objects or camera-observed charging. The two marked
 zones are declared task locations. This is learned action consequence prediction
 under an engineered motivation; it does not establish personality or social
 understanding. See the [implementation plan](docs/PURPOSE_PLAN.md) and
 [results](docs/PURPOSE_RESULTS.md).
+
+**Learn from a rendered visual response**
+
+The opt-in visual experiment uses the installed development room and existing
+models. Launch it with:
+
+```bash
+./scripts/launch-control-room.sh --agency-mode visual --mode 3 --visibility-planning --scene-validity
+```
+
+Wait for fresh localization and fixture pixels, then select **Start learning**.
+The UI identifies the source as **Experimental · live RGB fixture learning** and shows
+**Awaiting fixture pixels** when no usable observation is available. The default
+mode remains `purpose`, whose resource readings are explicitly simulated
+telemetry.
+
+Visual mode reads two engineered marker panels and their 32-bin gauges from
+normal native RGB. A dedicated 2560×1920 camera uses the registered B pose;
+`--mode 1`, `--mode 2` and `--mode 3` still select navigation cameras A, A+B and
+A+B+C respectively. Entity identity and station anchors come from marker pixels
+and the declared calibration/marker offset. The world renders action-dependent
+synthetic gauge changes. The chooser receives fresh pixel-derived before/after
+readings and a completion acknowledgement without resource or effect values.
+Arrival alone does not teach an outcome. Missing, ambiguous or interrupted
+visual evidence cannot produce a learned result.
+
+Memory defaults to `work/visual-agency/bb8.sqlite3`, separate from the ordinary
+purpose experiment. Use `--agency-memory /path/to/visual-memory.sqlite3` for an
+explicit alternative. Committed entity and outcome knowledge survives restart
+and Reset. Autonomy always starts disabled; Reset starts a fresh resource episode.
+**Pause learning**, **Stop**, a manual goal, Reset, camera-mode changes, lost
+heartbeat, expired localization or unavailable fixture evidence revoke authority.
+Returning images do not restart a cancelled intention.
+
+These are fixed synthetic markers and gauges, not general object recognition,
+a physical battery or demonstrated real-world interaction. The existing SAC
+controller, navigation model, clearance checks and actuator path are unchanged.
+The dedicated B view is part of this development fixture; other viewpoints or
+rooms require their own validation.
+
+Three navigation cameras are recommended for this development experiment.
+The paired one-camera history trials lost learned head detection after the
+world response and correctly cancelled without learning; fresh semantic pixels
+alone do not establish valid robot localization. See the staged
+[visual and new-room results](docs/VISUAL_HELDOUT_RESULTS.md).
 
 The earlier finite map-coverage diagnostic is available with
 `--agency-mode coverage`; it uses **Start exploring**, excludes completed targets
@@ -196,6 +274,11 @@ This is a selected development route.*
 
 | Experiment | Recorded result | Scope |
 |---|---|---|
+| Live RGB interaction learning | Opposite histories choose different entities under identical startup pixels; reversal, useless idle, Stop, missing-post-pixel abstention and disabled restart pass | 15 retained launches, 12 completed cases, 9 passes; engineered markers and an extra RGB camera; [results and failures](docs/VISUAL_HELDOUT_RESULTS.md) |
+| Pixel-coordinate map repair | 4,513 certified cells after fresh RGB registration; zero unsafe free-space claims; original start/goal remain unknown | Development on one evaluated family; 24 cells survive 14 cm clearance and motion remains blocked; [map and limits](docs/VISUAL_HELDOUT_RESULTS.md) |
+| Metric mapping repairs | Correct shared voxel faces and exact endpoint certificates; 1,536 non-native tests and one known-room native arrival pass | Experimental covered-window mapper rejected by raised-object controls; new-room driving remains unfinished; [results](docs/METRIC_MAPPING_REPAIRS.md) |
+| Multiscale acquisition development | 24 additional native RGB views; 18,679 certified cells and zero unsafe free-volume claims | Original route still blocked at 10/14 cm clearance; all six driving trials blocked before launch; [results](docs/VISUAL_HELDOUT_RESULTS.md) |
+| Corrected new-room evaluation | 48 requests: 24 native attempts, 24 map blocks, zero arrivals; 20 issued goals rejected and 4 cases never localized | Four synthetic capture families; map utility remains inadequate; [results](docs/VISUAL_HELDOUT_RESULTS.md) |
 | Purposeful station interactions | One- and three-camera runs each learned 3 station outcomes, restored the simulated resource and idled; Stop and durable disabled restart passed | Revised shared virtual-station fixture; [results and original single-camera failure](docs/PURPOSE_RESULTS.md) |
 | Outcome-model comparison | 1.021 interactions per need during acquisition and 1.167 after reversal, versus random 1.982 / 1.971 | 120 designed synthetic cases plus 20 noise cases; not personality evidence |
 | Corrected map-target exploration | 3 independently valid arrivals at 3 distinct targets; no successful revisits or contacts | One three-camera synthetic-room run; [full results](docs/AGENCY_COVERAGE_FIX.md) |
@@ -288,8 +371,11 @@ work/            Local models, datasets and evidence — ignored by Git
 ./scripts/python.sh -m ruff check src tests scripts
 ```
 
-CI tests pure camera/control/application contracts without native graphics or
-model assets. The M7.13 local non-native suite passed **584 tests**. Current native
+CI discovers camera/control/application contracts without native graphics or
+model assets and checks independent auditors with deliberate negative controls.
+The full Studio-dependent job requires private dependency access; its absence
+is explicitly reported as **NOT RUN**, not full coverage. Current validation is
+tracked in the [continuation ledger](docs/CONTINUATION_PLAN.md). Historical native
 and browser acceptance are documented in the [localization report](docs/M7_13_RESULTS.md);
 the earlier application checks remain in the [validation report](docs/M7_9_VALIDATION.md).
 The [route-clearance correction](docs/M7_10_ROUTE_FIX.md) documents the subsequent
@@ -312,8 +398,9 @@ paths can reject tight destinations; these results cover one synthetic room.
   coverage checks are reported separately.
 - Uncertainty/response bounds are assumptions, not calibrated physical guarantees.
   Visible arrival is independently checked against physics.
-- Scene or camera changes require validated memory/calibration. Automatic
-  real-room scanning and change detection remain future work.
+- The opt-in scene guard detects some visible changes and locks navigation. It
+  does not repair a moved camera or map. Automatic real-room scanning, global
+  relocalization and hidden-change detection remain future work.
 
 ## Assets and attribution
 
@@ -324,3 +411,5 @@ redistributed. See [asset notes](docs/PUBLISHING.md) for provenance and checksum
 This independent project is not an official or endorsed character product. Robot
 geometry uses schematic primitives. No software license has been selected;
 repository access does not itself grant a reuse license.
+
+The 27 September floor-height experiment passed 62 helper tests but produced no usable positive map after ambiguity rejection. The centered reference passed 16 bounded controls; the covered rule produced 258 false-FREE cell claims. No new-room motion was admitted. [Latest geometry results](docs/FLOOR_GEOMETRY_RESULTS.md).

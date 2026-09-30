@@ -503,6 +503,7 @@ def run(args):
     profile = get_profile(protocol["control_profile"])
     config = {
         "asset_dir": str(assets),
+        "recording_mode": "audit",
         "run_dir": str(output / "worker"),
         "mode": case["mode"],
         "max_steps": round(case["duration_s"] / 0.05),

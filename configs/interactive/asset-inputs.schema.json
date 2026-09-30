@@ -1,0 +1,63 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "BB8 interactive asset rebuild inputs",
+  "description": "Every path is relative to root (relative to this manifest), or to --input-root when relocating. Runtime configuration references must resolve to the named world/project. Memory artifacts must match the source map manifest. Hashes cover opaque model/array bytes; this is not model execution or training provenance validation.",
+  "type": "object",
+  "required": ["schema", "inputs", "memory_artifacts", "cameras"],
+  "properties": {
+    "schema": {"const": "bb8.interactive-asset-inputs.v1"},
+    "root": {"type": "string", "default": "."},
+    "protocol_case": {"type": "integer", "minimum": 0, "default": 0},
+    "inputs": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["policy", "vision", "task", "world", "project", "registration", "protocol", "memory_manifest"],
+      "properties": {
+        "policy": {"$ref": "#/$defs/file"},
+        "vision": {"$ref": "#/$defs/file"},
+        "task": {"$ref": "#/$defs/file"},
+        "world": {"$ref": "#/$defs/file"},
+        "project": {"$ref": "#/$defs/file"},
+        "registration": {"$ref": "#/$defs/file"},
+        "protocol": {"$ref": "#/$defs/file"},
+        "memory_manifest": {"$ref": "#/$defs/file"}
+      }
+    },
+    "memory_artifacts": {
+      "type": "object",
+      "required": ["room-memory.json", "free-grid.npz"],
+      "additionalProperties": {"$ref": "#/$defs/file"}
+    },
+    "cameras": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["A", "B", "C"],
+      "properties": {
+        "A": {"$ref": "#/$defs/camera"},
+        "B": {"$ref": "#/$defs/camera"},
+        "C": {"$ref": "#/$defs/camera"}
+      }
+    }
+  },
+  "$defs": {
+    "file": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256"],
+      "properties": {
+        "path": {"type": "string", "minLength": 1},
+        "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+      }
+    },
+    "camera": {
+      "type": "object",
+      "required": ["query_index", "metadata", "lookat", "resolution"],
+      "properties": {
+        "query_index": {"type": "integer", "minimum": 0},
+        "metadata": {"$ref": "#/$defs/file"},
+        "lookat": {"type": "array", "minItems": 3, "maxItems": 3, "items": {"type": "number"}},
+        "resolution": {"type": "array", "minItems": 2, "maxItems": 2, "items": {"type": "integer", "minimum": 1}}
+      }
+    }
+  }
+}

@@ -2,9 +2,6 @@ import os
 from pathlib import Path
 
 import pytest
-from genesis_studio_desktop.app import run as studio_run
-
-from bb8_rl.cli import run
 
 ROOT = Path(__file__).resolve().parents[1]
 pytestmark = [
@@ -19,6 +16,8 @@ pytestmark = [
     "project", ["empty-floor.genesis.json", "synthetic-room/room.genesis.json"]
 )
 def test_saved_world_reopens_in_studio(project):
+    from genesis_studio_desktop.app import run as studio_run
+
     assert (
         studio_run(
             [
@@ -33,6 +32,8 @@ def test_saved_world_reopens_in_studio(project):
 
 
 def test_controllable_world_native_viewer():
+    from bb8_rl.cli import run
+
     assert (
         run(
             [

@@ -130,6 +130,33 @@ display, learned response estimates, satisfied idle and loss-safe pause.
 
 ## Limits
 
+The September continuation closes the audit's resource-only idle cache and early
+effect-reversal defects. Dry route failures retry at 2/4/8/16/30 seconds, capped
+at one scan per 30 seconds; significant measured pose/clearance changes can
+reconsider sooner, still at least two seconds apart. This does not relax route
+certification or automatically resume after revoked authority. Previously
+dispatched failed goals need changed evidence or an observed dry-route
+unavailable-to-available transition before they can move again.
+
+Two consecutive meaningful responses followed by three ineffective receipts now
+provide a one-shot early-change hypothesis. It restores exactly one trial of
+each suppressed alternative. Six useful outcomes still establish the stronger
+stable hypothesis. A failed reopened trial settles; elapsed time, duplicate
+receipts and restarts do not replenish it. Existing epoch-zero memories matching
+the audited stuck history can recover during explicit unsatisfied selection
+without deleting any receipts. Ambiguous legacy histories with nonzero change
+epochs are conservatively left unchanged.
+
+The added deterministic suite covers 120 reversed histories (10 seeds, both
+station assignments, 2/3/5/6/8/24 prior useful outcomes), persistence around every
+trigger boundary and repeated reversals. Each recovers within five interaction
+trials. Static sub-threshold sensor noise settles after eight total station
+trials. This does not distinguish a spurious above-threshold resource reading
+from a real gain; the telemetry model cannot make that inference. The original
+20-seed benchmark still passes all seven checks with unchanged aggregate results.
+See [the continuation report](CONTINUATION_RESULTS.md) for the new native and
+application checks, including the previously missing two-camera purpose case.
+
 This is an inspectable learned consequence model with an engineered motivation,
 not a recurrent high-level RL policy, self-created objective, or social personality.
 The virtual station zones are task fixtures, not objects recognized from RGB.

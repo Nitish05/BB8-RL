@@ -1,0 +1,103 @@
+{
+  "scope": "Read-only original endpoint and unchanged clearance diagnostic; no replacement targets or bounds.",
+  "free_cells": 4513,
+  "points": {
+    "start": {
+      "point": [
+        -0.15,
+        0.25
+      ],
+      "cell_yx": [
+        112,
+        92
+      ],
+      "raw_free": false,
+      "raw_occupied": false,
+      "supporting_views": []
+    },
+    "arrival": {
+      "point": [
+        0.8,
+        1.3
+      ],
+      "cell_yx": [
+        165,
+        140
+      ],
+      "raw_free": false,
+      "raw_occupied": false,
+      "supporting_views": []
+    },
+    "occupied": {
+      "point": [
+        0.3,
+        1.1
+      ],
+      "cell_yx": [
+        155,
+        114
+      ],
+      "raw_free": false,
+      "raw_occupied": false,
+      "supporting_views": []
+    }
+  },
+  "radii": {
+    "0": {
+      "traversable_cells": 4513,
+      "points": {
+        "start": {
+          "grid_free": false,
+          "capsule_free": false
+        },
+        "arrival": {
+          "grid_free": false,
+          "capsule_free": false
+        },
+        "occupied": {
+          "grid_free": false,
+          "capsule_free": false
+        }
+      }
+    },
+    "0.1": {
+      "traversable_cells": 155,
+      "points": {
+        "start": {
+          "grid_free": false,
+          "capsule_free": false
+        },
+        "arrival": {
+          "grid_free": false,
+          "capsule_free": false
+        },
+        "occupied": {
+          "grid_free": false,
+          "capsule_free": false
+        }
+      }
+    },
+    "0.14": {
+      "traversable_cells": 24,
+      "points": {
+        "start": {
+          "grid_free": false,
+          "capsule_free": false
+        },
+        "arrival": {
+          "grid_free": false,
+          "capsule_free": false
+        },
+        "occupied": {
+          "grid_free": false,
+          "capsule_free": false
+        }
+      }
+    }
+  },
+  "input_sha256": {
+    "work/continuation-20260926-visual-heldout/development-pixel-center-v1/data/memory/manifest.json": "326fa73462b968efe66ab354745bc7de8b679a1161f47c1e961b621a195cb819",
+    "work/continuation-20260926-visual-heldout/development-pixel-center-v1/data/memory/free-grid.npz": "c6c72ea68d5b036bc52a06d87e49f15438018b0cdd51db19e91a1a3083729c88",
+    "work/continuation-20260926-visual-heldout/development-pixel-center-v1/data/memory/room-memory.json": "138c85cced0d169505b59e1d7f808c7f07b0d0dd3b0b601bf60718c1778626a5"
+  }
+}

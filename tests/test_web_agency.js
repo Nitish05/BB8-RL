@@ -82,3 +82,98 @@ for (const resource of [NaN, Infinity, -1, 2, ".8"]) {
 }
 assert.equal(agencyView({...purposeState, localization_status: "lost", localization_valid: false, agency: {...purposeState.agency, enabled: true}}, session).canToggle, true);
 console.log("Purpose UI tests passed: explicit start, simulated resource, learned predictions, satisfied idle and loss-safe pause.");
+
+// A completed scene warmup must not keep its old pause reason visible once the
+// user can explicitly start again. Rendering must not resume learning or mutate
+// retained memory, and current safety messages still take precedence.
+const warmupReason = "Checking a stable camera reference; navigation is paused.";
+const recoveredScene = {
+  ...purposeState,
+  scene_validity: { ready: true, navigation_allowed: true, invalidated: false },
+  agency: { ...purposeState.agency, enabled: false, status: "paused", message: warmupReason },
+};
+const retainedScene = JSON.stringify(recoveredScene);
+const recoveredView = agencyView(recoveredScene, session);
+assert.equal(recoveredView.message, "Camera reference is ready. Start learning when you are ready; remembered outcomes are retained.");
+assert.equal(recoveredView.buttonText, "Start learning");
+assert.equal(recoveredView.canToggle, true);
+assert.equal(recoveredView.enabled, false);
+assert.equal(recoveredView.intention, null);
+assert.equal(recoveredView.experienceText, "2 experiences remembered");
+assert.equal(JSON.stringify(recoveredScene), retainedScene);
+for (const override of [
+  { scene_validity: { ready: false, navigation_allowed: false, invalidated: false } },
+  { scene_validity: { ready: true, navigation_allowed: false, invalidated: true } },
+  { localization_status: "lost", localization_valid: false },
+]) {
+  const blockedView = agencyView({ ...recoveredScene, ...override }, session);
+  assert.equal(blockedView.canToggle, false);
+  assert.notEqual(blockedView.message, recoveredView.message);
+  assert.match(blockedView.message, /paused|locked|unavailable/);
+}
+assert.notEqual(agencyView(recoveredScene, { ...session, connected: false }).message, recoveredView.message);
+for (const agency of [
+  { ...recoveredScene.agency, enabled: true },
+  { ...recoveredScene.agency, available: false },
+  { ...recoveredScene.agency, message: "Manual destination selected." },
+]) {
+  assert.equal(agencyView({ ...recoveredScene, agency }, session).message, agency.message);
+}
+assert.equal(agencyView({ ...recoveredScene, agency: { ...recoveredScene.agency, selection_policy: "coverage" } }, session).message,
+  "Camera reference is ready. Start exploring when you are ready; remembered visits are retained.");
+console.log("Scene warmup UI regression passed: current readiness replaces only the expired pause message without changing authority or memory.");
+
+// Visual mode is selected by the explicit native RGB source, while retaining
+// purpose learning and all existing motion/readiness gates.
+const visualState = {
+  ...purposeState,
+  agency: {...purposeState.agency, resource_source: "native_scene_rgb", resource: null, message: ""},
+};
+const visualBefore = JSON.stringify(visualState);
+const visualView = agencyView(visualState, session);
+assert.equal(visualView.purpose, true);
+assert.equal(visualView.visual, true);
+assert.equal(visualView.enabled, false);
+assert.equal(visualView.buttonText, "Start learning");
+assert.equal(visualView.resourceText, "Awaiting fixture pixels");
+assert.match(visualView.caption, /live RGB fixture learning/);
+assert.match(visualView.description, /native camera images/);
+assert.match(visualView.help, /fixture-specific decoder/);
+for (const field of ["caption", "description", "help", "resourceText", "resourceLabel", "resourceHelp", "enableMessage", "message"]) {
+  assert.doesNotMatch(visualView[field], /telemetry|current simulated resource/i);
+}
+assert.equal(JSON.stringify(visualState), visualBefore);
+assert.equal(agencyView({...visualState, agency: {...visualState.agency, resource: .5}}, session).resourceText, "Observed gauge · 50%");
+assert.equal(agencyView({...visualState, agency: {...visualState.agency, enabled: true, status: "waiting"}}, session).status, "Awaiting fixture pixels");
+assert.equal(agencyView({...visualState, agency: {...visualState.agency, enabled: true, status: "interacting"}}, session).status, "Observing a fixture response");
+assert.equal(agencyView({...visualState, agency: {...visualState.agency, available: false}}, session).canToggle, false);
+const visualLost = {...visualState, localization_status: "lost", localization_valid: false};
+assert.equal(agencyView(visualLost, session).canToggle, false);
+assert.equal(agencyView({...visualLost, agency: {...visualLost.agency, enabled: true}}, session).canToggle, true);
+assert.equal(agencyView({...visualState, scene_validity: {invalidated: true, navigation_allowed: false}}, session).canToggle, false);
+assert.equal(agencyView(visualState, {...session, connected: false}).canToggle, false);
+for (const resource_source of [undefined, null, "simulated_station_telemetry", "native_scene_rgb ", true]) {
+  const view = agencyView({...visualState, agency: {...visualState.agency, resource_source}}, session);
+  assert.equal(view.visual, false);
+  assert.equal(view.resourceText, "Awaiting telemetry");
+}
+assert.equal(agencyView({...visualState, agency: {...visualState.agency, selection_policy: "coverage"}}, session).visual, false);
+assert.equal(visualView.resourceLabel, "Observed fixture gauge");
+assert.match(visualView.resourceHelp, /before\/after native RGB/);
+assert.match(visualView.resourceHelp, /fixed synthetic markers and gauges/);
+for (const mode of [1, 2, 3]) {
+  const visual = agencyView({...visualState, mode}, session);
+  assert.equal(visual.cameraCount, `${mode} NAV + 1 RGB`);
+  assert.match(visual.cameraSetup, /navigation cameras/);
+  assert.match(visual.cameraDisclosure, /additional camera at the registered B view/);
+  assert.match(visual.cameraDisclosure, /feed is not displayed/);
+  const purpose = agencyView({...purposeState, mode}, session);
+  assert.equal(purpose.cameraCount, `${mode} ${mode === 1 ? "VIEW" : "VIEWS"}`);
+  assert.equal(purpose.cameraDisclosure, "");
+  assert.equal(purpose.resourceLabel, "Simulated resource");
+  assert.match(purpose.resourceHelp, /Effects come from simulation telemetry/);
+}
+for (const mode of [0, 4, "3", NaN, null]) {
+  assert.equal(agencyView({...visualState, mode}, session).cameraCount, "1 NAV + 1 RGB");
+}
+console.log("Visual fixture UI tests passed: explicit RGB provenance, pixel waiting, bounded claims, unchanged cancellation and memory-safe rendering.");

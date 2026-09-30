@@ -402,12 +402,20 @@ def score_restart(rows, learned_snapshot, commands):
 def score_completed(output):
     rows = read_jsonl(output / "worker/rows.jsonl")
     commands = read_jsonl(output / "worker/commands.jsonl")
-    physics = load_script(
-        "audit-interactive.py", "purpose_independent_physics_audit"
-    ).score_rows(rows)
-    write_json(output / "independent-audit.json", physics)
+    auditor = load_script("audit-interactive.py", "purpose_independent_physics_audit")
+    physics = auditor.score_rows(rows)
     manifest_path = output / "worker/manifest.json"
     manifest = json.loads(manifest_path.read_text()) if manifest_path.exists() else {}
+    provenance = auditor.verify_manifest(output / "worker", manifest)
+    provenance.update(auditor.verify_recording(rows, manifest))
+    physics["provenance"] = provenance
+    physics["images"] = auditor.verify_images(output / "worker", rows)
+    physics["integrity_pass"] = (
+        physics["integrity_pass"]
+        and all(provenance.values())
+        and not physics["images"]["failures"]
+    )
+    write_json(output / "independent-audit.json", physics)
     effects = score_effects(rows)
     result = {
         "frames": len(rows),
@@ -436,6 +444,7 @@ def run_phase(args, mode, output, memory, *, learning):
     output.mkdir()
     config = {
         "asset_dir": str(args.assets.resolve()),
+        "recording_mode": "audit",
         "mode": mode,
         "run_dir": str(output / "worker"),
         "agency_memory": str(memory),
@@ -598,7 +607,9 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--assets", type=Path, default=ROOT / "work/interactive-assets")
-    parser.add_argument("--modes", type=int, nargs="+", choices=(1, 3), default=[1, 3])
+    parser.add_argument(
+        "--modes", type=int, nargs="+", choices=(1, 2, 3), default=[1, 2, 3]
+    )
     parser.add_argument("--sim-seconds", type=float, default=120.0)
     parser.add_argument("--wall-seconds", type=float, default=600.0)
     args = parser.parse_args()

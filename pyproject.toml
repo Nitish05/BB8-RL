@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "bb8-rl"
-version = "0.1.0"
+version = "0.1.2.dev0"
 description = "BB-8 navigation and reinforcement-learning project using Genesis Studio"
 readme = "README.md"
 requires-python = ">=3.10,<3.14"
@@ -34,4 +34,5 @@ testpaths = ["tests"]
 markers = [
   "genesis: opt-in real Genesis integration",
   "native_gui: opt-in native Studio and simulation viewer",
+  "studio: non-native contracts requiring the private Genesis Studio API dependency",
 ]

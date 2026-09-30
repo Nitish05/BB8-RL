@@ -5,40 +5,79 @@ on:
 permissions:
   contents: read
 jobs:
-  control-contracts:
+  public-dependency-contracts:
     runs-on: ubuntu-latest
+    env:
+      PYTHONPATH: src
+      PYTHONDONTWRITEBYTECODE: '1'
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Install pure-test dependencies
-        run: python -m pip install 'numpy>=1.26,<3' 'scipy>=1.13,<2' 'opencv-python-headless>=4.10,<6' 'Pillow>=11,<13' 'pytest>=8.3,<9' 'ruff>=0.16,<1'
+      - name: Install CPU model-contract dependency
+        run: python -m pip install --index-url https://download.pytorch.org/whl/cpu 'torch>=2.7,<3'
+      - name: Install public test dependencies
+        run: python -m pip install 'numpy>=1.26,<3' 'scipy>=1.13,<2' 'opencv-python-headless>=4.10,<6' 'Pillow>=11,<13' 'pydantic>=2.10,<3' 'PyYAML>=6,<7' 'pytest>=8.3,<9' 'ruff>=0.16,<1'
       - name: Lint project
         run: ruff check src tests scripts
-      - name: Test control and application contracts
-        env:
-          PYTHONPATH: src
-        run: >-
-          pytest -q tests/test_interactive.py tests/test_demo_assets.py
-          tests/test_control_profiles.py tests/test_control_calibration.py
-          tests/test_agency.py tests/test_agency_review.py tests/test_agency_runtime.py
-          tests/test_agency_coverage.py tests/test_agency_navigation_audit.py tests/test_semantic_proposals.py
-          tests/test_purpose.py tests/test_purpose_runtime.py tests/test_purpose_review.py
-          tests/test_interaction_environment.py
-          tests/test_control_benchmark_summary.py
-          tests/test_scan_free_space.py tests/test_grounded_column_memory.py
-          tests/test_map_improvement_audit.py
-          tests/test_extended_scan_memory.py tests/test_scan_revision.py
-          tests/test_dense_scan_memory.py
-          tests/test_interactive_runtime.py tests/test_occluded_control.py
-          tests/test_localization_recovery.py tests/test_braking_prediction.py
-          tests/test_localization_audit.py tests/test_localization_loss_replay.py
-          tests/test_camera.py tests/test_camera_rig.py tests/test_camera_runtime.py
-          -k 'not world_rejects_invalid_rig_before_loading_scene'
+      - name: Discover and test public-dependency non-native contracts
+        run: python -m pytest -q -p no:cacheprovider --strict-markers --without-studio -m 'not genesis and not native_gui'
+      - name: Verify auditor discovery and negative controls
+        run: python scripts/check-ci-contracts.py --without-studio
+      - name: Record coverage scope
+        if: always()
+        run: |
+          echo '### Public-dependency contracts' >> "$GITHUB_STEP_SUMMARY"
+          echo 'All test modules are discovered except the explicit private Studio and opt-in native groups in tests/conftest.py. Independent audit and recursive asset validators are mandatory. This job alone is not the complete non-native gate.' >> "$GITHUB_STEP_SUMMARY"
       - name: Check frontend syntax
         run: |
           node --check src/bb8_rl/web/app.js
           node tests/test_web_coordinates.js
           node tests/test_web_localization.js
           node tests/test_web_agency.js
+  complete-non-native-contracts:
+    runs-on: ubuntu-latest
+    env:
+      PYTHONPATH: src
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check private dependency access
+        id: studio-access
+        env:
+          STUDIO_READ_TOKEN: ${{ secrets.GENESIS_STUDIO_READ_TOKEN }}
+        run: |
+          if [[ -n "$STUDIO_READ_TOKEN" ]]; then
+            echo 'available=true' >> "$GITHUB_OUTPUT"
+          else
+            echo 'available=false' >> "$GITHUB_OUTPUT"
+            echo '::warning::Complete non-native contracts NOT RUN: GENESIS_STUDIO_READ_TOKEN is absent. Public-dependency checks still run.'
+            echo '### Complete non-native gate: NOT RUN' >> "$GITHUB_STEP_SUMMARY"
+            echo 'Genesis-Studio is private. Configure GENESIS_STUDIO_READ_TOKEN with contents:read access to Nitish05/Genesis-Studio. Until then, six Studio-dependent modules, four camera world-validation cases and one generated-room fixture case are unverified in hosted CI; see tests/conftest.py. No native simulation is part of either job.' >> "$GITHUB_STEP_SUMMARY"
+          fi
+      - uses: actions/checkout@v4
+        if: steps.studio-access.outputs.available == 'true'
+        with:
+          repository: Nitish05/Genesis-Studio
+          ref: cd20c8c685f2b51263814fd0a6296bfd849bdce6
+          token: ${{ secrets.GENESIS_STUDIO_READ_TOKEN }}
+          path: .ci/genesis-studio
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        if: steps.studio-access.outputs.available == 'true'
+        with:
+          python-version: '3.12'
+      - name: Install full non-native dependencies
+        if: steps.studio-access.outputs.available == 'true'
+        run: |
+          python -m pip install --index-url https://download.pytorch.org/whl/cpu 'torch>=2.7,<3'
+          python -m pip install -e .ci/genesis-studio -e '.[dev,training]' 'scipy>=1.13,<2' 'opencv-python-headless>=4.10,<6' 'Pillow>=11,<13'
+      - name: Discover and run complete non-native contracts
+        if: steps.studio-access.outputs.available == 'true'
+        run: python -m pytest -q -p no:cacheprovider --strict-markers -m 'not genesis and not native_gui'
+      - name: Record complete gate success
+        if: success() && steps.studio-access.outputs.available == 'true'
+        run: |
+          echo '### Complete non-native gate: PASS' >> "$GITHUB_STEP_SUMMARY"
+          echo 'All discovered non-native contracts passed against Genesis Studio cd20c8c685f2b51263814fd0a6296bfd849bdce6. Native Genesis/viewer tests remain explicit opt-in local gates.' >> "$GITHUB_STEP_SUMMARY"

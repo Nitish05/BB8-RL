@@ -1,0 +1,918 @@
+{
+  "schema": "bb8.navigation-visibility-evaluation.v1",
+  "frozen_at_utc": "2026-09-26T19:08:58.202705+00:00",
+  "freeze_status": "specification_frozen_before_visibility_planner_or_validity_guard_tuning",
+  "evidence_domain": "Synthetic native RGB evaluation; no physical or real-time reliability claim.",
+  "baseline_assets": {
+    "bundle.json": "fb7227dd326ec2968ca9110326a6d642d5548db7e9f78bd3f8af09ca6a8419cb",
+    "scene/room.genesis.json": "73421fdfe351a2092fb0a502325157ebc692b15b1ea75aa09063c11bdc66e65a",
+    "memory/manifest.json": "fec3689439eabef3ba405046d57402fc4732cfc0d84cc24bcfa25f813304f83c",
+    "memory/room-memory.json": "db176e00eb4edfc3f0ff9e327e75cb4a78d75b0025ff2fdd40c7cba95d528ea2",
+    "policy.zip": "97b0f47802515356262a453fb1894c6146ba9f8c66ada958daac3c8b5fe98b93",
+    "vision.pt": "483065dada5480f7ef990f526cec5f8a45c16438fb7931bcd1058d44ccd06ca8"
+  },
+  "control_profile": "reserve-3cm",
+  "variants": {
+    "clearance_only": {
+      "visibility_planning": false,
+      "scene_validity": false
+    },
+    "visibility_and_validity": {
+      "visibility_planning": true,
+      "scene_validity": true
+    }
+  },
+  "camera_mode_ids": {
+    "1": [
+      "A"
+    ],
+    "2": [
+      "A",
+      "B"
+    ],
+    "3": [
+      "A",
+      "B",
+      "C"
+    ]
+  },
+  "layouts": {
+    "north_gate": {
+      "seed": 926101,
+      "start": [
+        -0.15,
+        0.25
+      ],
+      "arrival_goal": [
+        0.8,
+        1.3
+      ],
+      "occupied_goal": [
+        0.3,
+        1.1
+      ],
+      "geometry_rule": "Keep baseline room boundary and robot primitive geometry. Remove every room_obstacle_* object, replacing them with exactly the listed fixed boxes. Do not reuse the baseline scan memory.",
+      "obstacles": [
+        {
+          "name": "room_obstacle_0",
+          "format": "box",
+          "fixed": true,
+          "position": [
+            -0.85,
+            0.55,
+            0.16
+          ],
+          "size": [
+            0.32,
+            0.4,
+            0.32
+          ],
+          "euler": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "name": "room_obstacle_1",
+          "format": "box",
+          "fixed": true,
+          "position": [
+            0.3,
+            1.1,
+            0.175
+          ],
+          "size": [
+            0.38,
+            0.4,
+            0.35
+          ],
+          "euler": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "name": "room_obstacle_2",
+          "format": "box",
+          "fixed": true,
+          "position": [
+            0.95,
+            -0.55,
+            0.225
+          ],
+          "size": [
+            0.4,
+            0.4,
+            0.45
+          ],
+          "euler": [
+            0,
+            0,
+            0
+          ]
+        }
+      ]
+    },
+    "west_gate": {
+      "seed": 926102,
+      "start": [
+        0.15,
+        0.1
+      ],
+      "arrival_goal": [
+        -0.8,
+        1.3
+      ],
+      "occupied_goal": [
+        -0.3,
+        0.9
+      ],
+      "geometry_rule": "Keep baseline room boundary and robot primitive geometry. Remove every room_obstacle_* object, replacing them with exactly the listed fixed boxes. Do not reuse the baseline scan memory.",
+      "obstacles": [
+        {
+          "name": "room_obstacle_0",
+          "format": "box",
+          "fixed": true,
+          "position": [
+            0.85,
+            0.65,
+            0.2
+          ],
+          "size": [
+            0.36,
+            0.42,
+            0.4
+          ],
+          "euler": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "name": "room_obstacle_1",
+          "format": "box",
+          "fixed": true,
+          "position": [
+            -0.3,
+            0.9,
+            0.18
+          ],
+          "size": [
+            0.4,
+            0.36,
+            0.36
+          ],
+          "euler": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "name": "room_obstacle_2",
+          "format": "box",
+          "fixed": true,
+          "position": [
+            -1.1,
+            -0.55,
+            0.25
+          ],
+          "size": [
+            0.32,
+            0.48,
+            0.5
+          ],
+          "euler": [
+            0,
+            0,
+            0
+          ]
+        }
+      ]
+    }
+  },
+  "camera_sets": {
+    "oblique": {
+      "A": {
+        "render_position": [
+          4.0,
+          -2.8,
+          3.3
+        ],
+        "render_lookat": [
+          0,
+          0,
+          0.1
+        ],
+        "resolution": [
+          1280,
+          960
+        ],
+        "vertical_fov_degrees": 58.0
+      },
+      "B": {
+        "render_position": [
+          -3.6,
+          -3.1,
+          3.5
+        ],
+        "render_lookat": [
+          0,
+          0,
+          0.1
+        ],
+        "resolution": [
+          1280,
+          960
+        ],
+        "vertical_fov_degrees": 58.0
+      },
+      "C": {
+        "render_position": [
+          0.0,
+          4.6,
+          3.4
+        ],
+        "render_lookat": [
+          0,
+          0,
+          0.1
+        ],
+        "resolution": [
+          1280,
+          960
+        ],
+        "vertical_fov_degrees": 58.0
+      }
+    },
+    "reverse": {
+      "A": {
+        "render_position": [
+          3.2,
+          -4.1,
+          3.0
+        ],
+        "render_lookat": [
+          0,
+          0,
+          0.1
+        ],
+        "resolution": [
+          1280,
+          960
+        ],
+        "vertical_fov_degrees": 58.0
+      },
+      "B": {
+        "render_position": [
+          -4.2,
+          1.8,
+          3.2
+        ],
+        "render_lookat": [
+          0,
+          0,
+          0.1
+        ],
+        "resolution": [
+          1280,
+          960
+        ],
+        "vertical_fov_degrees": 58.0
+      },
+      "C": {
+        "render_position": [
+          1.6,
+          4.4,
+          3.6
+        ],
+        "render_lookat": [
+          0,
+          0,
+          0.1
+        ],
+        "resolution": [
+          1280,
+          960
+        ],
+        "vertical_fov_degrees": 58.0
+      }
+    }
+  },
+  "appearances": {
+    "cool": {
+      "bb8_body": [
+        0.22,
+        0.24,
+        0.28,
+        1.0
+      ],
+      "bb8_head": [
+        0.68,
+        0.72,
+        0.76,
+        1.0
+      ],
+      "room_obstacle_*": [
+        0.34,
+        0.43,
+        0.51,
+        1.0
+      ]
+    },
+    "warm": {
+      "bb8_body": [
+        0.27,
+        0.22,
+        0.19,
+        1.0
+      ],
+      "bb8_head": [
+        0.78,
+        0.7,
+        0.61,
+        1.0
+      ],
+      "room_obstacle_*": [
+        0.52,
+        0.38,
+        0.29,
+        1.0
+      ]
+    }
+  },
+  "families": {
+    "north_oblique_cool": {
+      "layout": "north_gate",
+      "camera_set": "oblique",
+      "appearance": "cool",
+      "asset_status_at_freeze": "unprovisioned_requires_new_rgb_scan_and_estimated_registration"
+    },
+    "north_reverse_warm": {
+      "layout": "north_gate",
+      "camera_set": "reverse",
+      "appearance": "warm",
+      "asset_status_at_freeze": "unprovisioned_requires_new_rgb_scan_and_estimated_registration"
+    },
+    "west_oblique_warm": {
+      "layout": "west_gate",
+      "camera_set": "oblique",
+      "appearance": "warm",
+      "asset_status_at_freeze": "unprovisioned_requires_new_rgb_scan_and_estimated_registration"
+    },
+    "west_reverse_cool": {
+      "layout": "west_gate",
+      "camera_set": "reverse",
+      "appearance": "cool",
+      "asset_status_at_freeze": "unprovisioned_requires_new_rgb_scan_and_estimated_registration"
+    }
+  },
+  "cases": {
+    "north_oblique_cool-m1-arrival": {
+      "family": "north_oblique_cool",
+      "mode": 1,
+      "start": [
+        -0.15,
+        0.25
+      ],
+      "goal": [
+        0.8,
+        1.3
+      ],
+      "intent": "arrival",
+      "seed": 926102,
+      "layout_seed": 926101,
+      "duration_s": 30.0,
+      "minimum_end_s": 2.0,
+      "expected": "attempt_arrival_with_unchanged_bounds"
+    },
+    "north_oblique_cool-m1-occupied_rejection": {
+      "family": "north_oblique_cool",
+      "mode": 1,
+      "start": [
+        -0.15,
+        0.25
+      ],
+      "goal": [
+        0.3,
+        1.1
+      ],
+      "intent": "occupied_rejection",
+      "seed": 926102,
+      "layout_seed": 926101,
+      "duration_s": 5.0,
+      "minimum_end_s": 2.0,
+      "expected": "reject_without_motion"
+    },
+    "north_oblique_cool-m2-arrival": {
+      "family": "north_oblique_cool",
+      "mode": 2,
+      "start": [
+        -0.15,
+        0.25
+      ],
+      "goal": [
+        0.8,
+        1.3
+      ],
+      "intent": "arrival",
+      "seed": 926103,
+      "layout_seed": 926101,
+      "duration_s": 30.0,
+      "minimum_end_s": 2.0,
+      "expected": "attempt_arrival_with_unchanged_bounds"
+    },
+    "north_oblique_cool-m2-occupied_rejection": {
+      "family": "north_oblique_cool",
+      "mode": 2,
+      "start": [
+        -0.15,
+        0.25
+      ],
+      "goal": [
+        0.3,
+        1.1
+      ],
+      "intent": "occupied_rejection",
+      "seed": 926103,
+      "layout_seed": 926101,
+      "duration_s": 5.0,
+      "minimum_end_s": 2.0,
+      "expected": "reject_without_motion"
+    },
+    "north_oblique_cool-m3-arrival": {
+      "family": "north_oblique_cool",
+      "mode": 3,
+      "start": [
+        -0.15,
+        0.25
+      ],
+      "goal": [
+        0.8,
+        1.3
+      ],
+      "intent": "arrival",
+      "seed": 926104,
+      "layout_seed": 926101,
+      "duration_s": 30.0,
+      "minimum_end_s": 2.0,
+      "expected": "attempt_arrival_with_unchanged_bounds"
+    },
+    "north_oblique_cool-m3-occupied_rejection": {
+      "family": "north_oblique_cool",
+      "mode": 3,
+      "start": [
+        -0.15,
+        0.25
+      ],
+      "goal": [
+        0.3,
+        1.1
+      ],
+      "intent": "occupied_rejection",
+      "seed": 926104,
+      "layout_seed": 926101,
+      "duration_s": 5.0,
+      "minimum_end_s": 2.0,
+      "expected": "reject_without_motion"
+    },
+    "north_reverse_warm-m1-arrival": {
+      "family": "north_reverse_warm",
+      "mode": 1,
+      "start": [
+        -0.15,
+        0.25
+      ],
+      "goal": [
+        0.8,
+        1.3
+      ],
+      "intent": "arrival",
+      "seed": 926102,
+      "layout_seed": 926101,
+      "duration_s": 30.0,
+      "minimum_end_s": 2.0,
+      "expected": "attempt_arrival_with_unchanged_bounds"
+    },
+    "north_reverse_warm-m1-occupied_rejection": {
+      "family": "north_reverse_warm",
+      "mode": 1,
+      "start": [
+        -0.15,
+        0.25
+      ],
+      "goal": [
+        0.3,
+        1.1
+      ],
+      "intent": "occupied_rejection",
+      "seed": 926102,
+      "layout_seed": 926101,
+      "duration_s": 5.0,
+      "minimum_end_s": 2.0,
+      "expected": "reject_without_motion"
+    },
+    "north_reverse_warm-m2-arrival": {
+      "family": "north_reverse_warm",
+      "mode": 2,
+      "start": [
+        -0.15,
+        0.25
+      ],
+      "goal": [
+        0.8,
+        1.3
+      ],
+      "intent": "arrival",
+      "seed": 926103,
+      "layout_seed": 926101,
+      "duration_s": 30.0,
+      "minimum_end_s": 2.0,
+      "expected": "attempt_arrival_with_unchanged_bounds"
+    },
+    "north_reverse_warm-m2-occupied_rejection": {
+      "family": "north_reverse_warm",
+      "mode": 2,
+      "start": [
+        -0.15,
+        0.25
+      ],
+      "goal": [
+        0.3,
+        1.1
+      ],
+      "intent": "occupied_rejection",
+      "seed": 926103,
+      "layout_seed": 926101,
+      "duration_s": 5.0,
+      "minimum_end_s": 2.0,
+      "expected": "reject_without_motion"
+    },
+    "north_reverse_warm-m3-arrival": {
+      "family": "north_reverse_warm",
+      "mode": 3,
+      "start": [
+        -0.15,
+        0.25
+      ],
+      "goal": [
+        0.8,
+        1.3
+      ],
+      "intent": "arrival",
+      "seed": 926104,
+      "layout_seed": 926101,
+      "duration_s": 30.0,
+      "minimum_end_s": 2.0,
+      "expected": "attempt_arrival_with_unchanged_bounds"
+    },
+    "north_reverse_warm-m3-occupied_rejection": {
+      "family": "north_reverse_warm",
+      "mode": 3,
+      "start": [
+        -0.15,
+        0.25
+      ],
+      "goal": [
+        0.3,
+        1.1
+      ],
+      "intent": "occupied_rejection",
+      "seed": 926104,
+      "layout_seed": 926101,
+      "duration_s": 5.0,
+      "minimum_end_s": 2.0,
+      "expected": "reject_without_motion"
+    },
+    "west_oblique_warm-m1-arrival": {
+      "family": "west_oblique_warm",
+      "mode": 1,
+      "start": [
+        0.15,
+        0.1
+      ],
+      "goal": [
+        -0.8,
+        1.3
+      ],
+      "intent": "arrival",
+      "seed": 926103,
+      "layout_seed": 926102,
+      "duration_s": 30.0,
+      "minimum_end_s": 2.0,
+      "expected": "attempt_arrival_with_unchanged_bounds"
+    },
+    "west_oblique_warm-m1-occupied_rejection": {
+      "family": "west_oblique_warm",
+      "mode": 1,
+      "start": [
+        0.15,
+        0.1
+      ],
+      "goal": [
+        -0.3,
+        0.9
+      ],
+      "intent": "occupied_rejection",
+      "seed": 926103,
+      "layout_seed": 926102,
+      "duration_s": 5.0,
+      "minimum_end_s": 2.0,
+      "expected": "reject_without_motion"
+    },
+    "west_oblique_warm-m2-arrival": {
+      "family": "west_oblique_warm",
+      "mode": 2,
+      "start": [
+        0.15,
+        0.1
+      ],
+      "goal": [
+        -0.8,
+        1.3
+      ],
+      "intent": "arrival",
+      "seed": 926104,
+      "layout_seed": 926102,
+      "duration_s": 30.0,
+      "minimum_end_s": 2.0,
+      "expected": "attempt_arrival_with_unchanged_bounds"
+    },
+    "west_oblique_warm-m2-occupied_rejection": {
+      "family": "west_oblique_warm",
+      "mode": 2,
+      "start": [
+        0.15,
+        0.1
+      ],
+      "goal": [
+        -0.3,
+        0.9
+      ],
+      "intent": "occupied_rejection",
+      "seed": 926104,
+      "layout_seed": 926102,
+      "duration_s": 5.0,
+      "minimum_end_s": 2.0,
+      "expected": "reject_without_motion"
+    },
+    "west_oblique_warm-m3-arrival": {
+      "family": "west_oblique_warm",
+      "mode": 3,
+      "start": [
+        0.15,
+        0.1
+      ],
+      "goal": [
+        -0.8,
+        1.3
+      ],
+      "intent": "arrival",
+      "seed": 926105,
+      "layout_seed": 926102,
+      "duration_s": 30.0,
+      "minimum_end_s": 2.0,
+      "expected": "attempt_arrival_with_unchanged_bounds"
+    },
+    "west_oblique_warm-m3-occupied_rejection": {
+      "family": "west_oblique_warm",
+      "mode": 3,
+      "start": [
+        0.15,
+        0.1
+      ],
+      "goal": [
+        -0.3,
+        0.9
+      ],
+      "intent": "occupied_rejection",
+      "seed": 926105,
+      "layout_seed": 926102,
+      "duration_s": 5.0,
+      "minimum_end_s": 2.0,
+      "expected": "reject_without_motion"
+    },
+    "west_reverse_cool-m1-arrival": {
+      "family": "west_reverse_cool",
+      "mode": 1,
+      "start": [
+        0.15,
+        0.1
+      ],
+      "goal": [
+        -0.8,
+        1.3
+      ],
+      "intent": "arrival",
+      "seed": 926103,
+      "layout_seed": 926102,
+      "duration_s": 30.0,
+      "minimum_end_s": 2.0,
+      "expected": "attempt_arrival_with_unchanged_bounds"
+    },
+    "west_reverse_cool-m1-occupied_rejection": {
+      "family": "west_reverse_cool",
+      "mode": 1,
+      "start": [
+        0.15,
+        0.1
+      ],
+      "goal": [
+        -0.3,
+        0.9
+      ],
+      "intent": "occupied_rejection",
+      "seed": 926103,
+      "layout_seed": 926102,
+      "duration_s": 5.0,
+      "minimum_end_s": 2.0,
+      "expected": "reject_without_motion"
+    },
+    "west_reverse_cool-m2-arrival": {
+      "family": "west_reverse_cool",
+      "mode": 2,
+      "start": [
+        0.15,
+        0.1
+      ],
+      "goal": [
+        -0.8,
+        1.3
+      ],
+      "intent": "arrival",
+      "seed": 926104,
+      "layout_seed": 926102,
+      "duration_s": 30.0,
+      "minimum_end_s": 2.0,
+      "expected": "attempt_arrival_with_unchanged_bounds"
+    },
+    "west_reverse_cool-m2-occupied_rejection": {
+      "family": "west_reverse_cool",
+      "mode": 2,
+      "start": [
+        0.15,
+        0.1
+      ],
+      "goal": [
+        -0.3,
+        0.9
+      ],
+      "intent": "occupied_rejection",
+      "seed": 926104,
+      "layout_seed": 926102,
+      "duration_s": 5.0,
+      "minimum_end_s": 2.0,
+      "expected": "reject_without_motion"
+    },
+    "west_reverse_cool-m3-arrival": {
+      "family": "west_reverse_cool",
+      "mode": 3,
+      "start": [
+        0.15,
+        0.1
+      ],
+      "goal": [
+        -0.8,
+        1.3
+      ],
+      "intent": "arrival",
+      "seed": 926105,
+      "layout_seed": 926102,
+      "duration_s": 30.0,
+      "minimum_end_s": 2.0,
+      "expected": "attempt_arrival_with_unchanged_bounds"
+    },
+    "west_reverse_cool-m3-occupied_rejection": {
+      "family": "west_reverse_cool",
+      "mode": 3,
+      "start": [
+        0.15,
+        0.1
+      ],
+      "goal": [
+        -0.3,
+        0.9
+      ],
+      "intent": "occupied_rejection",
+      "seed": 926105,
+      "layout_seed": 926102,
+      "duration_s": 5.0,
+      "minimum_end_s": 2.0,
+      "expected": "reject_without_motion"
+    }
+  },
+  "denominators": {
+    "heldout_requests_per_variant": 24,
+    "heldout_requests_all_variants": 48,
+    "per_mode_per_variant": {
+      "1": 8,
+      "2": 8,
+      "3": 8
+    },
+    "arrival_intended_per_variant": 12,
+    "occupied_rejection_intended_per_variant": 12
+  },
+  "provisioning_requirements": [
+    "A separately checksummed complete asset bundle for each family, with native scene geometry and render camera poses matching this specification.",
+    "Collect RGB scans and reconstruct/certify new occupied/free memory for each new scene; the old development map is not admissible.",
+    "Estimate calibration from image evidence; exact simulator camera transforms and obstacle truth may be scored after decisions but never enter the controller or validity guard.",
+    "Keep policy and vision model hashes fixed to baseline; no training or parameter selection using held-out images, requests or outcomes.",
+    "Provisioning must record map/calibration source hashes, family geometry/appearance match and protocol SHA before any held-out policy run. If not provisioned, retain every request as unexecuted with denominator inclusion.",
+    "Do not move targets, weaken clearance/uncertainty/Stop bounds, treat unknown cells as free, discard failing runs, or tune on held-out outcomes."
+  ],
+  "reporting": {
+    "retain_all_requests": true,
+    "metrics": [
+      "requested",
+      "executed",
+      "unexecuted",
+      "worker_errors",
+      "contacts",
+      "arrivals",
+      "localization_loss_episodes",
+      "rejected_requests",
+      "unexpected_rejections",
+      "manual_interventions",
+      "scene_invalidations",
+      "zero_motion_after_latched_invalidation"
+    ],
+    "denominator_rule": "Report each metric numerator with all frozen requests and with executed requests separately; an unexecuted request is never a success. Preserve every attempt; reruns are separate attempts, not replacements.",
+    "heldout_use": "Report once after candidate design/parameters are fixed; failed outcomes can motivate a separately frozen next version, never retuning this version."
+  },
+  "development": {
+    "excluded_from_heldout": true,
+    "asset_family": "existing_development_bundle",
+    "start": [
+      0.03254007833063689,
+      0.9713217108374255
+    ],
+    "goals": {
+      "short_arrival": [
+        0.24745992166936648,
+        1.3086782891625797
+      ],
+      "difficult_arrival": [
+        0.5,
+        1.5
+      ],
+      "occupied_rejection": [
+        0.4780674841168932,
+        0.5949795980163718
+      ]
+    },
+    "modes": [
+      1,
+      2,
+      3
+    ],
+    "difficult_history": "Original one-camera purpose approach lost localization at 3.30s; direct-goal continuation lost at 3.20s and made 0/1 arrivals, with zero contacts. Retain both; no fixture relocation counts as recovery.",
+    "camera_change": {
+      "at_time": 1.0,
+      "camera_id": "A",
+      "position": [
+        3.0,
+        -3.8,
+        3.2
+      ],
+      "lookat": [
+        0,
+        0,
+        0.1
+      ],
+      "scope": "Evaluation-only render camera move; estimated calibration remains unchanged. The validity guard receives RGB only, never this label or transform."
+    },
+    "occupied_object": "room_obstacle_5"
+  },
+  "control_profile_record": {
+    "name": "reserve-3cm",
+    "margin_m": 0.03,
+    "speed_m_s": 0.15,
+    "lookahead_s": 0.0,
+    "planning_reserve_m": 0.04,
+    "parameters": {
+      "max_occlusion_seconds": 1.0,
+      "max_frame_age": 0.1,
+      "max_interval": 0.15,
+      "speed_cap": 0.15,
+      "max_position_radius": 0.08,
+      "measurement_sigma_multiplier": 3.0,
+      "measurement_radius_floor": 0.005,
+      "innovation_slack": 0.015,
+      "max_reacquisition_distance": 0.12,
+      "robot_radius": 0.037,
+      "clearance_margin": 0.03,
+      "command_horizon": 0.05,
+      "minimum_visual_samples": 3,
+      "max_initial_velocity_radius": 0.05,
+      "arrival_radius": 0.1,
+      "arrival_speed": 0.03,
+      "visible_dwell": 0.5,
+      "proactive_horizon_seconds": 0.0,
+      "proactive_speed_samples": 10
+    }
+  },
+  "pre_execution_correction": "Initial draft named a nonexistent control profile; corrected by static source inspection to existing default reserve-3cm, and froze the existing occupied goal before any native execution or parameter tuning. Initial draft bytes/hash retained in evaluation/frozen-protocol.json and freeze.json."
+}

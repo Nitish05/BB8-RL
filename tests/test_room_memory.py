@@ -2,6 +2,7 @@
 
 import json
 
+import numpy as np
 import pytest
 
 from bb8_rl.mapping import (
@@ -164,3 +165,69 @@ def test_object_and_free_volume_order_does_not_change_occupancy():
     assert restored.objects == memory.objects
     with pytest.raises(ValueError, match="already exists"):
         restored.remember_object(obj)
+
+
+def decimal_room(ceiling=0.12):
+    return RoomMemory(
+        Bounds3D((0, 0, 0), (0.04, 0.04, ceiling)),
+        0.02,
+        scene_version="decimal-grid",
+        calibration_version="analytic",
+    )
+
+
+def test_decimal_grid_fills_true_top_voxel_without_rounding_past_ceiling():
+    memory = decimal_room()
+    memory.observe_volume(memory.bounds, SpaceState.FREE, source())
+    assert memory._cells.shape == (2, 2, 6)
+    assert np.all(memory._cells == memory._FREE)
+    assert (
+        memory.query(Bounds3D((0.001, 0.001, 0.101), (0.019, 0.019, 0.12)))
+        is SpaceState.FREE
+    )
+    restored = RoomMemory.from_dict(memory.to_dict())
+    np.testing.assert_array_equal(restored._cells, memory._cells)
+
+
+@pytest.mark.parametrize("short_bound", ["room", "evidence"])
+def test_one_ulp_short_ceiling_or_evidence_never_certifies_partial_voxel(short_bound):
+    short = np.nextafter(0.12, -np.inf)
+    memory = decimal_room(short if short_bound == "room" else 0.12)
+    observation = Bounds3D(
+        (0, 0, 0), (0.04, 0.04, short if short_bound == "evidence" else 0.12)
+    )
+    memory.observe_volume(observation, SpaceState.FREE, source())
+    assert np.all(memory._cells[:, :, :5] == memory._FREE)
+    assert np.all(memory._cells[:, :, 5] == memory._UNKNOWN)
+    assert (
+        memory.query(Bounds3D((0.001, 0.001, 0.101), (0.019, 0.019, short)))
+        is SpaceState.UNKNOWN
+    )
+
+
+def test_adjacent_voxels_share_exact_face_without_overlap_or_gap():
+    memory = decimal_room(0.14)
+    edge = 6 * memory.resolution_m
+    touching = Bounds3D((0.001, 0.001, edge), (0.019, 0.019, 0.13))
+    assert memory._axes(touching, fully_contained=False)[2].tolist() == [5, 6]
+    above = Bounds3D((0.001, 0.001, np.nextafter(edge, np.inf)), (0.019, 0.019, 0.13))
+    assert memory._axes(above, fully_contained=False)[2].tolist() == [6]
+    below = Bounds3D((0.001, 0.001, 0.11), (0.019, 0.019, np.nextafter(edge, -np.inf)))
+    assert memory._axes(below, fully_contained=False)[2].tolist() == [5]
+
+
+def test_occupied_face_contact_blocks_both_canonical_neighbor_voxels():
+    memory = decimal_room(0.14)
+    memory.observe_volume(memory.bounds, SpaceState.FREE, source())
+    memory.observe_volume(
+        Bounds3D((0.001, 0.001, 0.12), (0.019, 0.019, 0.125)),
+        SpaceState.OCCUPIED,
+        source("touching-object"),
+    )
+    memory.observe_volume(memory.bounds, SpaceState.FREE, source("later-free"))
+    assert memory._cells[0, 0, 5] == memory._OCCUPIED
+    assert memory._cells[0, 0, 6] == memory._OCCUPIED
+    assert (
+        memory.query(Bounds3D((0.001, 0.001, 0.111), (0.019, 0.019, 0.119)))
+        is SpaceState.OCCUPIED
+    )

@@ -34,15 +34,99 @@ def _same_calibration(first, second):
     )
 
 
+def _pixel_coordinates(value):
+    if not isinstance(value, str) or value not in (
+        "genesis_viewport",
+        "opencv_integer_center",
+    ):
+        raise ValueError("Unknown pixel_coordinates convention")
+
+
+def _pinhole_intrinsics(intrinsics):
+    try:
+        if np.iscomplexobj(intrinsics):
+            raise ValueError("Complex intrinsics")
+        result = np.array(intrinsics, dtype=float, copy=True)
+    except (TypeError, ValueError) as error:
+        raise ValueError("Invalid pinhole intrinsics") from error
+    if (
+        result.shape != (3, 3)
+        or not np.isfinite(result).all()
+        or result[0, 0] <= 0
+        or result[1, 1] <= 0
+        or result[1, 0] != 0
+        or not np.array_equal(result[2], [0, 0, 1])
+    ):
+        raise ValueError("Invalid pinhole intrinsics")
+    return result
+
+
+def intrinsics_from_genesis(intrinsics, *, pixel_coordinates="genesis_viewport"):
+    """Copy native Genesis viewport K into the explicitly requested convention.
+
+    Genesis projects to viewport coordinates whose pixel centers are half
+    integers. Its vertically flipped RGB array has integer-indexed centers, so
+    the OpenCV export subtracts exactly 0.5 from both principal points. Apply
+    this boundary once, only to native Genesis K, never to estimated/loaded
+    OpenCV K. The legacy default copies every value unchanged. Callers retain
+    the convention in their versioned metadata; Calibration itself is unchanged.
+    """
+    _pixel_coordinates(pixel_coordinates)
+    result = _pinhole_intrinsics(intrinsics)
+    if pixel_coordinates == "opencv_integer_center":
+        result[:2, 2] -= 0.5
+    return result
+
+
+def scale_intrinsics(
+    intrinsics, scale_x, scale_y=None, *, pixel_coordinates="genesis_viewport"
+):
+    """Scale K without changing its declared pixel-coordinate convention.
+
+    The legacy path multiplies the first two rows. Integer-center images follow
+    the pixel-area affine ``u_new = scale * (u_old + 0.5) - 0.5`` on each axis,
+    including when downsampling. This does not convert between conventions.
+    """
+    _pixel_coordinates(pixel_coordinates)
+    result = _pinhole_intrinsics(intrinsics)
+    if scale_y is None:
+        scale_y = scale_x
+    for scale in (scale_x, scale_y):
+        if (
+            isinstance(scale, (bool, np.bool_))
+            or not isinstance(scale, (int, float, np.integer, np.floating))
+            or not np.isfinite(scale)
+            or scale <= 0
+        ):
+            raise ValueError("Scale factors must be finite positive scalars")
+    with np.errstate(over="ignore", invalid="ignore"):
+        result[0] *= scale_x
+        result[1] *= scale_y
+        if pixel_coordinates == "opencv_integer_center":
+            result[0, 2] += (scale_x - 1) / 2
+            result[1, 2] += (scale_y - 1) / 2
+    if not np.isfinite(result).all() or min(result[0, 0], result[1, 1]) <= 0:
+        raise ValueError("Scaled intrinsics are outside the finite positive range")
+    return result
+
+
 def calibration_from_live_camera(
-    camera, extent, *, head_height=0.083, provenance="synthetic_exact_live_transform"
+    camera,
+    extent,
+    *,
+    head_height=0.083,
+    provenance="synthetic_exact_live_transform",
+    pixel_coordinates="genesis_viewport",
 ):
     """Read a Genesis camera's current OpenGL camera-to-world transform.
 
     Genesis's cached ``extrinsics`` property can retain an earlier camera pose.
     Convert the live transform to OpenCV axes and invert it instead. This helper
     reads geometry only, renders nothing and makes no simulator/hardware import.
-    A caller must issue a new calibration version whenever a fixed rig changes.
+    ``pixel_coordinates`` explicitly selects native viewport coordinates (the
+    unchanged legacy default) or OpenCV integer pixel centers. A caller must
+    retain that convention and issue a new calibration version whenever the
+    rig or export convention changes.
     """
     camera_to_world = np.array(camera.transform, dtype=float, copy=True)
     if (
@@ -53,7 +137,7 @@ def calibration_from_live_camera(
         raise ValueError("Invalid live camera transform")
     camera_to_world[:3, 1:3] *= -1
     return Calibration(
-        np.array(camera.intrinsics, dtype=float, copy=True),
+        intrinsics_from_genesis(camera.intrinsics, pixel_coordinates=pixel_coordinates),
         np.linalg.inv(camera_to_world),
         tuple(camera.res),
         float(extent),

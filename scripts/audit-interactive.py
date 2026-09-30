@@ -268,6 +268,23 @@ def verify_images(directory, rows):
     }
 
 
+def verify_recording(rows, manifest):
+    """Detect missing audit tails that contiguous-row checks alone cannot see."""
+    if manifest.get("schema") != "bb8.interactive-run.v2":
+        return {}  # Historical manifests predate explicit complete-row accounting.
+    recording = manifest.get("recording", {})
+    return {
+        "recording:full_mode": recording.get("mode") == "audit"
+        and recording.get("complete_physics_rows") is True,
+        "recording:row_count": bool(rows)
+        and len(rows) == manifest.get("completed_steps") == recording.get("rows_seen"),
+        "recording:step_sequence": all(
+            row.get("step") == index for index, row in enumerate(rows)
+        ),
+        "recording:finalized": "finalization_error" not in recording,
+    }
+
+
 def verify_manifest(directory, manifest):
     checks = {
         "complete": manifest.get("status") == "complete",
@@ -275,11 +292,57 @@ def verify_manifest(directory, manifest):
         "segmentation_excluded_declaration": manifest.get("segmentation_to_controller")
         is False,
         "source_unchanged": manifest.get("source_files_unchanged") is True,
+        # Legacy manifests predate recording modes and always wrote full rows.
+        # An explicitly sampled session can never pass by reusing an audit file.
+        "complete_recording": manifest.get("recording", {}).get(
+            "complete_physics_rows", True
+        )
+        is True
+        and manifest.get("config", {}).get("recording_mode", "audit") == "audit",
     }
     for name, expected in manifest.get("source_sha256", {}).items():
         snapshot = _inside(directory, "source/" + Path(name).name)
         checks[f"source:{name}"] = snapshot.is_file() and digest(snapshot) == expected
     checks["source_snapshots_present"] = bool(manifest.get("source_sha256"))
+    identity = manifest.get("run_identity")
+    if manifest.get("schema") == "bb8.interactive-run.v2":
+        checks["identity:required"] = isinstance(identity, dict) and bool(identity)
+    if identity is not None:
+        checks["identity:inventory"] = (
+            identity.get("schema") == "bb8.run-identity.v1"
+            and bool(identity.get("source_files"))
+            and set(identity.get("configuration", {})) == {"task", "world", "project"}
+            and bool(identity.get("runtime", {}).get("packages"))
+        )
+        payload = {
+            key: value for key, value in identity.items() if key != "identity_sha256"
+        }
+        checks["identity:manifest_hash"] = hashlib.sha256(
+            json.dumps(payload, sort_keys=True, separators=(",", ":")).encode()
+        ).hexdigest() == identity.get("identity_sha256")
+        checks["identity:unchanged"] = (
+            manifest.get("run_identity_verification", {}).get("unchanged") is True
+        )
+        for category in ("source_files", "configuration"):
+            for name, record in identity.get(category, {}).items():
+                snapshot = _inside(directory, "identity/" + record["snapshot"])
+                checks[f"identity:{category}:{name}"] = (
+                    snapshot.is_file() and digest(snapshot) == record["sha256"]
+                )
+        for name, record in identity.get("git", {}).items():
+            if record.get("diff_snapshot"):
+                snapshot = _inside(directory, "identity/" + record["diff_snapshot"])
+                checks[f"identity:git:{name}"] = (
+                    snapshot.is_file()
+                    and digest(snapshot) == record["dirty_diff_sha256"]
+                )
+        loaded = manifest.get("loaded_setup", {})
+        loaded_path = _inside(
+            directory, loaded.get("path", "missing-loaded-setup.json")
+        )
+        checks["identity:loaded_setup"] = loaded_path.is_file() and digest(
+            loaded_path
+        ) == loaded.get("sha256")
     for name, item in manifest.get("assets", {}).items():
         path = Path(item["path"])
         if not path.is_absolute():
@@ -405,6 +468,7 @@ def main(args):
         rows, required=True
     )
     result["provenance"] = verify_manifest(directory, manifest)
+    result["provenance"].update(verify_recording(rows, manifest))
     result["images"] = verify_images(directory, rows)
     result["images"]["required"] = manifest.get("config", {}).get("save_frames") is True
     commands_path = directory / "commands.jsonl"

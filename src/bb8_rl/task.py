@@ -6,7 +6,12 @@ from typing import Literal
 import yaml
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
-SPLITS = {"train": (0, 10000), "validation": (10000, 20000), "test": (20000, 30000)}
+SPLITS = {
+    "train": (0, 10000),
+    "validation": (10000, 20000),
+    "test": (20000, 30000),
+    "heldout": (900000, 1000000),
+}
 
 
 class TaskConfig(BaseModel):

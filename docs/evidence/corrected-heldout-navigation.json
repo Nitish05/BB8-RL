@@ -1,0 +1,2332 @@
+{
+  "schema": "bb8.heldout-corrected-independent-aggregation.v1",
+  "scope": "Corrected render-orientation reproduction of original frozen requests, not a fresh independent held-out set. All native attempt summaries are counted, including worker/audit failures. Saved physics truth is read only for all-frame position-error diagnostics and never enters reconstruction or control. A safety audit pass alone does not imply navigation success.",
+  "batch": "work/continuation-20260926-visual-heldout/native-heldout-up-fixed-v1",
+  "protocol_sha256": "82ccfbe9e65c8a65b1ef454b69317087994a4b6257a56cf4a07af9f6ddd875fe",
+  "counts": {
+    "requested": 48,
+    "executed": 24,
+    "unexecuted": 24,
+    "passed_requests": 10,
+    "contacts": 0,
+    "arrivals": 0,
+    "rejected_requests": 20,
+    "unexpected_rejections": 10,
+    "localization_loss_episodes": 0,
+    "manual_interventions": 0,
+    "scene_invalidations": 0,
+    "worker_errors": 0,
+    "audit_errors": 0,
+    "unscored_requests": 0,
+    "case_attempts_with_no_goal_command": 4
+  },
+  "command_denominators": {
+    "all_goal_commands": 20,
+    "initial_goal_commands": 20,
+    "initial_rejected_receipts": 20,
+    "initial_accepted_receipts": 0,
+    "later_goal_commands": 0
+  },
+  "checks": {
+    "heldout/north_oblique_cool-m1-arrival/clearance_only": {
+      "protocol_hash": true,
+      "one_initial_goal_at_frozen_xy": true,
+      "no_goal_resubmission": true,
+      "failed_evidence_not_counted_pass": true,
+      "canonical_summary_matches_audit": true,
+      "case_seed": true,
+      "layout_seed": true,
+      "start": true,
+      "family": true,
+      "mode": true,
+      "flags": true,
+      "heldout_split": true,
+      "report_inputs": true,
+      "independent_audit_unchanged": true,
+      "run_identity_unchanged": true,
+      "audit_provenance": true,
+      "clean_worker": true,
+      "minimum_window": true
+    },
+    "heldout/north_oblique_cool-m1-arrival/visibility_and_validity": {
+      "protocol_hash": true,
+      "one_initial_goal_at_frozen_xy": true,
+      "no_goal_resubmission": true,
+      "failed_evidence_not_counted_pass": true,
+      "canonical_summary_matches_audit": true,
+      "case_seed": true,
+      "layout_seed": true,
+      "start": true,
+      "family": true,
+      "mode": true,
+      "flags": true,
+      "heldout_split": true,
+      "report_inputs": true,
+      "independent_audit_unchanged": true,
+      "run_identity_unchanged": true,
+      "audit_provenance": true,
+      "clean_worker": true,
+      "minimum_window": true
+    },
+    "heldout/north_oblique_cool-m1-occupied_rejection/clearance_only": {
+      "protocol_hash": true,
+      "one_initial_goal_at_frozen_xy": true,
+      "no_goal_resubmission": true,
+      "failed_evidence_not_counted_pass": true,
+      "canonical_summary_matches_audit": true,
+      "case_seed": true,
+      "layout_seed": true,
+      "start": true,
+      "family": true,
+      "mode": true,
+      "flags": true,
+      "heldout_split": true,
+      "report_inputs": true,
+      "independent_audit_unchanged": true,
+      "run_identity_unchanged": true,
+      "audit_provenance": true,
+      "clean_worker": true,
+      "minimum_window": true
+    },
+    "heldout/north_oblique_cool-m1-occupied_rejection/visibility_and_validity": {
+      "protocol_hash": true,
+      "one_initial_goal_at_frozen_xy": true,
+      "no_goal_resubmission": true,
+      "failed_evidence_not_counted_pass": true,
+      "canonical_summary_matches_audit": true,
+      "case_seed": true,
+      "layout_seed": true,
+      "start": true,
+      "family": true,
+      "mode": true,
+      "flags": true,
+      "heldout_split": true,
+      "report_inputs": true,
+      "independent_audit_unchanged": true,
+      "run_identity_unchanged": true,
+      "audit_provenance": true,
+      "clean_worker": true,
+      "minimum_window": true
+    },
+    "heldout/north_oblique_cool-m2-arrival/clearance_only": {
+      "protocol_hash": true,
+      "one_initial_goal_at_frozen_xy": true,
+      "no_goal_resubmission": true,
+      "failed_evidence_not_counted_pass": true,
+      "canonical_summary_matches_audit": true,
+      "case_seed": true,
+      "layout_seed": true,
+      "start": true,
+      "family": true,
+      "mode": true,
+      "flags": true,
+      "heldout_split": true,
+      "report_inputs": true,
+      "independent_audit_unchanged": true,
+      "run_identity_unchanged": true,
+      "audit_provenance": true,
+      "clean_worker": true,
+      "minimum_window": true
+    },
+    "heldout/north_oblique_cool-m2-arrival/visibility_and_validity": {
+      "protocol_hash": true,
+      "one_initial_goal_at_frozen_xy": true,
+      "no_goal_resubmission": true,
+      "failed_evidence_not_counted_pass": true,
+      "canonical_summary_matches_audit": true,
+      "case_seed": true,
+      "layout_seed": true,
+      "start": true,
+      "family": true,
+      "mode": true,
+      "flags": true,
+      "heldout_split": true,
+      "report_inputs": true,
+      "independent_audit_unchanged": true,
+      "run_identity_unchanged": true,
+      "audit_provenance": true,
+      "clean_worker": true,
+      "minimum_window": true
+    },
+    "heldout/north_oblique_cool-m2-occupied_rejection/clearance_only": {
+      "protocol_hash": true,
+      "one_initial_goal_at_frozen_xy": true,
+      "no_goal_resubmission": true,
+      "failed_evidence_not_counted_pass": true,
+      "canonical_summary_matches_audit": true,
+      "case_seed": true,
+      "layout_seed": true,
+      "start": true,
+      "family": true,
+      "mode": true,
+      "flags": true,
+      "heldout_split": true,
+      "report_inputs": true,
+      "independent_audit_unchanged": true,
+      "run_identity_unchanged": true,
+      "audit_provenance": true,
+      "clean_worker": true,
+      "minimum_window": true
+    },
+    "heldout/north_oblique_cool-m2-occupied_rejection/visibility_and_validity": {
+      "protocol_hash": true,
+      "one_initial_goal_at_frozen_xy": true,
+      "no_goal_resubmission": true,
+      "failed_evidence_not_counted_pass": true,
+      "canonical_summary_matches_audit": true,
+      "case_seed": true,
+      "layout_seed": true,
+      "start": true,
+      "family": true,
+      "mode": true,
+      "flags": true,
+      "heldout_split": true,
+      "report_inputs": true,
+      "independent_audit_unchanged": true,
+      "run_identity_unchanged": true,
+      "audit_provenance": true,
+      "clean_worker": true,
+      "minimum_window": true
+    },
+    "heldout/north_oblique_cool-m3-arrival/clearance_only": {
+      "protocol_hash": true,
+      "one_initial_goal_at_frozen_xy": true,
+      "no_goal_resubmission": true,
+      "failed_evidence_not_counted_pass": true,
+      "canonical_summary_matches_audit": true,
+      "case_seed": true,
+      "layout_seed": true,
+      "start": true,
+      "family": true,
+      "mode": true,
+      "flags": true,
+      "heldout_split": true,
+      "report_inputs": true,
+      "independent_audit_unchanged": true,
+      "run_identity_unchanged": true,
+      "audit_provenance": true,
+      "clean_worker": true,
+      "minimum_window": true
+    },
+    "heldout/north_oblique_cool-m3-arrival/visibility_and_validity": {
+      "protocol_hash": true,
+      "one_initial_goal_at_frozen_xy": true,
+      "no_goal_resubmission": true,
+      "failed_evidence_not_counted_pass": true,
+      "canonical_summary_matches_audit": true,
+      "case_seed": true,
+      "layout_seed": true,
+      "start": true,
+      "family": true,
+      "mode": true,
+      "flags": true,
+      "heldout_split": true,
+      "report_inputs": true,
+      "independent_audit_unchanged": true,
+      "run_identity_unchanged": true,
+      "audit_provenance": true,
+      "clean_worker": true,
+      "minimum_window": true
+    },
+    "heldout/north_oblique_cool-m3-occupied_rejection/clearance_only": {
+      "protocol_hash": true,
+      "one_initial_goal_at_frozen_xy": true,
+      "no_goal_resubmission": true,
+      "failed_evidence_not_counted_pass": true,
+      "canonical_summary_matches_audit": true,
+      "case_seed": true,
+      "layout_seed": true,
+      "start": true,
+      "family": true,
+      "mode": true,
+      "flags": true,
+      "heldout_split": true,
+      "report_inputs": true,
+      "independent_audit_unchanged": true,
+      "run_identity_unchanged": true,
+      "audit_provenance": true,
+      "clean_worker": true,
+      "minimum_window": true
+    },
+    "heldout/north_oblique_cool-m3-occupied_rejection/visibility_and_validity": {
+      "protocol_hash": true,
+      "one_initial_goal_at_frozen_xy": true,
+      "no_goal_resubmission": true,
+      "failed_evidence_not_counted_pass": true,
+      "canonical_summary_matches_audit": true,
+      "case_seed": true,
+      "layout_seed": true,
+      "start": true,
+      "family": true,
+      "mode": true,
+      "flags": true,
+      "heldout_split": true,
+      "report_inputs": true,
+      "independent_audit_unchanged": true,
+      "run_identity_unchanged": true,
+      "audit_provenance": true,
+      "clean_worker": true,
+      "minimum_window": true
+    },
+    "heldout/north_reverse_warm-m1-arrival/clearance_only": {
+      "protocol_hash": true,
+      "one_initial_goal_at_frozen_xy": true,
+      "no_goal_resubmission": true,
+      "failed_evidence_not_counted_pass": true,
+      "canonical_summary_matches_audit": true,
+      "case_seed": true,
+      "layout_seed": true,
+      "start": true,
+      "family": true,
+      "mode": true,
+      "flags": true,
+      "heldout_split": true,
+      "report_inputs": true,
+      "independent_audit_unchanged": true,
+      "run_identity_unchanged": true,
+      "audit_provenance": true,
+      "clean_worker": true,
+      "minimum_window": true
+    },
+    "heldout/north_reverse_warm-m1-arrival/visibility_and_validity": {
+      "protocol_hash": true,
+      "one_initial_goal_at_frozen_xy": true,
+      "no_goal_resubmission": true,
+      "failed_evidence_not_counted_pass": true,
+      "canonical_summary_matches_audit": true,
+      "case_seed": true,
+      "layout_seed": true,
+      "start": true,
+      "family": true,
+      "mode": true,
+      "flags": true,
+      "heldout_split": true,
+      "report_inputs": true,
+      "independent_audit_unchanged": true,
+      "run_identity_unchanged": true,
+      "audit_provenance": true,
+      "clean_worker": true,
+      "minimum_window": true
+    },
+    "heldout/north_reverse_warm-m1-occupied_rejection/clearance_only": {
+      "protocol_hash": true,
+      "one_initial_goal_at_frozen_xy": true,
+      "no_goal_resubmission": true,
+      "failed_evidence_not_counted_pass": true,
+      "canonical_summary_matches_audit": true,
+      "case_seed": true,
+      "layout_seed": true,
+      "start": true,
+      "family": true,
+      "mode": true,
+      "flags": true,
+      "heldout_split": true,
+      "report_inputs": true,
+      "independent_audit_unchanged": true,
+      "run_identity_unchanged": true,
+      "audit_provenance": true,
+      "clean_worker": true,
+      "minimum_window": true
+    },
+    "heldout/north_reverse_warm-m1-occupied_rejection/visibility_and_validity": {
+      "protocol_hash": true,
+      "one_initial_goal_at_frozen_xy": true,
+      "no_goal_resubmission": true,
+      "failed_evidence_not_counted_pass": true,
+      "canonical_summary_matches_audit": true,
+      "case_seed": true,
+      "layout_seed": true,
+      "start": true,
+      "family": true,
+      "mode": true,
+      "flags": true,
+      "heldout_split": true,
+      "report_inputs": true,
+      "independent_audit_unchanged": true,
+      "run_identity_unchanged": true,
+      "audit_provenance": true,
+      "clean_worker": true,
+      "minimum_window": true
+    },
+    "heldout/north_reverse_warm-m2-arrival/clearance_only": {
+      "protocol_hash": true,
+      "one_initial_goal_at_frozen_xy": true,
+      "no_goal_resubmission": true,
+      "failed_evidence_not_counted_pass": true,
+      "canonical_summary_matches_audit": true,
+      "case_seed": true,
+      "layout_seed": true,
+      "start": true,
+      "family": true,
+      "mode": true,
+      "flags": true,
+      "heldout_split": true,
+      "report_inputs": true,
+      "independent_audit_unchanged": true,
+      "run_identity_unchanged": true,
+      "audit_provenance": true,
+      "clean_worker": true,
+      "minimum_window": true
+    },
+    "heldout/north_reverse_warm-m2-arrival/visibility_and_validity": {
+      "protocol_hash": true,
+      "one_initial_goal_at_frozen_xy": true,
+      "no_goal_resubmission": true,
+      "failed_evidence_not_counted_pass": true,
+      "canonical_summary_matches_audit": true,
+      "case_seed": true,
+      "layout_seed": true,
+      "start": true,
+      "family": true,
+      "mode": true,
+      "flags": true,
+      "heldout_split": true,
+      "report_inputs": true,
+      "independent_audit_unchanged": true,
+      "run_identity_unchanged": true,
+      "audit_provenance": true,
+      "clean_worker": true,
+      "minimum_window": true
+    },
+    "heldout/north_reverse_warm-m2-occupied_rejection/clearance_only": {
+      "protocol_hash": true,
+      "one_initial_goal_at_frozen_xy": true,
+      "no_goal_resubmission": true,
+      "failed_evidence_not_counted_pass": true,
+      "canonical_summary_matches_audit": true,
+      "case_seed": true,
+      "layout_seed": true,
+      "start": true,
+      "family": true,
+      "mode": true,
+      "flags": true,
+      "heldout_split": true,
+      "report_inputs": true,
+      "independent_audit_unchanged": true,
+      "run_identity_unchanged": true,
+      "audit_provenance": true,
+      "clean_worker": true,
+      "minimum_window": true
+    },
+    "heldout/north_reverse_warm-m2-occupied_rejection/visibility_and_validity": {
+      "protocol_hash": true,
+      "one_initial_goal_at_frozen_xy": true,
+      "no_goal_resubmission": true,
+      "failed_evidence_not_counted_pass": true,
+      "canonical_summary_matches_audit": true,
+      "case_seed": true,
+      "layout_seed": true,
+      "start": true,
+      "family": true,
+      "mode": true,
+      "flags": true,
+      "heldout_split": true,
+      "report_inputs": true,
+      "independent_audit_unchanged": true,
+      "run_identity_unchanged": true,
+      "audit_provenance": true,
+      "clean_worker": true,
+      "minimum_window": true
+    },
+    "heldout/north_reverse_warm-m3-arrival/clearance_only": {
+      "protocol_hash": true,
+      "one_initial_goal_at_frozen_xy": false,
+      "no_goal_resubmission": true,
+      "failed_evidence_not_counted_pass": true,
+      "canonical_summary_matches_audit": true,
+      "case_seed": true,
+      "layout_seed": true,
+      "start": true,
+      "family": true,
+      "mode": true,
+      "flags": true,
+      "heldout_split": true,
+      "report_inputs": true,
+      "independent_audit_unchanged": true,
+      "run_identity_unchanged": true,
+      "audit_provenance": true,
+      "clean_worker": true,
+      "minimum_window": true
+    },
+    "heldout/north_reverse_warm-m3-arrival/visibility_and_validity": {
+      "protocol_hash": true,
+      "one_initial_goal_at_frozen_xy": false,
+      "no_goal_resubmission": true,
+      "failed_evidence_not_counted_pass": true,
+      "canonical_summary_matches_audit": true,
+      "case_seed": true,
+      "layout_seed": true,
+      "start": true,
+      "family": true,
+      "mode": true,
+      "flags": true,
+      "heldout_split": true,
+      "report_inputs": true,
+      "independent_audit_unchanged": true,
+      "run_identity_unchanged": true,
+      "audit_provenance": true,
+      "clean_worker": true,
+      "minimum_window": true
+    },
+    "heldout/north_reverse_warm-m3-occupied_rejection/clearance_only": {
+      "protocol_hash": true,
+      "one_initial_goal_at_frozen_xy": false,
+      "no_goal_resubmission": true,
+      "failed_evidence_not_counted_pass": true,
+      "canonical_summary_matches_audit": true,
+      "case_seed": true,
+      "layout_seed": true,
+      "start": true,
+      "family": true,
+      "mode": true,
+      "flags": true,
+      "heldout_split": true,
+      "report_inputs": true,
+      "independent_audit_unchanged": true,
+      "run_identity_unchanged": true,
+      "audit_provenance": true,
+      "clean_worker": true,
+      "minimum_window": true
+    },
+    "heldout/north_reverse_warm-m3-occupied_rejection/visibility_and_validity": {
+      "protocol_hash": true,
+      "one_initial_goal_at_frozen_xy": false,
+      "no_goal_resubmission": true,
+      "failed_evidence_not_counted_pass": true,
+      "canonical_summary_matches_audit": true,
+      "case_seed": true,
+      "layout_seed": true,
+      "start": true,
+      "family": true,
+      "mode": true,
+      "flags": true,
+      "heldout_split": true,
+      "report_inputs": true,
+      "independent_audit_unchanged": true,
+      "run_identity_unchanged": true,
+      "audit_provenance": true,
+      "clean_worker": true,
+      "minimum_window": true
+    }
+  },
+  "integrity_review_pass": true,
+  "all_execution_expectations_pass": false,
+  "canonical_summary_counts": null,
+  "canonical_count_comparison": null,
+  "all_frame_position_coverage": {
+    "counts": {
+      "frames": 2220,
+      "camera_view_observations": 5676,
+      "visible_camera_view_observations": 4276,
+      "nonzero_action_frames": 0,
+      "fused_RGB_position_samples": 820,
+      "fused_RGB_radius_covered": 820,
+      "measured_belief_samples": 620,
+      "measured_belief_radius_covered": 620
+    },
+    "measurement_status_counts": {
+      "visible": 820,
+      "ambiguous": 1400
+    },
+    "fused_RGB_errors_m": {
+      "samples": 820,
+      "minimum": 0.0009052423263320112,
+      "median": 0.003595606486075215,
+      "p95": 0.02138813913252674,
+      "maximum": 0.022107830788228342
+    },
+    "fused_RGB_declared_radii_m": {
+      "samples": 820,
+      "minimum": 0.02712053538385051,
+      "median": 0.03464083664199895,
+      "p95": 0.04638913807874681,
+      "maximum": 0.046397954810802784
+    },
+    "measured_belief_errors_m": {
+      "samples": 620,
+      "minimum": 0.0009052423263320112,
+      "median": 0.003595606486075215,
+      "p95": 0.02138813913252674,
+      "maximum": 0.022107830788228342
+    },
+    "measured_belief_declared_radii_m": {
+      "samples": 620,
+      "minimum": 0.02712053538385051,
+      "median": 0.03464083664199895,
+      "p95": 0.04638913807874681,
+      "maximum": 0.046397954810802784
+    }
+  },
+  "executed": [
+    {
+      "request_id": "heldout/north_oblique_cool-m1-arrival/clearance_only",
+      "family": "north_oblique_cool",
+      "mode": 1,
+      "variant": "clearance_only",
+      "intent": "arrival",
+      "intended_pass": false,
+      "metrics": {
+        "contacts": 0,
+        "arrivals": 0,
+        "localization_loss_episodes": 0,
+        "rejected_requests": 1,
+        "unexpected_rejections": 1,
+        "manual_interventions": 0,
+        "scene_invalidations": 0,
+        "worker_errors": 0
+      },
+      "evidence_complete": true,
+      "initial_goal_commands": 1,
+      "recorded_seconds": 2.05,
+      "terminal_stop": {
+        "reason": "initial_goal_terminal_rejection",
+        "first_observed_s": 0.05,
+        "stopped_after_s": 2.0,
+        "zero_authority_hold_s": 0.5
+      },
+      "coverage_counts": {
+        "frames": 41,
+        "camera_view_observations": 41,
+        "visible_camera_view_observations": 41,
+        "nonzero_action_frames": 0,
+        "fused_RGB_position_samples": 41,
+        "fused_RGB_radius_covered": 41,
+        "measured_belief_samples": 41,
+        "measured_belief_radius_covered": 41
+      },
+      "measurement_status_counts": {
+        "visible": 41
+      },
+      "fused_RGB_errors_m": {
+        "samples": 41,
+        "minimum": 0.0038398489745377013,
+        "median": 0.004963803558019324,
+        "p95": 0.004963803558019324,
+        "maximum": 0.004963803558019324
+      },
+      "fused_RGB_declared_radii_m": {
+        "samples": 41,
+        "minimum": 0.040071301270590366,
+        "median": 0.0400845619681863,
+        "p95": 0.0400845619681863,
+        "maximum": 0.04008456565177741
+      },
+      "measured_belief_errors_m": {
+        "samples": 41,
+        "minimum": 0.0038398489745377013,
+        "median": 0.004963803558019324,
+        "p95": 0.004963803558019324,
+        "maximum": 0.004963803558019324
+      },
+      "measured_belief_declared_radii_m": {
+        "samples": 41,
+        "minimum": 0.040071301270590366,
+        "median": 0.0400845619681863,
+        "p95": 0.0400845619681863,
+        "maximum": 0.04008456565177741
+      },
+      "summary_sha256": "398b831d5e816fbef27916e133b3bf151f630792cff78cbb2e7b62fa5fdd7e9b",
+      "rows_sha256": "f59c45637bfef3442787e8fb83471e3340764d1c490567199cdaa41126eafdc1"
+    },
+    {
+      "request_id": "heldout/north_oblique_cool-m1-arrival/visibility_and_validity",
+      "family": "north_oblique_cool",
+      "mode": 1,
+      "variant": "visibility_and_validity",
+      "intent": "arrival",
+      "intended_pass": false,
+      "metrics": {
+        "contacts": 0,
+        "arrivals": 0,
+        "localization_loss_episodes": 0,
+        "rejected_requests": 1,
+        "unexpected_rejections": 1,
+        "manual_interventions": 0,
+        "scene_invalidations": 0,
+        "worker_errors": 0
+      },
+      "evidence_complete": true,
+      "initial_goal_commands": 1,
+      "recorded_seconds": 2.05,
+      "terminal_stop": {
+        "reason": "initial_goal_terminal_rejection",
+        "first_observed_s": 1.05,
+        "stopped_after_s": 2.0,
+        "zero_authority_hold_s": 0.5
+      },
+      "coverage_counts": {
+        "frames": 41,
+        "camera_view_observations": 41,
+        "visible_camera_view_observations": 41,
+        "nonzero_action_frames": 0,
+        "fused_RGB_position_samples": 41,
+        "fused_RGB_radius_covered": 41,
+        "measured_belief_samples": 21,
+        "measured_belief_radius_covered": 21
+      },
+      "measurement_status_counts": {
+        "visible": 41
+      },
+      "fused_RGB_errors_m": {
+        "samples": 41,
+        "minimum": 0.0038398489745377013,
+        "median": 0.004963803558019324,
+        "p95": 0.004963803558019324,
+        "maximum": 0.004963803558019324
+      },
+      "fused_RGB_declared_radii_m": {
+        "samples": 41,
+        "minimum": 0.040071301270590366,
+        "median": 0.0400845619681863,
+        "p95": 0.0400845619681863,
+        "maximum": 0.04008456565177741
+      },
+      "measured_belief_errors_m": {
+        "samples": 21,
+        "minimum": 0.004963803558019324,
+        "median": 0.004963803558019324,
+        "p95": 0.004963803558019324,
+        "maximum": 0.004963803558019324
+      },
+      "measured_belief_declared_radii_m": {
+        "samples": 21,
+        "minimum": 0.0400845619681863,
+        "median": 0.0400845619681863,
+        "p95": 0.0400845619681863,
+        "maximum": 0.0400845619681863
+      },
+      "summary_sha256": "30c10d822bb726e0d5b61dd5935987c1a1d38340b4d89d7b8c735af2e646ada6",
+      "rows_sha256": "65ae0ed9e6b1f2ff2017e00e35666ff5e328c00876419221b15c21efd772bfaa"
+    },
+    {
+      "request_id": "heldout/north_oblique_cool-m1-occupied_rejection/clearance_only",
+      "family": "north_oblique_cool",
+      "mode": 1,
+      "variant": "clearance_only",
+      "intent": "occupied_rejection",
+      "intended_pass": true,
+      "metrics": {
+        "contacts": 0,
+        "arrivals": 0,
+        "localization_loss_episodes": 0,
+        "rejected_requests": 1,
+        "unexpected_rejections": 0,
+        "manual_interventions": 0,
+        "scene_invalidations": 0,
+        "worker_errors": 0
+      },
+      "evidence_complete": true,
+      "initial_goal_commands": 1,
+      "recorded_seconds": 2.05,
+      "terminal_stop": {
+        "reason": "initial_goal_terminal_rejection",
+        "first_observed_s": 0.05,
+        "stopped_after_s": 2.0,
+        "zero_authority_hold_s": 0.5
+      },
+      "coverage_counts": {
+        "frames": 41,
+        "camera_view_observations": 41,
+        "visible_camera_view_observations": 41,
+        "nonzero_action_frames": 0,
+        "fused_RGB_position_samples": 41,
+        "fused_RGB_radius_covered": 41,
+        "measured_belief_samples": 41,
+        "measured_belief_radius_covered": 41
+      },
+      "measurement_status_counts": {
+        "visible": 41
+      },
+      "fused_RGB_errors_m": {
+        "samples": 41,
+        "minimum": 0.0038398489745377013,
+        "median": 0.004963803558019324,
+        "p95": 0.004963803558019324,
+        "maximum": 0.004963803558019324
+      },
+      "fused_RGB_declared_radii_m": {
+        "samples": 41,
+        "minimum": 0.040071301270590366,
+        "median": 0.0400845619681863,
+        "p95": 0.0400845619681863,
+        "maximum": 0.04008456565177741
+      },
+      "measured_belief_errors_m": {
+        "samples": 41,
+        "minimum": 0.0038398489745377013,
+        "median": 0.004963803558019324,
+        "p95": 0.004963803558019324,
+        "maximum": 0.004963803558019324
+      },
+      "measured_belief_declared_radii_m": {
+        "samples": 41,
+        "minimum": 0.040071301270590366,
+        "median": 0.0400845619681863,
+        "p95": 0.0400845619681863,
+        "maximum": 0.04008456565177741
+      },
+      "summary_sha256": "68be9e209d84897ecfc4b830c998fc7c2062ea13c601182cf68768e303ed46f7",
+      "rows_sha256": "18ecfdc050b9112e43747d45f409481673ddf5f18b5a158e2aef5d94478102f5"
+    },
+    {
+      "request_id": "heldout/north_oblique_cool-m1-occupied_rejection/visibility_and_validity",
+      "family": "north_oblique_cool",
+      "mode": 1,
+      "variant": "visibility_and_validity",
+      "intent": "occupied_rejection",
+      "intended_pass": true,
+      "metrics": {
+        "contacts": 0,
+        "arrivals": 0,
+        "localization_loss_episodes": 0,
+        "rejected_requests": 1,
+        "unexpected_rejections": 0,
+        "manual_interventions": 0,
+        "scene_invalidations": 0,
+        "worker_errors": 0
+      },
+      "evidence_complete": true,
+      "initial_goal_commands": 1,
+      "recorded_seconds": 2.05,
+      "terminal_stop": {
+        "reason": "initial_goal_terminal_rejection",
+        "first_observed_s": 1.05,
+        "stopped_after_s": 2.0,
+        "zero_authority_hold_s": 0.5
+      },
+      "coverage_counts": {
+        "frames": 41,
+        "camera_view_observations": 41,
+        "visible_camera_view_observations": 41,
+        "nonzero_action_frames": 0,
+        "fused_RGB_position_samples": 41,
+        "fused_RGB_radius_covered": 41,
+        "measured_belief_samples": 21,
+        "measured_belief_radius_covered": 21
+      },
+      "measurement_status_counts": {
+        "visible": 41
+      },
+      "fused_RGB_errors_m": {
+        "samples": 41,
+        "minimum": 0.0038398489745377013,
+        "median": 0.004963803558019324,
+        "p95": 0.004963803558019324,
+        "maximum": 0.004963803558019324
+      },
+      "fused_RGB_declared_radii_m": {
+        "samples": 41,
+        "minimum": 0.040071301270590366,
+        "median": 0.0400845619681863,
+        "p95": 0.0400845619681863,
+        "maximum": 0.04008456565177741
+      },
+      "measured_belief_errors_m": {
+        "samples": 21,
+        "minimum": 0.004963803558019324,
+        "median": 0.004963803558019324,
+        "p95": 0.004963803558019324,
+        "maximum": 0.004963803558019324
+      },
+      "measured_belief_declared_radii_m": {
+        "samples": 21,
+        "minimum": 0.0400845619681863,
+        "median": 0.0400845619681863,
+        "p95": 0.0400845619681863,
+        "maximum": 0.0400845619681863
+      },
+      "summary_sha256": "47e5443b6cfb4f062ea57130234556243c6219afc32eca8ab9d4ba32a88b5def",
+      "rows_sha256": "3da80496724a1721682099bc7dc479fa3ab15bbcd804f0a30ffa1b4cec289ba5"
+    },
+    {
+      "request_id": "heldout/north_oblique_cool-m2-arrival/clearance_only",
+      "family": "north_oblique_cool",
+      "mode": 2,
+      "variant": "clearance_only",
+      "intent": "arrival",
+      "intended_pass": false,
+      "metrics": {
+        "contacts": 0,
+        "arrivals": 0,
+        "localization_loss_episodes": 0,
+        "rejected_requests": 1,
+        "unexpected_rejections": 1,
+        "manual_interventions": 0,
+        "scene_invalidations": 0,
+        "worker_errors": 0
+      },
+      "evidence_complete": true,
+      "initial_goal_commands": 1,
+      "recorded_seconds": 2.05,
+      "terminal_stop": {
+        "reason": "initial_goal_terminal_rejection",
+        "first_observed_s": 0.05,
+        "stopped_after_s": 2.0,
+        "zero_authority_hold_s": 0.5
+      },
+      "coverage_counts": {
+        "frames": 41,
+        "camera_view_observations": 82,
+        "visible_camera_view_observations": 82,
+        "nonzero_action_frames": 0,
+        "fused_RGB_position_samples": 41,
+        "fused_RGB_radius_covered": 41,
+        "measured_belief_samples": 41,
+        "measured_belief_radius_covered": 41
+      },
+      "measurement_status_counts": {
+        "visible": 41
+      },
+      "fused_RGB_errors_m": {
+        "samples": 41,
+        "minimum": 0.0009052423263320112,
+        "median": 0.0012895258234556812,
+        "p95": 0.0012895258234556812,
+        "maximum": 0.0012895258234556812
+      },
+      "fused_RGB_declared_radii_m": {
+        "samples": 41,
+        "minimum": 0.027656227733244713,
+        "median": 0.027658258698821506,
+        "p95": 0.027658258698821506,
+        "maximum": 0.027664046612639534
+      },
+      "measured_belief_errors_m": {
+        "samples": 41,
+        "minimum": 0.0009052423263320112,
+        "median": 0.0012895258234556812,
+        "p95": 0.0012895258234556812,
+        "maximum": 0.0012895258234556812
+      },
+      "measured_belief_declared_radii_m": {
+        "samples": 41,
+        "minimum": 0.027656227733244713,
+        "median": 0.027658258698821506,
+        "p95": 0.027658258698821506,
+        "maximum": 0.027664046612639534
+      },
+      "summary_sha256": "b627936e175a5016bf627e05f4a5b925f499a32d20fd6c05f641680535c06488",
+      "rows_sha256": "386c4ce9aecff59526525eefcd3f804fdd364d74a368b91b844cf8b695721beb"
+    },
+    {
+      "request_id": "heldout/north_oblique_cool-m2-arrival/visibility_and_validity",
+      "family": "north_oblique_cool",
+      "mode": 2,
+      "variant": "visibility_and_validity",
+      "intent": "arrival",
+      "intended_pass": false,
+      "metrics": {
+        "contacts": 0,
+        "arrivals": 0,
+        "localization_loss_episodes": 0,
+        "rejected_requests": 1,
+        "unexpected_rejections": 1,
+        "manual_interventions": 0,
+        "scene_invalidations": 0,
+        "worker_errors": 0
+      },
+      "evidence_complete": true,
+      "initial_goal_commands": 1,
+      "recorded_seconds": 2.05,
+      "terminal_stop": {
+        "reason": "initial_goal_terminal_rejection",
+        "first_observed_s": 1.05,
+        "stopped_after_s": 2.0,
+        "zero_authority_hold_s": 0.5
+      },
+      "coverage_counts": {
+        "frames": 41,
+        "camera_view_observations": 82,
+        "visible_camera_view_observations": 82,
+        "nonzero_action_frames": 0,
+        "fused_RGB_position_samples": 41,
+        "fused_RGB_radius_covered": 41,
+        "measured_belief_samples": 21,
+        "measured_belief_radius_covered": 21
+      },
+      "measurement_status_counts": {
+        "visible": 41
+      },
+      "fused_RGB_errors_m": {
+        "samples": 41,
+        "minimum": 0.0009052423263320112,
+        "median": 0.0012895258234556812,
+        "p95": 0.0012895258234556812,
+        "maximum": 0.0012895258234556812
+      },
+      "fused_RGB_declared_radii_m": {
+        "samples": 41,
+        "minimum": 0.027656227733244713,
+        "median": 0.027658258698821506,
+        "p95": 0.027658258698821506,
+        "maximum": 0.027664046612639534
+      },
+      "measured_belief_errors_m": {
+        "samples": 21,
+        "minimum": 0.0012895258234556812,
+        "median": 0.0012895258234556812,
+        "p95": 0.0012895258234556812,
+        "maximum": 0.0012895258234556812
+      },
+      "measured_belief_declared_radii_m": {
+        "samples": 21,
+        "minimum": 0.027658258698821506,
+        "median": 0.027658258698821506,
+        "p95": 0.027658258698821506,
+        "maximum": 0.027658258698821506
+      },
+      "summary_sha256": "2cbacb364ff764726628ec590e3f81db037d643009d38c11f749f473c6845ac9",
+      "rows_sha256": "b03f299bfce32e381292ada16c631291e09087dbac83726a783e186adda414be"
+    },
+    {
+      "request_id": "heldout/north_oblique_cool-m2-occupied_rejection/clearance_only",
+      "family": "north_oblique_cool",
+      "mode": 2,
+      "variant": "clearance_only",
+      "intent": "occupied_rejection",
+      "intended_pass": true,
+      "metrics": {
+        "contacts": 0,
+        "arrivals": 0,
+        "localization_loss_episodes": 0,
+        "rejected_requests": 1,
+        "unexpected_rejections": 0,
+        "manual_interventions": 0,
+        "scene_invalidations": 0,
+        "worker_errors": 0
+      },
+      "evidence_complete": true,
+      "initial_goal_commands": 1,
+      "recorded_seconds": 2.05,
+      "terminal_stop": {
+        "reason": "initial_goal_terminal_rejection",
+        "first_observed_s": 0.05,
+        "stopped_after_s": 2.0,
+        "zero_authority_hold_s": 0.5
+      },
+      "coverage_counts": {
+        "frames": 41,
+        "camera_view_observations": 82,
+        "visible_camera_view_observations": 82,
+        "nonzero_action_frames": 0,
+        "fused_RGB_position_samples": 41,
+        "fused_RGB_radius_covered": 41,
+        "measured_belief_samples": 41,
+        "measured_belief_radius_covered": 41
+      },
+      "measurement_status_counts": {
+        "visible": 41
+      },
+      "fused_RGB_errors_m": {
+        "samples": 41,
+        "minimum": 0.0009052423263320112,
+        "median": 0.0012895258234556812,
+        "p95": 0.0012895258234556812,
+        "maximum": 0.0012895258234556812
+      },
+      "fused_RGB_declared_radii_m": {
+        "samples": 41,
+        "minimum": 0.027656227733244713,
+        "median": 0.027658258698821506,
+        "p95": 0.027658258698821506,
+        "maximum": 0.027664046612639534
+      },
+      "measured_belief_errors_m": {
+        "samples": 41,
+        "minimum": 0.0009052423263320112,
+        "median": 0.0012895258234556812,
+        "p95": 0.0012895258234556812,
+        "maximum": 0.0012895258234556812
+      },
+      "measured_belief_declared_radii_m": {
+        "samples": 41,
+        "minimum": 0.027656227733244713,
+        "median": 0.027658258698821506,
+        "p95": 0.027658258698821506,
+        "maximum": 0.027664046612639534
+      },
+      "summary_sha256": "c9fde38593dcfe44ab17c2c189deda1268d69e653fe844d97afa4c9868766821",
+      "rows_sha256": "a14008febb3b04610dec8d5bc10f7ab414f51630b6cc9b4c4862877cabbbc22f"
+    },
+    {
+      "request_id": "heldout/north_oblique_cool-m2-occupied_rejection/visibility_and_validity",
+      "family": "north_oblique_cool",
+      "mode": 2,
+      "variant": "visibility_and_validity",
+      "intent": "occupied_rejection",
+      "intended_pass": true,
+      "metrics": {
+        "contacts": 0,
+        "arrivals": 0,
+        "localization_loss_episodes": 0,
+        "rejected_requests": 1,
+        "unexpected_rejections": 0,
+        "manual_interventions": 0,
+        "scene_invalidations": 0,
+        "worker_errors": 0
+      },
+      "evidence_complete": true,
+      "initial_goal_commands": 1,
+      "recorded_seconds": 2.05,
+      "terminal_stop": {
+        "reason": "initial_goal_terminal_rejection",
+        "first_observed_s": 1.05,
+        "stopped_after_s": 2.0,
+        "zero_authority_hold_s": 0.5
+      },
+      "coverage_counts": {
+        "frames": 41,
+        "camera_view_observations": 82,
+        "visible_camera_view_observations": 82,
+        "nonzero_action_frames": 0,
+        "fused_RGB_position_samples": 41,
+        "fused_RGB_radius_covered": 41,
+        "measured_belief_samples": 21,
+        "measured_belief_radius_covered": 21
+      },
+      "measurement_status_counts": {
+        "visible": 41
+      },
+      "fused_RGB_errors_m": {
+        "samples": 41,
+        "minimum": 0.0009052423263320112,
+        "median": 0.0012895258234556812,
+        "p95": 0.0012895258234556812,
+        "maximum": 0.0012895258234556812
+      },
+      "fused_RGB_declared_radii_m": {
+        "samples": 41,
+        "minimum": 0.027656227733244713,
+        "median": 0.027658258698821506,
+        "p95": 0.027658258698821506,
+        "maximum": 0.027664046612639534
+      },
+      "measured_belief_errors_m": {
+        "samples": 21,
+        "minimum": 0.0012895258234556812,
+        "median": 0.0012895258234556812,
+        "p95": 0.0012895258234556812,
+        "maximum": 0.0012895258234556812
+      },
+      "measured_belief_declared_radii_m": {
+        "samples": 21,
+        "minimum": 0.027658258698821506,
+        "median": 0.027658258698821506,
+        "p95": 0.027658258698821506,
+        "maximum": 0.027658258698821506
+      },
+      "summary_sha256": "d96a8d449177240911bb8430bb3126b2b855c0f05b2e7ff086fbd7241491219c",
+      "rows_sha256": "0b7112a8f2d90a9992747276cc7f043485312d8f913e0f4fe3e1edb30ddb3eb7"
+    },
+    {
+      "request_id": "heldout/north_oblique_cool-m3-arrival/clearance_only",
+      "family": "north_oblique_cool",
+      "mode": 3,
+      "variant": "clearance_only",
+      "intent": "arrival",
+      "intended_pass": false,
+      "metrics": {
+        "contacts": 0,
+        "arrivals": 0,
+        "localization_loss_episodes": 0,
+        "rejected_requests": 1,
+        "unexpected_rejections": 1,
+        "manual_interventions": 0,
+        "scene_invalidations": 0,
+        "worker_errors": 0
+      },
+      "evidence_complete": true,
+      "initial_goal_commands": 1,
+      "recorded_seconds": 2.05,
+      "terminal_stop": {
+        "reason": "initial_goal_terminal_rejection",
+        "first_observed_s": 0.05,
+        "stopped_after_s": 2.0,
+        "zero_authority_hold_s": 0.5
+      },
+      "coverage_counts": {
+        "frames": 41,
+        "camera_view_observations": 123,
+        "visible_camera_view_observations": 123,
+        "nonzero_action_frames": 0,
+        "fused_RGB_position_samples": 41,
+        "fused_RGB_radius_covered": 41,
+        "measured_belief_samples": 41,
+        "measured_belief_radius_covered": 41
+      },
+      "measurement_status_counts": {
+        "visible": 41
+      },
+      "fused_RGB_errors_m": {
+        "samples": 41,
+        "minimum": 0.001040996404149247,
+        "median": 0.001166270222312841,
+        "p95": 0.001166270222312841,
+        "maximum": 0.0016553479421175766
+      },
+      "fused_RGB_declared_radii_m": {
+        "samples": 41,
+        "minimum": 0.02712053538385051,
+        "median": 0.027122957024124726,
+        "p95": 0.027122957024124726,
+        "maximum": 0.027124138974531076
+      },
+      "measured_belief_errors_m": {
+        "samples": 41,
+        "minimum": 0.001040996404149247,
+        "median": 0.001166270222312841,
+        "p95": 0.001166270222312841,
+        "maximum": 0.0016553479421175766
+      },
+      "measured_belief_declared_radii_m": {
+        "samples": 41,
+        "minimum": 0.02712053538385051,
+        "median": 0.027122957024124726,
+        "p95": 0.027122957024124726,
+        "maximum": 0.027124138974531076
+      },
+      "summary_sha256": "039d6f125e2c2808c411906592a3b223712ad23552fda04035fc0d8b27db0218",
+      "rows_sha256": "7574fd8087c613b0507473f08709aaa52ffec9220e4bc1db6f1c20c5fff6a9c5"
+    },
+    {
+      "request_id": "heldout/north_oblique_cool-m3-arrival/visibility_and_validity",
+      "family": "north_oblique_cool",
+      "mode": 3,
+      "variant": "visibility_and_validity",
+      "intent": "arrival",
+      "intended_pass": false,
+      "metrics": {
+        "contacts": 0,
+        "arrivals": 0,
+        "localization_loss_episodes": 0,
+        "rejected_requests": 1,
+        "unexpected_rejections": 1,
+        "manual_interventions": 0,
+        "scene_invalidations": 0,
+        "worker_errors": 0
+      },
+      "evidence_complete": true,
+      "initial_goal_commands": 1,
+      "recorded_seconds": 2.05,
+      "terminal_stop": {
+        "reason": "initial_goal_terminal_rejection",
+        "first_observed_s": 1.05,
+        "stopped_after_s": 2.0,
+        "zero_authority_hold_s": 0.5
+      },
+      "coverage_counts": {
+        "frames": 41,
+        "camera_view_observations": 123,
+        "visible_camera_view_observations": 123,
+        "nonzero_action_frames": 0,
+        "fused_RGB_position_samples": 41,
+        "fused_RGB_radius_covered": 41,
+        "measured_belief_samples": 21,
+        "measured_belief_radius_covered": 21
+      },
+      "measurement_status_counts": {
+        "visible": 41
+      },
+      "fused_RGB_errors_m": {
+        "samples": 41,
+        "minimum": 0.001040996404149247,
+        "median": 0.001166270222312841,
+        "p95": 0.001166270222312841,
+        "maximum": 0.0016553479421175766
+      },
+      "fused_RGB_declared_radii_m": {
+        "samples": 41,
+        "minimum": 0.02712053538385051,
+        "median": 0.027122957024124726,
+        "p95": 0.027122957024124726,
+        "maximum": 0.027124138974531076
+      },
+      "measured_belief_errors_m": {
+        "samples": 21,
+        "minimum": 0.001166270222312841,
+        "median": 0.001166270222312841,
+        "p95": 0.001166270222312841,
+        "maximum": 0.001166270222312841
+      },
+      "measured_belief_declared_radii_m": {
+        "samples": 21,
+        "minimum": 0.027122957024124726,
+        "median": 0.027122957024124726,
+        "p95": 0.027122957024124726,
+        "maximum": 0.027122957024124726
+      },
+      "summary_sha256": "951b00de10ccf9aa168a06932d9fffeebbcd7100d647f9fa5eda83c7e5ccabcb",
+      "rows_sha256": "b4fb341004893627d0273336eef0c8959e19f087a8f6e60e01773c1e8d1ae9b9"
+    },
+    {
+      "request_id": "heldout/north_oblique_cool-m3-occupied_rejection/clearance_only",
+      "family": "north_oblique_cool",
+      "mode": 3,
+      "variant": "clearance_only",
+      "intent": "occupied_rejection",
+      "intended_pass": true,
+      "metrics": {
+        "contacts": 0,
+        "arrivals": 0,
+        "localization_loss_episodes": 0,
+        "rejected_requests": 1,
+        "unexpected_rejections": 0,
+        "manual_interventions": 0,
+        "scene_invalidations": 0,
+        "worker_errors": 0
+      },
+      "evidence_complete": true,
+      "initial_goal_commands": 1,
+      "recorded_seconds": 2.05,
+      "terminal_stop": {
+        "reason": "initial_goal_terminal_rejection",
+        "first_observed_s": 0.05,
+        "stopped_after_s": 2.0,
+        "zero_authority_hold_s": 0.5
+      },
+      "coverage_counts": {
+        "frames": 41,
+        "camera_view_observations": 123,
+        "visible_camera_view_observations": 123,
+        "nonzero_action_frames": 0,
+        "fused_RGB_position_samples": 41,
+        "fused_RGB_radius_covered": 41,
+        "measured_belief_samples": 41,
+        "measured_belief_radius_covered": 41
+      },
+      "measurement_status_counts": {
+        "visible": 41
+      },
+      "fused_RGB_errors_m": {
+        "samples": 41,
+        "minimum": 0.001040996404149247,
+        "median": 0.001166270222312841,
+        "p95": 0.001166270222312841,
+        "maximum": 0.0016553479421175766
+      },
+      "fused_RGB_declared_radii_m": {
+        "samples": 41,
+        "minimum": 0.02712053538385051,
+        "median": 0.027122957024124726,
+        "p95": 0.027122957024124726,
+        "maximum": 0.027124138974531076
+      },
+      "measured_belief_errors_m": {
+        "samples": 41,
+        "minimum": 0.001040996404149247,
+        "median": 0.001166270222312841,
+        "p95": 0.001166270222312841,
+        "maximum": 0.0016553479421175766
+      },
+      "measured_belief_declared_radii_m": {
+        "samples": 41,
+        "minimum": 0.02712053538385051,
+        "median": 0.027122957024124726,
+        "p95": 0.027122957024124726,
+        "maximum": 0.027124138974531076
+      },
+      "summary_sha256": "c0390fcff2d4a4fba5cb2fc0d472935319f5b4e3aeb7f80ad61be13ff4bd8d77",
+      "rows_sha256": "939ecd371cb7a562905537e556a05637977baec4dc6a860e514343dc9a7cbc2a"
+    },
+    {
+      "request_id": "heldout/north_oblique_cool-m3-occupied_rejection/visibility_and_validity",
+      "family": "north_oblique_cool",
+      "mode": 3,
+      "variant": "visibility_and_validity",
+      "intent": "occupied_rejection",
+      "intended_pass": true,
+      "metrics": {
+        "contacts": 0,
+        "arrivals": 0,
+        "localization_loss_episodes": 0,
+        "rejected_requests": 1,
+        "unexpected_rejections": 0,
+        "manual_interventions": 0,
+        "scene_invalidations": 0,
+        "worker_errors": 0
+      },
+      "evidence_complete": true,
+      "initial_goal_commands": 1,
+      "recorded_seconds": 2.05,
+      "terminal_stop": {
+        "reason": "initial_goal_terminal_rejection",
+        "first_observed_s": 1.05,
+        "stopped_after_s": 2.0,
+        "zero_authority_hold_s": 0.5
+      },
+      "coverage_counts": {
+        "frames": 41,
+        "camera_view_observations": 123,
+        "visible_camera_view_observations": 123,
+        "nonzero_action_frames": 0,
+        "fused_RGB_position_samples": 41,
+        "fused_RGB_radius_covered": 41,
+        "measured_belief_samples": 21,
+        "measured_belief_radius_covered": 21
+      },
+      "measurement_status_counts": {
+        "visible": 41
+      },
+      "fused_RGB_errors_m": {
+        "samples": 41,
+        "minimum": 0.001040996404149247,
+        "median": 0.001166270222312841,
+        "p95": 0.001166270222312841,
+        "maximum": 0.0016553479421175766
+      },
+      "fused_RGB_declared_radii_m": {
+        "samples": 41,
+        "minimum": 0.02712053538385051,
+        "median": 0.027122957024124726,
+        "p95": 0.027122957024124726,
+        "maximum": 0.027124138974531076
+      },
+      "measured_belief_errors_m": {
+        "samples": 21,
+        "minimum": 0.001166270222312841,
+        "median": 0.001166270222312841,
+        "p95": 0.001166270222312841,
+        "maximum": 0.001166270222312841
+      },
+      "measured_belief_declared_radii_m": {
+        "samples": 21,
+        "minimum": 0.027122957024124726,
+        "median": 0.027122957024124726,
+        "p95": 0.027122957024124726,
+        "maximum": 0.027122957024124726
+      },
+      "summary_sha256": "37c28c8d2e84dac7176957f5b425007d73d4888f89a69dca250ff0c0e3b110c4",
+      "rows_sha256": "504efdfa9b3e6a72e06b1e6f3b0734a7a7c75e7a8f22b5f346e4296d4f29131a"
+    },
+    {
+      "request_id": "heldout/north_reverse_warm-m1-arrival/clearance_only",
+      "family": "north_reverse_warm",
+      "mode": 1,
+      "variant": "clearance_only",
+      "intent": "arrival",
+      "intended_pass": false,
+      "metrics": {
+        "contacts": 0,
+        "arrivals": 0,
+        "localization_loss_episodes": 0,
+        "rejected_requests": 1,
+        "unexpected_rejections": 1,
+        "manual_interventions": 0,
+        "scene_invalidations": 0,
+        "worker_errors": 0
+      },
+      "evidence_complete": true,
+      "initial_goal_commands": 1,
+      "recorded_seconds": 2.05,
+      "terminal_stop": {
+        "reason": "initial_goal_terminal_rejection",
+        "first_observed_s": 0.05,
+        "stopped_after_s": 2.0,
+        "zero_authority_hold_s": 0.5
+      },
+      "coverage_counts": {
+        "frames": 41,
+        "camera_view_observations": 41,
+        "visible_camera_view_observations": 41,
+        "nonzero_action_frames": 0,
+        "fused_RGB_position_samples": 41,
+        "fused_RGB_radius_covered": 41,
+        "measured_belief_samples": 41,
+        "measured_belief_radius_covered": 41
+      },
+      "measurement_status_counts": {
+        "visible": 41
+      },
+      "fused_RGB_errors_m": {
+        "samples": 41,
+        "minimum": 0.021363609981292653,
+        "median": 0.02138813913252674,
+        "p95": 0.02138813913252674,
+        "maximum": 0.022107830788228342
+      },
+      "fused_RGB_declared_radii_m": {
+        "samples": 41,
+        "minimum": 0.046388849041483916,
+        "median": 0.04638913807874681,
+        "p95": 0.04638913807874681,
+        "maximum": 0.046397954810802784
+      },
+      "measured_belief_errors_m": {
+        "samples": 41,
+        "minimum": 0.021363609981292653,
+        "median": 0.02138813913252674,
+        "p95": 0.02138813913252674,
+        "maximum": 0.022107830788228342
+      },
+      "measured_belief_declared_radii_m": {
+        "samples": 41,
+        "minimum": 0.046388849041483916,
+        "median": 0.04638913807874681,
+        "p95": 0.04638913807874681,
+        "maximum": 0.046397954810802784
+      },
+      "summary_sha256": "fa14d70808e816c386ea038adb07c725ea8deca462e9ac0bc7d1dfed5d6a710d",
+      "rows_sha256": "d97bd365ba28fe1909498cc20b76a36ff94b4317ec86979a5290742f708a88c4"
+    },
+    {
+      "request_id": "heldout/north_reverse_warm-m1-arrival/visibility_and_validity",
+      "family": "north_reverse_warm",
+      "mode": 1,
+      "variant": "visibility_and_validity",
+      "intent": "arrival",
+      "intended_pass": false,
+      "metrics": {
+        "contacts": 0,
+        "arrivals": 0,
+        "localization_loss_episodes": 0,
+        "rejected_requests": 1,
+        "unexpected_rejections": 1,
+        "manual_interventions": 0,
+        "scene_invalidations": 0,
+        "worker_errors": 0
+      },
+      "evidence_complete": true,
+      "initial_goal_commands": 1,
+      "recorded_seconds": 2.05,
+      "terminal_stop": {
+        "reason": "initial_goal_terminal_rejection",
+        "first_observed_s": 1.05,
+        "stopped_after_s": 2.0,
+        "zero_authority_hold_s": 0.5
+      },
+      "coverage_counts": {
+        "frames": 41,
+        "camera_view_observations": 41,
+        "visible_camera_view_observations": 41,
+        "nonzero_action_frames": 0,
+        "fused_RGB_position_samples": 41,
+        "fused_RGB_radius_covered": 41,
+        "measured_belief_samples": 21,
+        "measured_belief_radius_covered": 21
+      },
+      "measurement_status_counts": {
+        "visible": 41
+      },
+      "fused_RGB_errors_m": {
+        "samples": 41,
+        "minimum": 0.021363609981292653,
+        "median": 0.02138813913252674,
+        "p95": 0.02138813913252674,
+        "maximum": 0.022107830788228342
+      },
+      "fused_RGB_declared_radii_m": {
+        "samples": 41,
+        "minimum": 0.046388849041483916,
+        "median": 0.04638913807874681,
+        "p95": 0.04638913807874681,
+        "maximum": 0.046397954810802784
+      },
+      "measured_belief_errors_m": {
+        "samples": 21,
+        "minimum": 0.02138813913252674,
+        "median": 0.02138813913252674,
+        "p95": 0.02138813913252674,
+        "maximum": 0.02138813913252674
+      },
+      "measured_belief_declared_radii_m": {
+        "samples": 21,
+        "minimum": 0.04638913807874681,
+        "median": 0.04638913807874681,
+        "p95": 0.04638913807874681,
+        "maximum": 0.04638913807874681
+      },
+      "summary_sha256": "da6869e92c4e29cd55456fed2ace8a2c3f205864cd4c976862d61a67121306a0",
+      "rows_sha256": "8c414692c17fa7288b484e0db4b35fbd6be3cc74d6cbffdb3d0316492328ac3f"
+    },
+    {
+      "request_id": "heldout/north_reverse_warm-m1-occupied_rejection/clearance_only",
+      "family": "north_reverse_warm",
+      "mode": 1,
+      "variant": "clearance_only",
+      "intent": "occupied_rejection",
+      "intended_pass": true,
+      "metrics": {
+        "contacts": 0,
+        "arrivals": 0,
+        "localization_loss_episodes": 0,
+        "rejected_requests": 1,
+        "unexpected_rejections": 0,
+        "manual_interventions": 0,
+        "scene_invalidations": 0,
+        "worker_errors": 0
+      },
+      "evidence_complete": true,
+      "initial_goal_commands": 1,
+      "recorded_seconds": 2.05,
+      "terminal_stop": {
+        "reason": "initial_goal_terminal_rejection",
+        "first_observed_s": 0.05,
+        "stopped_after_s": 2.0,
+        "zero_authority_hold_s": 0.5
+      },
+      "coverage_counts": {
+        "frames": 41,
+        "camera_view_observations": 41,
+        "visible_camera_view_observations": 41,
+        "nonzero_action_frames": 0,
+        "fused_RGB_position_samples": 41,
+        "fused_RGB_radius_covered": 41,
+        "measured_belief_samples": 41,
+        "measured_belief_radius_covered": 41
+      },
+      "measurement_status_counts": {
+        "visible": 41
+      },
+      "fused_RGB_errors_m": {
+        "samples": 41,
+        "minimum": 0.021363609981292653,
+        "median": 0.02138813913252674,
+        "p95": 0.02138813913252674,
+        "maximum": 0.022107830788228342
+      },
+      "fused_RGB_declared_radii_m": {
+        "samples": 41,
+        "minimum": 0.046388849041483916,
+        "median": 0.04638913807874681,
+        "p95": 0.04638913807874681,
+        "maximum": 0.046397954810802784
+      },
+      "measured_belief_errors_m": {
+        "samples": 41,
+        "minimum": 0.021363609981292653,
+        "median": 0.02138813913252674,
+        "p95": 0.02138813913252674,
+        "maximum": 0.022107830788228342
+      },
+      "measured_belief_declared_radii_m": {
+        "samples": 41,
+        "minimum": 0.046388849041483916,
+        "median": 0.04638913807874681,
+        "p95": 0.04638913807874681,
+        "maximum": 0.046397954810802784
+      },
+      "summary_sha256": "49ffa29b1ebf2952e6fdd884cc12640d7fc2d7ad5dfaeddebbbea51d5a6d983b",
+      "rows_sha256": "d600c0818cdfa0cc2680ad153eee2755e6dc613aae5f72a0c5ca1c2797a7fa63"
+    },
+    {
+      "request_id": "heldout/north_reverse_warm-m1-occupied_rejection/visibility_and_validity",
+      "family": "north_reverse_warm",
+      "mode": 1,
+      "variant": "visibility_and_validity",
+      "intent": "occupied_rejection",
+      "intended_pass": true,
+      "metrics": {
+        "contacts": 0,
+        "arrivals": 0,
+        "localization_loss_episodes": 0,
+        "rejected_requests": 1,
+        "unexpected_rejections": 0,
+        "manual_interventions": 0,
+        "scene_invalidations": 0,
+        "worker_errors": 0
+      },
+      "evidence_complete": true,
+      "initial_goal_commands": 1,
+      "recorded_seconds": 2.05,
+      "terminal_stop": {
+        "reason": "initial_goal_terminal_rejection",
+        "first_observed_s": 1.05,
+        "stopped_after_s": 2.0,
+        "zero_authority_hold_s": 0.5
+      },
+      "coverage_counts": {
+        "frames": 41,
+        "camera_view_observations": 41,
+        "visible_camera_view_observations": 41,
+        "nonzero_action_frames": 0,
+        "fused_RGB_position_samples": 41,
+        "fused_RGB_radius_covered": 41,
+        "measured_belief_samples": 21,
+        "measured_belief_radius_covered": 21
+      },
+      "measurement_status_counts": {
+        "visible": 41
+      },
+      "fused_RGB_errors_m": {
+        "samples": 41,
+        "minimum": 0.021363609981292653,
+        "median": 0.02138813913252674,
+        "p95": 0.02138813913252674,
+        "maximum": 0.022107830788228342
+      },
+      "fused_RGB_declared_radii_m": {
+        "samples": 41,
+        "minimum": 0.046388849041483916,
+        "median": 0.04638913807874681,
+        "p95": 0.04638913807874681,
+        "maximum": 0.046397954810802784
+      },
+      "measured_belief_errors_m": {
+        "samples": 21,
+        "minimum": 0.02138813913252674,
+        "median": 0.02138813913252674,
+        "p95": 0.02138813913252674,
+        "maximum": 0.02138813913252674
+      },
+      "measured_belief_declared_radii_m": {
+        "samples": 21,
+        "minimum": 0.04638913807874681,
+        "median": 0.04638913807874681,
+        "p95": 0.04638913807874681,
+        "maximum": 0.04638913807874681
+      },
+      "summary_sha256": "15f0b378caa9e12f8b5619d57a93e7299fe48573aaddaa0b43c29970fa7e8caa",
+      "rows_sha256": "f8341892336928bca0dee1887b2b8258d6d516473d568a2013169edd14ab044e"
+    },
+    {
+      "request_id": "heldout/north_reverse_warm-m2-arrival/clearance_only",
+      "family": "north_reverse_warm",
+      "mode": 2,
+      "variant": "clearance_only",
+      "intent": "arrival",
+      "intended_pass": false,
+      "metrics": {
+        "contacts": 0,
+        "arrivals": 0,
+        "localization_loss_episodes": 0,
+        "rejected_requests": 1,
+        "unexpected_rejections": 1,
+        "manual_interventions": 0,
+        "scene_invalidations": 0,
+        "worker_errors": 0
+      },
+      "evidence_complete": true,
+      "initial_goal_commands": 1,
+      "recorded_seconds": 2.05,
+      "terminal_stop": {
+        "reason": "initial_goal_terminal_rejection",
+        "first_observed_s": 0.05,
+        "stopped_after_s": 2.0,
+        "zero_authority_hold_s": 0.5
+      },
+      "coverage_counts": {
+        "frames": 41,
+        "camera_view_observations": 82,
+        "visible_camera_view_observations": 82,
+        "nonzero_action_frames": 0,
+        "fused_RGB_position_samples": 41,
+        "fused_RGB_radius_covered": 41,
+        "measured_belief_samples": 41,
+        "measured_belief_radius_covered": 41
+      },
+      "measurement_status_counts": {
+        "visible": 41
+      },
+      "fused_RGB_errors_m": {
+        "samples": 41,
+        "minimum": 0.0035903349273229915,
+        "median": 0.003595606486075215,
+        "p95": 0.003595606486075215,
+        "maximum": 0.004204393045855796
+      },
+      "fused_RGB_declared_radii_m": {
+        "samples": 41,
+        "minimum": 0.034640787163336934,
+        "median": 0.03464083664199895,
+        "p95": 0.03464083664199895,
+        "maximum": 0.03464855728565633
+      },
+      "measured_belief_errors_m": {
+        "samples": 41,
+        "minimum": 0.0035903349273229915,
+        "median": 0.003595606486075215,
+        "p95": 0.003595606486075215,
+        "maximum": 0.004204393045855796
+      },
+      "measured_belief_declared_radii_m": {
+        "samples": 41,
+        "minimum": 0.034640787163336934,
+        "median": 0.03464083664199895,
+        "p95": 0.03464083664199895,
+        "maximum": 0.03464855728565633
+      },
+      "summary_sha256": "5f46f665f9676e60a7bc5fb9fc18b2dd5cf1c65101331706b94e8e687939fd0d",
+      "rows_sha256": "a394f9800bf6674766c9aeb41a8c6ac68708d7b926788cdd2463bb7e9062ba59"
+    },
+    {
+      "request_id": "heldout/north_reverse_warm-m2-arrival/visibility_and_validity",
+      "family": "north_reverse_warm",
+      "mode": 2,
+      "variant": "visibility_and_validity",
+      "intent": "arrival",
+      "intended_pass": false,
+      "metrics": {
+        "contacts": 0,
+        "arrivals": 0,
+        "localization_loss_episodes": 0,
+        "rejected_requests": 1,
+        "unexpected_rejections": 1,
+        "manual_interventions": 0,
+        "scene_invalidations": 0,
+        "worker_errors": 0
+      },
+      "evidence_complete": true,
+      "initial_goal_commands": 1,
+      "recorded_seconds": 2.05,
+      "terminal_stop": {
+        "reason": "initial_goal_terminal_rejection",
+        "first_observed_s": 1.05,
+        "stopped_after_s": 2.0,
+        "zero_authority_hold_s": 0.5
+      },
+      "coverage_counts": {
+        "frames": 41,
+        "camera_view_observations": 82,
+        "visible_camera_view_observations": 82,
+        "nonzero_action_frames": 0,
+        "fused_RGB_position_samples": 41,
+        "fused_RGB_radius_covered": 41,
+        "measured_belief_samples": 21,
+        "measured_belief_radius_covered": 21
+      },
+      "measurement_status_counts": {
+        "visible": 41
+      },
+      "fused_RGB_errors_m": {
+        "samples": 41,
+        "minimum": 0.0035903349273229915,
+        "median": 0.003595606486075215,
+        "p95": 0.003595606486075215,
+        "maximum": 0.004204393045855796
+      },
+      "fused_RGB_declared_radii_m": {
+        "samples": 41,
+        "minimum": 0.034640787163336934,
+        "median": 0.03464083664199895,
+        "p95": 0.03464083664199895,
+        "maximum": 0.03464855728565633
+      },
+      "measured_belief_errors_m": {
+        "samples": 21,
+        "minimum": 0.003595606486075215,
+        "median": 0.003595606486075215,
+        "p95": 0.003595606486075215,
+        "maximum": 0.003595606486075215
+      },
+      "measured_belief_declared_radii_m": {
+        "samples": 21,
+        "minimum": 0.03464083664199895,
+        "median": 0.03464083664199895,
+        "p95": 0.03464083664199895,
+        "maximum": 0.03464083664199895
+      },
+      "summary_sha256": "19c11604b75c0d06a7425658dc59dfb82b90d1baf9c27130bb8cff48dac18eb4",
+      "rows_sha256": "473d8ac80b96b870c067e53cb82279bd438cc76b83b2336477d27466930e2937"
+    },
+    {
+      "request_id": "heldout/north_reverse_warm-m2-occupied_rejection/clearance_only",
+      "family": "north_reverse_warm",
+      "mode": 2,
+      "variant": "clearance_only",
+      "intent": "occupied_rejection",
+      "intended_pass": true,
+      "metrics": {
+        "contacts": 0,
+        "arrivals": 0,
+        "localization_loss_episodes": 0,
+        "rejected_requests": 1,
+        "unexpected_rejections": 0,
+        "manual_interventions": 0,
+        "scene_invalidations": 0,
+        "worker_errors": 0
+      },
+      "evidence_complete": true,
+      "initial_goal_commands": 1,
+      "recorded_seconds": 2.05,
+      "terminal_stop": {
+        "reason": "initial_goal_terminal_rejection",
+        "first_observed_s": 0.05,
+        "stopped_after_s": 2.0,
+        "zero_authority_hold_s": 0.5
+      },
+      "coverage_counts": {
+        "frames": 41,
+        "camera_view_observations": 82,
+        "visible_camera_view_observations": 82,
+        "nonzero_action_frames": 0,
+        "fused_RGB_position_samples": 41,
+        "fused_RGB_radius_covered": 41,
+        "measured_belief_samples": 41,
+        "measured_belief_radius_covered": 41
+      },
+      "measurement_status_counts": {
+        "visible": 41
+      },
+      "fused_RGB_errors_m": {
+        "samples": 41,
+        "minimum": 0.0035903349273229915,
+        "median": 0.003595606486075215,
+        "p95": 0.003595606486075215,
+        "maximum": 0.004204393045855796
+      },
+      "fused_RGB_declared_radii_m": {
+        "samples": 41,
+        "minimum": 0.034640787163336934,
+        "median": 0.03464083664199895,
+        "p95": 0.03464083664199895,
+        "maximum": 0.03464855728565633
+      },
+      "measured_belief_errors_m": {
+        "samples": 41,
+        "minimum": 0.0035903349273229915,
+        "median": 0.003595606486075215,
+        "p95": 0.003595606486075215,
+        "maximum": 0.004204393045855796
+      },
+      "measured_belief_declared_radii_m": {
+        "samples": 41,
+        "minimum": 0.034640787163336934,
+        "median": 0.03464083664199895,
+        "p95": 0.03464083664199895,
+        "maximum": 0.03464855728565633
+      },
+      "summary_sha256": "991d8d7434ce685403836427d749546be4e9ee6e73d2a984cb3adad04b155423",
+      "rows_sha256": "5e5ca505e3281f1dd6dcdf49420f11ab3f5ec378236d30da17564abb22970ab7"
+    },
+    {
+      "request_id": "heldout/north_reverse_warm-m2-occupied_rejection/visibility_and_validity",
+      "family": "north_reverse_warm",
+      "mode": 2,
+      "variant": "visibility_and_validity",
+      "intent": "occupied_rejection",
+      "intended_pass": true,
+      "metrics": {
+        "contacts": 0,
+        "arrivals": 0,
+        "localization_loss_episodes": 0,
+        "rejected_requests": 1,
+        "unexpected_rejections": 0,
+        "manual_interventions": 0,
+        "scene_invalidations": 0,
+        "worker_errors": 0
+      },
+      "evidence_complete": true,
+      "initial_goal_commands": 1,
+      "recorded_seconds": 2.05,
+      "terminal_stop": {
+        "reason": "initial_goal_terminal_rejection",
+        "first_observed_s": 1.05,
+        "stopped_after_s": 2.0,
+        "zero_authority_hold_s": 0.5
+      },
+      "coverage_counts": {
+        "frames": 41,
+        "camera_view_observations": 82,
+        "visible_camera_view_observations": 82,
+        "nonzero_action_frames": 0,
+        "fused_RGB_position_samples": 41,
+        "fused_RGB_radius_covered": 41,
+        "measured_belief_samples": 21,
+        "measured_belief_radius_covered": 21
+      },
+      "measurement_status_counts": {
+        "visible": 41
+      },
+      "fused_RGB_errors_m": {
+        "samples": 41,
+        "minimum": 0.0035903349273229915,
+        "median": 0.003595606486075215,
+        "p95": 0.003595606486075215,
+        "maximum": 0.004204393045855796
+      },
+      "fused_RGB_declared_radii_m": {
+        "samples": 41,
+        "minimum": 0.034640787163336934,
+        "median": 0.03464083664199895,
+        "p95": 0.03464083664199895,
+        "maximum": 0.03464855728565633
+      },
+      "measured_belief_errors_m": {
+        "samples": 21,
+        "minimum": 0.003595606486075215,
+        "median": 0.003595606486075215,
+        "p95": 0.003595606486075215,
+        "maximum": 0.003595606486075215
+      },
+      "measured_belief_declared_radii_m": {
+        "samples": 21,
+        "minimum": 0.03464083664199895,
+        "median": 0.03464083664199895,
+        "p95": 0.03464083664199895,
+        "maximum": 0.03464083664199895
+      },
+      "summary_sha256": "8cdd479263dc65a5233a9cd0c05e672762a279af5c22b487ff309b5202319664",
+      "rows_sha256": "06c7c7366f84b90f0b5389656fce5cfd396581fabe87b74643d0b9f55d8b3aa3"
+    },
+    {
+      "request_id": "heldout/north_reverse_warm-m3-arrival/clearance_only",
+      "family": "north_reverse_warm",
+      "mode": 3,
+      "variant": "clearance_only",
+      "intent": "arrival",
+      "intended_pass": false,
+      "metrics": {
+        "contacts": 0,
+        "arrivals": 0,
+        "localization_loss_episodes": 0,
+        "rejected_requests": 0,
+        "unexpected_rejections": 0,
+        "manual_interventions": 0,
+        "scene_invalidations": 0,
+        "worker_errors": 0
+      },
+      "evidence_complete": true,
+      "initial_goal_commands": 0,
+      "recorded_seconds": 30.0,
+      "terminal_stop": null,
+      "coverage_counts": {
+        "frames": 600,
+        "camera_view_observations": 1800,
+        "visible_camera_view_observations": 1200,
+        "nonzero_action_frames": 0
+      },
+      "measurement_status_counts": {
+        "ambiguous": 600
+      },
+      "fused_RGB_errors_m": {
+        "samples": 0,
+        "minimum": null,
+        "median": null,
+        "p95": null,
+        "maximum": null
+      },
+      "fused_RGB_declared_radii_m": {
+        "samples": 0,
+        "minimum": null,
+        "median": null,
+        "p95": null,
+        "maximum": null
+      },
+      "measured_belief_errors_m": {
+        "samples": 0,
+        "minimum": null,
+        "median": null,
+        "p95": null,
+        "maximum": null
+      },
+      "measured_belief_declared_radii_m": {
+        "samples": 0,
+        "minimum": null,
+        "median": null,
+        "p95": null,
+        "maximum": null
+      },
+      "summary_sha256": "ea699a167d2df87917f4e30bbbbfe4ce3fe4af6dc73f7c5dc5f38ecf27167e98",
+      "rows_sha256": "ee95870e5ede70180caadae0cb8844d58f7739bdecd73fe3ffdbb18399770d70"
+    },
+    {
+      "request_id": "heldout/north_reverse_warm-m3-arrival/visibility_and_validity",
+      "family": "north_reverse_warm",
+      "mode": 3,
+      "variant": "visibility_and_validity",
+      "intent": "arrival",
+      "intended_pass": false,
+      "metrics": {
+        "contacts": 0,
+        "arrivals": 0,
+        "localization_loss_episodes": 0,
+        "rejected_requests": 0,
+        "unexpected_rejections": 0,
+        "manual_interventions": 0,
+        "scene_invalidations": 0,
+        "worker_errors": 0
+      },
+      "evidence_complete": true,
+      "initial_goal_commands": 0,
+      "recorded_seconds": 30.0,
+      "terminal_stop": null,
+      "coverage_counts": {
+        "frames": 600,
+        "camera_view_observations": 1800,
+        "visible_camera_view_observations": 1200,
+        "nonzero_action_frames": 0
+      },
+      "measurement_status_counts": {
+        "ambiguous": 600
+      },
+      "fused_RGB_errors_m": {
+        "samples": 0,
+        "minimum": null,
+        "median": null,
+        "p95": null,
+        "maximum": null
+      },
+      "fused_RGB_declared_radii_m": {
+        "samples": 0,
+        "minimum": null,
+        "median": null,
+        "p95": null,
+        "maximum": null
+      },
+      "measured_belief_errors_m": {
+        "samples": 0,
+        "minimum": null,
+        "median": null,
+        "p95": null,
+        "maximum": null
+      },
+      "measured_belief_declared_radii_m": {
+        "samples": 0,
+        "minimum": null,
+        "median": null,
+        "p95": null,
+        "maximum": null
+      },
+      "summary_sha256": "b68489064c674a4ea663a297f8e1ee71cf9973bc3a6158c1cfd9b075a9c7b354",
+      "rows_sha256": "0bfa605a20471d8d0c41a7598ed8d384acb28ce1327855ad6bdb240dfac62a3b"
+    },
+    {
+      "request_id": "heldout/north_reverse_warm-m3-occupied_rejection/clearance_only",
+      "family": "north_reverse_warm",
+      "mode": 3,
+      "variant": "clearance_only",
+      "intent": "occupied_rejection",
+      "intended_pass": false,
+      "metrics": {
+        "contacts": 0,
+        "arrivals": 0,
+        "localization_loss_episodes": 0,
+        "rejected_requests": 0,
+        "unexpected_rejections": 0,
+        "manual_interventions": 0,
+        "scene_invalidations": 0,
+        "worker_errors": 0
+      },
+      "evidence_complete": true,
+      "initial_goal_commands": 0,
+      "recorded_seconds": 5.0,
+      "terminal_stop": null,
+      "coverage_counts": {
+        "frames": 100,
+        "camera_view_observations": 300,
+        "visible_camera_view_observations": 200,
+        "nonzero_action_frames": 0
+      },
+      "measurement_status_counts": {
+        "ambiguous": 100
+      },
+      "fused_RGB_errors_m": {
+        "samples": 0,
+        "minimum": null,
+        "median": null,
+        "p95": null,
+        "maximum": null
+      },
+      "fused_RGB_declared_radii_m": {
+        "samples": 0,
+        "minimum": null,
+        "median": null,
+        "p95": null,
+        "maximum": null
+      },
+      "measured_belief_errors_m": {
+        "samples": 0,
+        "minimum": null,
+        "median": null,
+        "p95": null,
+        "maximum": null
+      },
+      "measured_belief_declared_radii_m": {
+        "samples": 0,
+        "minimum": null,
+        "median": null,
+        "p95": null,
+        "maximum": null
+      },
+      "summary_sha256": "fe840ddbc96af23072d42d027e3f42cf67b0329ef02ebdbe622bba7ab2ed07a5",
+      "rows_sha256": "301f81f209629c1ba67f8641a819d2c453aa5e2707cac8ba441b29493177f89b"
+    },
+    {
+      "request_id": "heldout/north_reverse_warm-m3-occupied_rejection/visibility_and_validity",
+      "family": "north_reverse_warm",
+      "mode": 3,
+      "variant": "visibility_and_validity",
+      "intent": "occupied_rejection",
+      "intended_pass": false,
+      "metrics": {
+        "contacts": 0,
+        "arrivals": 0,
+        "localization_loss_episodes": 0,
+        "rejected_requests": 0,
+        "unexpected_rejections": 0,
+        "manual_interventions": 0,
+        "scene_invalidations": 0,
+        "worker_errors": 0
+      },
+      "evidence_complete": true,
+      "initial_goal_commands": 0,
+      "recorded_seconds": 5.0,
+      "terminal_stop": null,
+      "coverage_counts": {
+        "frames": 100,
+        "camera_view_observations": 300,
+        "visible_camera_view_observations": 200,
+        "nonzero_action_frames": 0
+      },
+      "measurement_status_counts": {
+        "ambiguous": 100
+      },
+      "fused_RGB_errors_m": {
+        "samples": 0,
+        "minimum": null,
+        "median": null,
+        "p95": null,
+        "maximum": null
+      },
+      "fused_RGB_declared_radii_m": {
+        "samples": 0,
+        "minimum": null,
+        "median": null,
+        "p95": null,
+        "maximum": null
+      },
+      "measured_belief_errors_m": {
+        "samples": 0,
+        "minimum": null,
+        "median": null,
+        "p95": null,
+        "maximum": null
+      },
+      "measured_belief_declared_radii_m": {
+        "samples": 0,
+        "minimum": null,
+        "median": null,
+        "p95": null,
+        "maximum": null
+      },
+      "summary_sha256": "93a392fedd11541cb02a0d6e2f5f54aa90f03794c3f7ceb115e0fd8d3137cb6e",
+      "rows_sha256": "6693b9dceb93768b262010ea4d6f114878b4613f93f4b4bc8aaef16f0be5d76d"
+    }
+  ],
+  "unexecuted": [
+    {
+      "request_id": "heldout/west_oblique_warm-m1-arrival/clearance_only",
+      "reason": "family_provisioning_blocked",
+      "provisioning_reason": "audit-map_failed"
+    },
+    {
+      "request_id": "heldout/west_oblique_warm-m1-arrival/visibility_and_validity",
+      "reason": "family_provisioning_blocked",
+      "provisioning_reason": "audit-map_failed"
+    },
+    {
+      "request_id": "heldout/west_oblique_warm-m1-occupied_rejection/clearance_only",
+      "reason": "family_provisioning_blocked",
+      "provisioning_reason": "audit-map_failed"
+    },
+    {
+      "request_id": "heldout/west_oblique_warm-m1-occupied_rejection/visibility_and_validity",
+      "reason": "family_provisioning_blocked",
+      "provisioning_reason": "audit-map_failed"
+    },
+    {
+      "request_id": "heldout/west_oblique_warm-m2-arrival/clearance_only",
+      "reason": "family_provisioning_blocked",
+      "provisioning_reason": "audit-map_failed"
+    },
+    {
+      "request_id": "heldout/west_oblique_warm-m2-arrival/visibility_and_validity",
+      "reason": "family_provisioning_blocked",
+      "provisioning_reason": "audit-map_failed"
+    },
+    {
+      "request_id": "heldout/west_oblique_warm-m2-occupied_rejection/clearance_only",
+      "reason": "family_provisioning_blocked",
+      "provisioning_reason": "audit-map_failed"
+    },
+    {
+      "request_id": "heldout/west_oblique_warm-m2-occupied_rejection/visibility_and_validity",
+      "reason": "family_provisioning_blocked",
+      "provisioning_reason": "audit-map_failed"
+    },
+    {
+      "request_id": "heldout/west_oblique_warm-m3-arrival/clearance_only",
+      "reason": "family_provisioning_blocked",
+      "provisioning_reason": "audit-map_failed"
+    },
+    {
+      "request_id": "heldout/west_oblique_warm-m3-arrival/visibility_and_validity",
+      "reason": "family_provisioning_blocked",
+      "provisioning_reason": "audit-map_failed"
+    },
+    {
+      "request_id": "heldout/west_oblique_warm-m3-occupied_rejection/clearance_only",
+      "reason": "family_provisioning_blocked",
+      "provisioning_reason": "audit-map_failed"
+    },
+    {
+      "request_id": "heldout/west_oblique_warm-m3-occupied_rejection/visibility_and_validity",
+      "reason": "family_provisioning_blocked",
+      "provisioning_reason": "audit-map_failed"
+    },
+    {
+      "request_id": "heldout/west_reverse_cool-m1-arrival/clearance_only",
+      "reason": "family_provisioning_blocked",
+      "provisioning_reason": "audit-map_failed"
+    },
+    {
+      "request_id": "heldout/west_reverse_cool-m1-arrival/visibility_and_validity",
+      "reason": "family_provisioning_blocked",
+      "provisioning_reason": "audit-map_failed"
+    },
+    {
+      "request_id": "heldout/west_reverse_cool-m1-occupied_rejection/clearance_only",
+      "reason": "family_provisioning_blocked",
+      "provisioning_reason": "audit-map_failed"
+    },
+    {
+      "request_id": "heldout/west_reverse_cool-m1-occupied_rejection/visibility_and_validity",
+      "reason": "family_provisioning_blocked",
+      "provisioning_reason": "audit-map_failed"
+    },
+    {
+      "request_id": "heldout/west_reverse_cool-m2-arrival/clearance_only",
+      "reason": "family_provisioning_blocked",
+      "provisioning_reason": "audit-map_failed"
+    },
+    {
+      "request_id": "heldout/west_reverse_cool-m2-arrival/visibility_and_validity",
+      "reason": "family_provisioning_blocked",
+      "provisioning_reason": "audit-map_failed"
+    },
+    {
+      "request_id": "heldout/west_reverse_cool-m2-occupied_rejection/clearance_only",
+      "reason": "family_provisioning_blocked",
+      "provisioning_reason": "audit-map_failed"
+    },
+    {
+      "request_id": "heldout/west_reverse_cool-m2-occupied_rejection/visibility_and_validity",
+      "reason": "family_provisioning_blocked",
+      "provisioning_reason": "audit-map_failed"
+    },
+    {
+      "request_id": "heldout/west_reverse_cool-m3-arrival/clearance_only",
+      "reason": "family_provisioning_blocked",
+      "provisioning_reason": "audit-map_failed"
+    },
+    {
+      "request_id": "heldout/west_reverse_cool-m3-arrival/visibility_and_validity",
+      "reason": "family_provisioning_blocked",
+      "provisioning_reason": "audit-map_failed"
+    },
+    {
+      "request_id": "heldout/west_reverse_cool-m3-occupied_rejection/clearance_only",
+      "reason": "family_provisioning_blocked",
+      "provisioning_reason": "audit-map_failed"
+    },
+    {
+      "request_id": "heldout/west_reverse_cool-m3-occupied_rejection/visibility_and_validity",
+      "reason": "family_provisioning_blocked",
+      "provisioning_reason": "audit-map_failed"
+    }
+  ],
+  "denominators": {
+    "all_frozen_requests": 48,
+    "executed_requests": 24
+  }
+}

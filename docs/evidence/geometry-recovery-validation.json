@@ -1,0 +1,131 @@
+{
+  "schema": "bb8.geometry-recovery-phase-validation.v1",
+  "created_at_utc": "2026-09-28T01:43:08.171190+00:00",
+  "phase_complete": true,
+  "task_complete": false,
+  "phase": "Explicit original-reference recovery and controlled RGB information preflight",
+  "closed_this_phase": [
+    "Same-session restored-reference runtime recheck",
+    "Generation/fault/event acknowledgement and cancellation retries",
+    "Stopped local reacquisition and fresh motion request requirement",
+    "Native1/2/3-camera recovery and actual browser control validation",
+    "Controlled point-light RGB acquisition and independent signal/uncertainty diagnosis"
+  ],
+  "unchanged_prior_audit_repairs": "Original reproduced auditF1-F6 remain implemented; full regression passed.",
+  "validation": {
+    "non_native_unique_passed": 1591,
+    "non_native_main_passed": 1589,
+    "sandbox_http_errors_resolved_by_exact_retry": 2,
+    "native_gui_deselected_in_main_command": 20,
+    "geometry_helper_tests_passed": 25,
+    "independent_native_audit_tests_passed": 36,
+    "ruff": "passed",
+    "frontend_suites": 3,
+    "javascript_syntax": "passed",
+    "ci_collected_tests": 1591,
+    "ci_collected_modules": 73,
+    "ci_negative_controls": [
+      {
+        "mutation": "unauthorized-motion",
+        "rejected_by_test": true
+      },
+      {
+        "mutation": "missed-solid-overlap",
+        "rejected_by_test": true
+      },
+      {
+        "mutation": "unchecked-config-reference",
+        "rejected_by_test": true
+      }
+    ]
+  },
+  "native_recovery": {
+    "planned_cases": 3,
+    "native_attempts": 5,
+    "complete_attempts": 3,
+    "distinct_completed_cases": 3,
+    "protocol_behavior_pass_attempts": 4,
+    "preserved_failed_attempts": 2,
+    "supplemental_ui_sessions": 1
+  },
+  "native_contacts": 0,
+  "native_boundary_failures": 0,
+  "native_worker_errors": 0,
+  "supplemental_ui": {
+    "run": "ui-v1",
+    "report_sha256": "cd3cdbd9d3b7bc0c0f6eed7016f974ec1d87a7dcc5bd5c772f91374c56b30943",
+    "pass": true,
+    "frames": 1936,
+    "physics_samples": 19360,
+    "verified_images": 3872,
+    "recovery_time": 31.3
+  },
+  "controlled_rgb": {
+    "native_acquisitions": 1,
+    "rgb_frames": 28,
+    "zero_light_controls": 16,
+    "response_checks": 6,
+    "preflight_pass": true,
+    "physics_steps": 0,
+    "metric_height_resolution_demonstrated": false,
+    "free_cells_admitted": 0
+  },
+  "preservation": {
+    "checked_files": 255,
+    "unchanged_count": 246,
+    "changed": [
+      "src/bb8_rl/interactive.py",
+      "src/bb8_rl/interactive_runtime.py",
+      "src/bb8_rl/scene_validity.py",
+      "src/bb8_rl/web/app.js",
+      "src/bb8_rl/web/index.html",
+      "tests/test_interactive.py",
+      "tests/test_interactive_runtime.py",
+      "tests/test_scene_validity.py",
+      "tests/test_web_localization.js"
+    ],
+    "missing": [],
+    "unexpected_changes": [],
+    "source_freeze_drift": [],
+    "studio_head": "cd20c8c685f2b51263814fd0a6296bfd849bdce6",
+    "studio_clean": true,
+    "all_required_preserved": true
+  },
+  "new_room_original_requests": {
+    "requested": 6,
+    "native_attempted": 0,
+    "blocked_before_native": 6,
+    "arrivals": 0
+  },
+  "remaining": [
+    "Validated useful new-room geometry and free-space map",
+    "Six original new-room mode1/2/3 arrival and occupied requests",
+    "Arbitrary moved-camera registration, changed-map repair and global relocalization",
+    "General visual entities, cross-room identity, richer personality and physical hardware"
+  ],
+  "scope": "Synthetic known-room native lockstep recovery; explicit restoration only. Sensing is a development acquisition, not a held-out geometry success. Two unsuccessful test-driver attempts preserved.",
+  "evidence_sha256": {
+    "PLAN.md": "b564522ed8a23e388e221d1f478e54b12ed0940e41d4cb743fd18c3a4031e446",
+    "DECISIONS.md": "ad0b629d0f284d3fa0c08773ba8605c54321495794fe2bae5e080bebd0f9e9bc",
+    "preservation-before.json": "279aa32595ad90d10bf8f67123dc2189e4b0a9f21fdcfa40bb968ebdcd693460",
+    "preservation-after.json": "5bfdb5280d8d069677faa491a36b1c405c7f9d78864685de8b5a18b918e83066",
+    "native-recovery/protocol-v1.json": "7f96dd6ce9bb28f4bb2608d99ff50ad34dbeac3bbe2aa5d16bc7a9acfa9e2f50",
+    "native-recovery/protocol-v2.json": "cc0414698edfd55ec8b452d6d6ed09feb8ee3047a8f4ee87c53780429f5c2510",
+    "native-recovery/source-freeze.json": "7926f173d9b0165c37319c1b4f6da5c4938dc16990f6de3282b2f3018d870b92",
+    "native-recovery/independent-audit-summary-v1.json": "e3499fba5dd4fa16d995898eaf8629265c80f49ace7b7a2de080d836116887a9",
+    "native-recovery/active-motion-qualification.json": "111f5492a125041684298e0752276713a0568634e04189eb5e53c5d9f445e9a8",
+    "information-review/analysis-v1/report.json": "6c968162f26d517c91a3e2e703b309768b65a22f0d7e731eaaf3107e0fc767ed",
+    "information-review/capture-v1/audit/response.json": "20946b8f8e21c8ae91e6223d921bfd5446b3a6030c70bdf845c8d4e342122dcb",
+    "information-review/capture-v1/audit/manifest.json": "ac2e28a7ece48f9e39a4cc6155b68f7092adbbe8e6f38e5efdeb2d0afa162a34",
+    "information-review/freeze.json": "58da4849d5e931476d2b5341fc6c4146c978fb18304db6622ab37ff7da878263",
+    "information-review/conditioning-local-v1/plan.json": "5c591b6239a2e8949f925fd7a4af714a7a40248da432cc3e730b260793b69bc0",
+    "recovery-review/independent-runtime-check.json": "b522c1c4a8aea35144fedcf78b90163515e93f884657326ea5f85479db46a107",
+    "motion-ledger.json": "06423b66f42b157eae192fda51a9a3113569550555f22993b11c3e7b1735e555",
+    "pytest-full.log": "d5df3abd9b98c3f2ce4aa296f75c684e57bbe9112bdde27d90a6223afc874850",
+    "pytest-http-retry.log": "b45886881ee77c75323d839fb3cfe69abe5730b11914edfaa36461edb80cb110",
+    "geometry-tests.log": "b69401582a27520e16d43e7ccb3b470bd037ebec9f26663cfbd760d3da21b67b",
+    "native-audit-tests.log": "0b194d90142dc3392beb6c4a9bf4ecf8f021b38185cc0f1f99081cb8a899dd6d",
+    "ruff.log": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+    "ci-contracts.json": "86b6b6b033d9adc280cc970b58b458c3becc6972a1ac33b06951199c1761281e"
+  }
+}
